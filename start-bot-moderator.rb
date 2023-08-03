@@ -14,8 +14,8 @@ Telegram::Bot::Client.run(ENV['TOKEN_MODERATOR']) do |bot|
     $mes = message 
 
     handle if $mes
-    # rescue  => e
-    #   Send.mes(e, to: ENV['CHAT_ID_MY'])
-    #   Send.mes(e.backtrace, to: ENV['CHAT_ID_MY'])
+    rescue  => e
+      Send.mes(e, to: ENV['CHAT_ID_MY'])
+      Send.mes(e.backtrace, to: ENV['CHAT_ID_MY'])
   end
 end

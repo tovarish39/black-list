@@ -75,7 +75,7 @@ def handle_accept_complaint
     complaint = get_complaint_by_button()
     return if complaint.nil?
 
-    puts complaint.status
+    # puts complaint.status
     is_already_handled = complaint.status != "request_to_moderator"
     if is_already_handled
         Send.mes(Text.was_handled)

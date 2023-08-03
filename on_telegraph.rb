@@ -94,6 +94,6 @@ moderators.each do |moderator|
     )
     # puts mes.inspect
     rescue => exception
-        puts   exception
-        puts   exception.backtrace
+        # puts   exception
+        # puts   exception.backtrace
 end
