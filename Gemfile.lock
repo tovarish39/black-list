@@ -1,0 +1,86 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    aasm (5.5.0)
+      concurrent-ruby (~> 1.0)
+    activemodel (7.0.6)
+      activesupport (= 7.0.6)
+    activerecord (7.0.6)
+      activemodel (= 7.0.6)
+      activesupport (= 7.0.6)
+    activesupport (7.0.6)
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      tzinfo (~> 2.0)
+    colorize (1.1.0)
+    concurrent-ruby (1.2.2)
+    debase (0.2.5.beta2)
+      debase-ruby_core_source (>= 0.10.12)
+    debase-ruby_core_source (3.2.1)
+    dotenv (2.8.1)
+    dry-core (1.0.0)
+      concurrent-ruby (~> 1.0)
+      zeitwerk (~> 2.6)
+    dry-inflector (1.0.0)
+    dry-logic (1.5.0)
+      concurrent-ruby (~> 1.0)
+      dry-core (~> 1.0, < 2)
+      zeitwerk (~> 2.6)
+    dry-struct (1.6.0)
+      dry-core (~> 1.0, < 2)
+      dry-types (>= 1.7, < 2)
+      ice_nine (~> 0.11)
+      zeitwerk (~> 2.6)
+    dry-types (1.7.1)
+      concurrent-ruby (~> 1.0)
+      dry-core (~> 1.0)
+      dry-inflector (~> 1.0)
+      dry-logic (~> 1.4)
+      zeitwerk (~> 2.6)
+    faraday (2.3.0)
+      faraday-net_http (~> 2.0)
+      ruby2_keywords (>= 0.0.4)
+    faraday-multipart (1.0.4)
+      multipart-post (~> 2)
+    faraday-net_http (2.1.0)
+    i18n (1.14.1)
+      concurrent-ruby (~> 1.0)
+    ice_nine (0.11.2)
+    minitest (5.19.0)
+    multipart-post (2.3.0)
+    nokogiri (1.15.3-x86_64-linux)
+      racc (~> 1.4)
+    pg (1.5.3)
+    racc (1.7.1)
+    rake (13.0.6)
+    ruby-debug-ide (0.7.3)
+      rake (>= 0.8.1)
+    ruby2_keywords (0.0.5)
+    telegram-bot-ruby (1.0.0)
+      dry-struct (~> 1.6)
+      faraday (~> 2.0)
+      faraday-multipart (~> 1.0)
+      zeitwerk (~> 2.6)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
+    zeitwerk (2.6.10)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  aasm (~> 5.1, >= 5.1.1)
+  activerecord
+  colorize
+  debase (= 0.2.5.beta2)
+  dotenv
+  faraday (= 2.3.0)
+  faraday-multipart
+  nokogiri
+  pg (~> 1.5, >= 1.5.3)
+  ruby-debug-ide
+  telegram-bot-ruby (~> 1.0.0)
+
+BUNDLED WITH
+   2.4.1

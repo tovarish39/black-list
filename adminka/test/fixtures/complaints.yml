@@ -1,0 +1,33 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  telegram_id: MyString
+  username: MyString
+  first_name: MyString
+  last_name: MyString
+  status: MyString
+  photo_dir_paths: MyString
+  complaint_text: MyText
+  photos_amount: 1
+  is_proofed_by_forwarted_mes: false
+  telegraph_link: MyString
+  explanation_by_moderator: MyText
+  photo_urls_remote_tmp: MyString
+  justification: MyText
+
+two:
+  user: two
+  telegram_id: MyString
+  username: MyString
+  first_name: MyString
+  last_name: MyString
+  status: MyString
+  photo_dir_paths: MyString
+  complaint_text: MyText
+  photos_amount: 1
+  is_proofed_by_forwarted_mes: false
+  telegraph_link: MyString
+  explanation_by_moderator: MyText
+  photo_urls_remote_tmp: MyString
+  justification: MyText

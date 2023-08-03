@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  telegram_id: MyString
+  username: MyString
+  first_name: MyString
+  last_name: MyString
+  lg: MyString
+  state_aasm: MyString
+  cur_complaint_id: MyString
+  cur_message_id: MyString
+  status: MyString
+  complaint_id: MyString
+
+two:
+  telegram_id: MyString
+  username: MyString
+  first_name: MyString
+  last_name: MyString
+  lg: MyString
+  state_aasm: MyString
+  cur_complaint_id: MyString
+  cur_message_id: MyString
+  status: MyString
+  complaint_id: MyString
