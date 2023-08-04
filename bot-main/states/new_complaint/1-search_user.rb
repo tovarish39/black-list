@@ -30,7 +30,7 @@ def get_userTo_telegram_id
                          $mes.user_shared[:user_id].to_s
                        elsif mes_text?
                         # при вводе текста меняем "/" чтоб папки не ломало
-                        replace_invalid_characters($mes.text.gsub)
+                        replace_invalid_characters($mes.text)
                        end
   userTo_telegram_id   
 end
