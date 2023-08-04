@@ -28,7 +28,7 @@ module Text
         'Отправьте скриншоты диалога на которых виден процесс обмана, после отправки нажмите кнопку “Готово”'
     end
     def self.notice_max_photos_size
-        "Максимальное количество фотографий #{MAX_PHOTOS_SIZE}"
+        "Максимальное количество фотографий #{ENV['MAX_PHOTOS_AMOUNT']}"
     end
     def self.notice_min_photos_size
         'Необходимо отправить фото'

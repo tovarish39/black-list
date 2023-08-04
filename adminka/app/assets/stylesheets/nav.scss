@@ -4,8 +4,9 @@
   width: 300px;
   display: flex;
   flex-direction: column;
-  // box-sizing: border-box;
-
+  ul {
+    list-style-type: none;
+  }
   &__link {
     border-radius: 10px;
     padding: 10px;
@@ -17,14 +18,15 @@
     font-weight: bold;
     display: inline-flex;
     user-select: none;
-    width: 180px;
+    width: 210px;
+    transition: width 1s, border-radius 2s;
     &:hover {
       border-radius: 10px 0 0 10px;
-      width: 100%;
+      width: 240px;
     }
     &__active {
       border-radius: 10px 0 0 10px;
-      width: 100%;
+      width: 240px;
     }
   }
 }

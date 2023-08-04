@@ -38,7 +38,7 @@ def in_min_limit?
 end
 
 def in_max_limit? # ..21
-  get_size_now <= ENV['MAX_PHOTOS_AMOUNT'].to_i
+  get_size_now < ENV['MAX_PHOTOS_AMOUNT'].to_i
 end
 
 def write_file file, complaint
@@ -62,9 +62,8 @@ end
 
 def handle_photo
   min_size = 2 # availible 3 variants (indexes)
-
-  # bug 
   file = $mes.photo[min_size]
+
   return if file.nil?
   
   

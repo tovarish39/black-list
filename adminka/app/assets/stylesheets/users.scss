@@ -1,7 +1,9 @@
 .users {
   padding: 20px;
-  box-sizing: border-box;
-  flex-grow: 1;
+  flex: 1;
+  &-wrap {
+    width: -webkit-fill-available;
+  }
   &__header {
     display: flex;
     justify-content: space-between;
