@@ -19,11 +19,18 @@ def is_user_shared?
   $mes.user_shared.present? ? true : false
 end
 
+def replace_invalid_characters(input_string)
+  invalid_characters = ['/', '\\', '?', '*', ':', '"', '<', '>', '|', "\0", "\t", "\n", "\r"]
+  replaced_string = input_string.gsub(/[#{Regexp.escape(invalid_characters.join)}]/, '_')
+  replaced_string
+end
+
 def get_userTo_telegram_id
   userTo_telegram_id = if    is_user_shared?
                          $mes.user_shared[:user_id].to_s
                        elsif mes_text?
-                         $mes.text
+                        # при вводе текста меняем "/" чтоб папки не ломало
+                        replace_invalid_characters($mes.text.gsub)
                        end
   userTo_telegram_id   
 end

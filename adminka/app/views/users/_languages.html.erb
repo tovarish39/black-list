@@ -1,0 +1,8 @@
+    <div class="form_radio_group">
+        <% @languages.each_with_index do |lg, index| %>
+          <div class="form_radio_group-item">
+            <input id="radio-<%= index %>" type="radio" name="radio" value="<%= lg[:value] %>" <%= lg[:checked] ? "checked" : "" %>>
+            <label for="radio-<%= index %>"><%=lg[:label]%></label>
+          </div>
+        <% end %>
+    </div>

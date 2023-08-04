@@ -41,8 +41,8 @@ module Get
     end
 end
 
-def get_photo_dir_path scamer
-    "#{PHOTOS_PATH}/#{scamer.id}-#{scamer.telegram_id}"
+def get_photo_dir_path complate
+    "#{PHOTOS_PATH}/#{complate.id}-#{complate.telegram_id}"
 end
 
 def action(from_state) = "#{from_state}_action"        

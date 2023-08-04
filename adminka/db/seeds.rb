@@ -7,6 +7,28 @@
 #   Character.create(name: "Luke", movie: movies.first)
 
 
+data = [
+    {telegram_id:'123412342143', username:"sadfsadf", first_name:'asdfsdf', last_name:'xcvbvcb', lg:'ru', status:'not_scamer:default'},
+    {telegram_id:'123412342143', username:"sadfsadf", first_name:'asdfsdf', last_name:'xcvbvcb', lg:'ru', status:'not_scamer:default'},
+    {telegram_id:'123412342143', username:"sadfsadf", first_name:'asdfsdf', last_name:'xcvbvcb', lg:'ru', status:'scamer:managed_by_moderator'},
+    {telegram_id:'123412342143', username:"sadfsadf", first_name:'asdfsdf', last_name:'xcvbvcb', lg:'ru', status:'not_scamer:default'},
+    {telegram_id:'123412342143', username:"sadfsadf", first_name:'asdfsdf', last_name:'xcvbvcb', lg:'ru', status:'not_scamer:default'},
+    {telegram_id:'123412342143', username:"sadfsadf", first_name:'asdfsdf', last_name:'xcvbvcb', lg:'en', status:'not_scamer:managed_by_admin'},
+    {telegram_id:'123412342143', username:"sadfsadf", first_name:'asdfsdf', last_name:'xcvbvcb', lg:'en', status:'not_scamer:default'},
+    {telegram_id:'123412342143', username:"sadfsadf", first_name:'asdfsdf', last_name:'xcvbvcb', lg:'en', status:'not_scamer:default'},
+    {telegram_id:'123412342143', username:"sadfsadf", first_name:'asdfsdf', last_name:'xcvbvcb', lg:'en', status:'verified:managed_by_admin'},
+    {telegram_id:'123412342143', username:"sadfsadf", first_name:'asdfsdf', last_name:'xcvbvcb', lg:'en', status:'not_scamer:default'},
+]
 
-user = User.create(telegram_id:'123', username:'sadf', first_name:'qwer', last_name:'-', lg:'ru', state_aasm:'start')
-user.complaints.create()
+
+
+data.each do |obj|
+    User.create(
+        telegram_id:obj[:telegram_id], 
+        username:obj[:username], 
+        first_name:obj[:first_name], 
+        last_name:obj[:last_name], 
+        lg:obj[:lg], 
+        status:obj[:status]
+    )
+end

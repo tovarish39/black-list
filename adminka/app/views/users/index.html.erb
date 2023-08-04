@@ -1,5 +1,31 @@
 <%= render '/partials/nav' %>
 
-<main>
+<main class='users'>
+    <div   data-controller='users'>
+        <div class='users__header'>
+            <%= render 'search' %>
+            <%= render 'languages'%>
+        </div>
 
+        <table class='users__table'>
+            <div class='users__row'>
+                    <div class='users__cell users__cell-checkbox'>checkbox</div>
+                    <div class='users__cell users__cell-telegram-id'>telegram_id</div>
+                    <div class='users__cell users__cell-username'>@username</div>
+                    <div class='users__cell users__cell-status'>status</div>
+                    <div class='users__cell users__cell-registration'>registration</div>
+           </div>
+
+
+
+            <% for user in @users %>
+            <ul>
+                <li>
+                <%= user.username %>
+
+                </li>
+           </ul>
+            <% end%>
+        </table>
+    </div>
 </main>
