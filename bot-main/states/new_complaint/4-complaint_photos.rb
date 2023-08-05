@@ -15,11 +15,6 @@ class StateMachine
         transitions if: -> { mes_photo? &&  in_max_limit? }             , after: :handle_photo          , to: :complaint_photos
         transitions if: -> { mes_photo? && !in_max_limit? }             , after: :notice_max_photos_size, to: :complaint_photos
       end
-
-
-
-
-      
     end
   end
 end

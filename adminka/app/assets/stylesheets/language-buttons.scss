@@ -29,7 +29,7 @@
 
 /* Checked */
 .form_radio_group input[type='radio']:checked + label {
-  background: #c9c5be;
+  background: var(--bg-active);
 }
 
 /* Hover */

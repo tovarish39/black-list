@@ -1,24 +1,42 @@
 .users {
   padding: 20px;
   flex: 1;
+  box-sizing: border-box;
   &-wrap {
     width: -webkit-fill-available;
   }
   &__header {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 20px;
   }
-  // &__table {
-  // }
+
   &__row {
     display: flex;
     list-style-type: none;
     width: 100%;
+    color: black;
+    align-items: center;
+    min-height: 40px;
+    align-items: stretch;
+    background-color: #b5bec5;
+    &:last-child {
+      border-radius: 0 0 10px 10px;
+    }
+    &:first-child {
+      background-color: #989a9b;
+      border-radius: 10px 10px 0 0;
+    }
   }
+
   &__cell {
-    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px var(--bg-main) solid;
+    border-bottom: 1px var(--bg-main) solid;
     &-checkbox {
-      flex: 0.5;
+      flex: 0.3;
     }
     &-telegram-id {
       flex: 2;
@@ -30,7 +48,7 @@
       flex: 2;
     }
     &-registration {
-      flex: 1;
+      flex: 2;
     }
   }
 }

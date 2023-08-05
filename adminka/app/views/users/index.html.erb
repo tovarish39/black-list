@@ -7,25 +7,25 @@
             <%= render 'languages'%>
         </div>
 
-        <table class='users__table'>
+        <div class='users__table'>
             <div class='users__row'>
-                    <div class='users__cell users__cell-checkbox'>checkbox</div>
+                    <div class='users__cell users__cell-checkbox'><%= render '/partials/checkbox'%></div>
                     <div class='users__cell users__cell-telegram-id'>telegram_id</div>
                     <div class='users__cell users__cell-username'>@username</div>
                     <div class='users__cell users__cell-status'>status</div>
                     <div class='users__cell users__cell-registration'>registration</div>
            </div>
 
+           <% for user in @users%>
 
-
-            <% for user in @users %>
-            <ul>
-                <li>
-                <%= user.username %>
-
-                </li>
-           </ul>
-            <% end%>
-        </table>
+            <div class='users__row'>
+                    <div class='users__cell users__cell-checkbox'><%= render '/partials/checkbox'%></div>
+                    <div class='users__cell users__cell-telegram-id'><%= user[:telegram_id] %></div>
+                    <div class='users__cell users__cell-username'>@<%= user[:username] %></div>
+                    <div class='users__cell users__cell-status'><%= render 'select_status', locals:{status_options:default_options(@status_options, user[:status])} %></div>
+                    <div class='users__cell users__cell-registration'><%= user[:created_at].strftime('%d.%m.%Y') %></div>
+           </div>
+           <% end%>
+        </div>
     </div>
 </main>

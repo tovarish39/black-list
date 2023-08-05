@@ -1,0 +1,8 @@
+<div class="select-wrapper" data-controller="selectstatus">
+  <select class="custom-select">
+    <% for option in locals[:status_options] %>
+      <option value="<%= option %>"><%= option %></option>
+    <% end %>
+  </select>
+<div class="spinner" data-selectstatus-target="spinner"></div>
+</div>

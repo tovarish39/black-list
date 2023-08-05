@@ -6,5 +6,7 @@ class UsersController < ApplicationController
       {label:'en', value:'en', checked:false},
       {label:'es', value:'es', checked:false},
     ]
+
+    @status_options = ['scamer', 'not_scamer', 'verified' ]
   end
 end

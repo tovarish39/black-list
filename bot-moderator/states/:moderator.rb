@@ -9,10 +9,12 @@ class StateMachine
 
           transitions if: -> { mes_text?(Button.active_complaints) }, after: :view_complaints        , to: :moderator
 
-          transitions if: -> { mes_data?(/accept_complaint/) }      , after: :handle_accept_complaint, to: :moderator
+          transitions if: -> { mes_data? && is_already_handled?()} , after: :already_handled, to: :moderator
+
+
+          transitions if: -> { mes_data?(/accept_complaint/)} , after: :handle_accept_complaint, to: :moderator
           
-          transitions if: -> { mes_data?(/reject_complaint/) && is_already_handled?() }, after: :already_handled        , to: :moderator
-          transitions if: -> { mes_data?(/reject_complaint/) }                         , after: :handle_reject_complaint, to: :explanation
+          transitions if: -> { mes_data?(/reject_complaint/)}, after: :handle_reject_complaint, to: :explanation
           
           transitions if: -> { mes_data?(/access_justification/) }  , after: :accessing_justification, to: :moderator
 
