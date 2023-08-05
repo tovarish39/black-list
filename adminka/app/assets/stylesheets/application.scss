@@ -25,3 +25,17 @@ body {
   margin: 0;
   font-family: Arial;
 }
+
+.blanket {
+  &_loading {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 30;
+    opacity: 0.5;
+    background-color: black;
+    cursor: wait;
+  }
+}

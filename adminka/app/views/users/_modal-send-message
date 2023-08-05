@@ -1,0 +1,14 @@
+<div class="modal-send-message_wrap">
+  <div class="modal-send-message modal-send-message_overlay"></div>
+  <form class="modal-send-message__window">
+    <div class="modal-send-message__wrap-title">
+      <div class="modal-send-message__title">Send message</div>
+      <div class="modal-send-message__close-img"></div>
+    </div>
+    <textarea class="modal-send-message__area" name="" id="" cols="30" rows="10" required></textarea>
+    <div class="modal-send-message__wrap-buttons">
+      <input type="submit" class="modal-send-message__send-button" value="Send" />
+      <div class="modal-send-message__close-button">Cancel</div>
+    </div>
+  </form>
+</div>

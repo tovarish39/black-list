@@ -1,15 +1,19 @@
 <%= render '/partials/nav' %>
 
 <main class='users'>
+
     <div class='users-wrap'   data-controller='users'>
+        <%= render 'modal-send-message'%>
         <div class='users__header'>
             <%= render 'search' %>
+            <%= render 'show_modal'%>
+            <p class='users__stats'>stats will be here</p>
             <%= render 'languages'%>
         </div>
 
-        <div class='users__table'>
+        <div class='users__table' data-controller='checkbox'>
             <div class='users__row'>
-                    <div class='users__cell users__cell-checkbox'><%= render '/partials/checkbox'%></div>
+                    <div class='users__cell users__cell-checkbox'><%= render '/partials/checkbox', id:'general', type:'general'%></div>
                     <div class='users__cell users__cell-telegram-id'>telegram_id</div>
                     <div class='users__cell users__cell-username'>@username</div>
                     <div class='users__cell users__cell-status'>status</div>
@@ -18,8 +22,10 @@
 
            <% for user in @users%>
 
-            <div class='users__row'>
-                    <div class='users__cell users__cell-checkbox'><%= render '/partials/checkbox'%></div>
+            <div class='users__row users__row_item users__row_none' 
+            data=<%=formatting_data(user) %>     
+            >
+                    <div class='users__cell users__cell-checkbox'><%= render '/partials/checkbox', id:user.id, type:'local' %></div>
                     <div class='users__cell users__cell-telegram-id'><%= user[:telegram_id] %></div>
                     <div class='users__cell users__cell-username'>@<%= user[:username] %></div>
                     <div class='users__cell users__cell-status'><%= render 'select_status', status_options:default_options(@status_options, user[:status]), id:user.id %></div>

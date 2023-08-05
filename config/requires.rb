@@ -18,8 +18,8 @@ params = {
 ActiveRecord::Base.establish_connection(params)
 
 
-Ru = 'Русский'
-En = 'English'
+Ru = 'ru'
+En = 'en'
 
 CallbackQuery        = Telegram::Bot::Types::CallbackQuery
 Message              = Telegram::Bot::Types::Message

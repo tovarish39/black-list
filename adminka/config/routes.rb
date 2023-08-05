@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
-  get 'moderators/index'
   root 'users#index'
   
   resources :users
+  post '/users/send_message', to:'users#send_message'
   resources :scamers
   resources :moderators
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

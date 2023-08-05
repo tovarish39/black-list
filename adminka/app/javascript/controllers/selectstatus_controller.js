@@ -10,7 +10,7 @@ export default class extends Controller {
       const user_id = e.target.id
 
       const { updated_status } = await this.processEvent(user_id, new_status_value) // Пример асинхронной обработки (замените на вашу логику)
-      e.target.value = 'scamer'
+      e.target.value = updated_status
 
       this.hideSpinner() // Скрыть спиннер
     })
