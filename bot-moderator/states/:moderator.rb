@@ -99,7 +99,7 @@ def is_already_handled?
     complaint = get_complaint_by_button()
     return if complaint.nil?
     # puts complaint.status 
-    complaint.status != "request_to_moderator"
+    complaint.status != "request_to_moderator" || complaint.status != 'accepted_complaint' 
 end
 
 def handle_reject_complaint
