@@ -1,6 +1,6 @@
 <div class="select-wrapper" data-controller="selectstatus">
-  <select class="custom-select">
-    <% for option in locals[:status_options] %>
+  <select class="custom-select" id=<%=id%>>
+    <% for option in status_options %>
       <option value="<%= option %>"><%= option %></option>
     <% end %>
   </select>

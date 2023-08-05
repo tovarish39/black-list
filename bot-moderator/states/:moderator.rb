@@ -54,7 +54,7 @@ def view_complaints
         )
     end
 
-    Send.mes(Text.not_complaints) if complaints_to_moderator.empty?# && userTo_justifications.empty?
+    Send.mes(Text.not_complaints) if complaints_to_moderator.empty? && userTo_justifications.empty?
 end
 
 def publishing_in_channel complaint

@@ -5,21 +5,34 @@ export default class extends Controller {
 
   connect() {
     this.element.addEventListener('change', async (e) => {
-      if (e.target.classList.contains('custom-select')) {
-        this.showSpinner() // Показать спиннер
+      this.showSpinner() // Показать спиннер
+      const new_status_value = e.target.value
+      const user_id = e.target.id
 
-        // Здесь выполняется ваша обработка события
+      const { updated_status } = await this.processEvent(user_id, new_status_value) // Пример асинхронной обработки (замените на вашу логику)
+      e.target.value = 'scamer'
 
-        await this.processEvent() // Пример асинхронной обработки (замените на вашу логику)
-
-        this.hideSpinner() // Скрыть спиннер
-      }
+      this.hideSpinner() // Скрыть спиннер
     })
   }
 
-  async processEvent() {
-    // Здесь можете выполнить вашу обработку события, может быть асинхронной
-    await new Promise((resolve) => setTimeout(resolve, 2000)) // Пример задержки
+  async processEvent(user_id, new_status_value) {
+    const body = { new_status_value: new_status_value }
+    const csrfToken = document.querySelector("[name='csrf-token']").content
+
+    const res = await fetch(`/users/${user_id}`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken,
+      },
+    })
+
+    return res.json()
   }
 
   showSpinner() {
