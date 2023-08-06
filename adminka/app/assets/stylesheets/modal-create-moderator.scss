@@ -1,0 +1,82 @@
+.modal-create-moderator {
+  &_loading {
+    cursor: progress;
+    pointer-events: none;
+  }
+  &_wrap {
+    display: none;
+    &_active {
+      display: block;
+    }
+  }
+  &_overlay {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+    background-color: black;
+    opacity: 0.5;
+    left: 0;
+    top: 0;
+  }
+  &__window {
+    border-radius: 10px;
+    margin-left: 300px;
+    margin-top: 5vw;
+    width: 600px;
+    height: 360px;
+    background-color: var(--bg-main);
+    z-index: 20;
+    position: fixed;
+    opacity: 1; /* Установите непрозрачность на 1 */
+    padding: 30px;
+    box-sizing: border-box;
+  }
+  &__wrap-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  &__close-img {
+    width: 30px;
+    height: 30px;
+    background-image: url('close.png');
+    background-size: cover;
+    position: absolute;
+    right: 0;
+    margin-right: 20px;
+    cursor: pointer;
+  }
+  &__title {
+    font-size: 30px;
+    color: white;
+    font-weight: bold;
+  }
+  &__wrap-buttons {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+  }
+  &__send-button,
+  &__close-button {
+    width: 200px;
+    border-radius: 8px;
+    background-color: var(--bg-active);
+    font-size: 20px;
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+  }
+  &__input {
+    background-color: var(--bg-nav);
+    color: white;
+    border-radius: 5px;
+    width: -webkit-fill-available;
+    margin: 60px 0;
+    height: 56px;
+    font-size: 18px;
+    padding-left: 20px;
+    border: none;
+  }
+}

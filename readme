@@ -1,0 +1,4 @@
+.env
+adminka/.env
+in adminka -> whenever --update-crontab
+database.yml

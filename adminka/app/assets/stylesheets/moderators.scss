@@ -1,3 +1,86 @@
 .moderators {
+  padding: 20px;
   flex: 1;
+  box-sizing: border-box;
+  &__stats {
+    color: white;
+  }
+  &-wrap {
+    width: -webkit-fill-available;
+  }
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  &__row {
+    display: flex;
+    list-style-type: none;
+    width: 100%;
+    color: black;
+    align-items: center;
+    min-height: 40px;
+    align-items: stretch;
+    background-color: #b5bec5;
+    &_none {
+      display: none;
+    }
+    // &:last-child {
+    //   border-radius: 0 0 10px 10px;
+    // }
+    &:first-child {
+      background-color: #989a9b;
+      border-radius: 10px 10px 0 0;
+    }
+  }
+
+  &__cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px var(--bg-main) solid;
+    border-bottom: 1px var(--bg-main) solid;
+    &-checkbox {
+      flex: 0.3;
+    }
+    &-telegram-id {
+      flex: 2;
+    }
+    &-username {
+      flex: 2;
+    }
+    &-stat {
+      flex: 3;
+      font-size: 12px;
+      text-align: center;
+      &_values {
+        font-size: 16px;
+      }
+    }
+    &-status {
+      flex: 2;
+    }
+    &-registration {
+      flex: 1;
+    }
+  }
+  &__show-modal-button {
+    background-color: var(--bg-nav);
+    border: none;
+    border-radius: 7px;
+    color: white;
+    &_active {
+      background-color: var(--bg-active);
+      color: black;
+      cursor: pointer;
+    }
+  }
+}
+
+.show-modal-create-moderator {
+  background-color: var(--bg-active);
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
 }

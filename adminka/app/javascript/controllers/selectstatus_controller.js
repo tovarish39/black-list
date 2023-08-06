@@ -20,7 +20,8 @@ export default class extends Controller {
     const body = { new_status_value: new_status_value }
     const csrfToken = document.querySelector("[name='csrf-token']").content
 
-    const res = await fetch(`/users/${user_id}`, {
+    const path = window.location.pathname
+    const res = await fetch(`${path}/${user_id}`, {
       method: 'PUT',
       body: JSON.stringify(body),
       mode: 'cors', // no-cors, *cors, same-origin

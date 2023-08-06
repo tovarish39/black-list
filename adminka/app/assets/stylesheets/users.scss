@@ -26,9 +26,9 @@
     &_none {
       display: none;
     }
-    &:last-child {
-      border-radius: 0 0 10px 10px;
-    }
+    // &:last-child {
+    //   border-radius: 0 0 10px 10px;
+    // }
     &:first-child {
       background-color: #989a9b;
       border-radius: 10px 10px 0 0;
@@ -50,6 +50,7 @@
     &-username {
       flex: 2;
     }
+
     &-status {
       flex: 2;
     }

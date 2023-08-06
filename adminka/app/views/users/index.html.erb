@@ -11,7 +11,7 @@
             <%= render 'languages'%>
         </div>
 
-        <div class='users__table' data-controller='checkbox'>
+        <div class='users__table'>
             <div class='users__row'>
                     <div class='users__cell users__cell-checkbox'><%= render '/partials/checkbox', id:'general', type:'general'%></div>
                     <div class='users__cell users__cell-telegram-id'>telegram_id</div>
@@ -28,7 +28,7 @@
                     <div class='users__cell users__cell-checkbox'><%= render '/partials/checkbox', id:user.id, type:'local' %></div>
                     <div class='users__cell users__cell-telegram-id'><%= user[:telegram_id] %></div>
                     <div class='users__cell users__cell-username'>@<%= user[:username] %></div>
-                    <div class='users__cell users__cell-status'><%= render 'select_status', status_options:default_options(@status_options, user[:status]), id:user.id %></div>
+                    <div class='users__cell users__cell-status'><%= render '/partials/select_status', status_options:default_options(@status_options, user[:status]), id:user.id %></div>
                     <div class='users__cell users__cell-registration'><%= user[:created_at].strftime('%d.%m.%Y') %></div>
            </div>
            <% end%>
