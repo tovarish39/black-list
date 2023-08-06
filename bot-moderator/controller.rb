@@ -5,7 +5,7 @@
     
     # if $mes.instance_of?(ChatMemberUpdated)
       # update_is_member
-    if ($user.nil?)
+    if (!$user)
       $bot.api.send_message(chat_id:$mes.chat.id, text:'зарегистрируйтесь у администратора')
     elsif mes_text? || mes_data?
     #   if $lg.nil? # язык ещё не выбран
@@ -18,7 +18,6 @@
     $user.state_aasm = 'moderator' if $user.state_aasm.nil? 
 
       event_bot = StateMachine.new
-  # puts $user.inspect
   # puts 
       from_state = $user.state_aasm.to_sym          # предидущее состояние
       event_bot.aasm.current_state = from_state
