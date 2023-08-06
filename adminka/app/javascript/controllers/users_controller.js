@@ -11,6 +11,7 @@ export default class extends Controller {
     //////////////////////////////// languages
     // Получаем все радиокнопки в группе
     search_input.addEventListener('input', (e) => {
+      handle_all_local({ checked: false })
       const intput_value = e.target.value
       view_users_by_options(lg, intput_value)
     })

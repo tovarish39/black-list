@@ -1,3 +1,52 @@
 .scamers {
+  padding: 20px;
   flex: 1;
+  box-sizing: border-box;
+  &-wrap {
+    width: -webkit-fill-available;
+  }
+  &__row {
+    display: flex;
+    list-style-type: none;
+    width: 100%;
+    color: black;
+    align-items: center;
+    min-height: 40px;
+    align-items: stretch;
+    background-color: #b5bec5;
+    &_none {
+      display: none;
+    }
+    // &:last-child {
+    //   border-radius: 0 0 10px 10px;
+    // }
+    &:first-child {
+      background-color: #989a9b;
+      border-radius: 10px 10px 0 0;
+    }
+  }
+
+  &__cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-right: 1px var(--bg-main) solid;
+    border-bottom: 1px var(--bg-main) solid;
+    &-telegram-id {
+      flex: 1;
+    }
+    &-username {
+      flex: 1;
+    }
+    &-telegraph-post {
+      flex: 2;
+    }
+
+    &-telegram-post {
+      flex: 2;
+    }
+    &-became-a-scamer {
+      flex: 1;
+    }
+  }
 }

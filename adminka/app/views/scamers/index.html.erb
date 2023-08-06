@@ -1,5 +1,26 @@
 <%= render '/partials/nav'%>
 
 <main class='scamers'>
+    <div class='scamers-wrap'   data-controller='scamers'>
+        <div class='scamers__table'>
+            <div class='scamers__row'>
+                    <div class='scamers__cell scamers__cell-telegram-id'>telegram_id</div>
+                    <div class='scamers__cell scamers__cell-username'>@username</div>
+                    <div class='scamers__cell scamers__cell-telegraph-post'>telegraph post</div>
+                    <div class='scamers__cell scamers__cell-telegram-post'>telegram post</div>
+                    <div class='scamers__cell scamers__cell-became-a-scamer'>became a scammer</div>
+           </div>
 
+           <% for scamer in @scamers%>
+
+            <div class='scamers__row scamers__row_item '>
+                    <div class='scamers__cell scamers__cell-telegram-id'><%= scamer['telegram_id'] %></div>
+                    <div class='scamers__cell scamers__cell-username'>@<%= scamer['username'] %></div>
+                    <div class='scamers__cell scamers__cell-telegraph-post'><%= scamer['telegraph_post'] %></div>
+                    <div class='scamers__cell scamers__cell-telegram-post'><%= scamer['telegram_post'] %></div>
+                    <div class='scamers__cell scamers__cell-became-a-scamer'><%= scamer['date_when_became_a_scamer']&.strftime('%d.%m.%Y') %></div>
+           </div>
+           <% end%>
+        </div>
+    </div>
 </main>
