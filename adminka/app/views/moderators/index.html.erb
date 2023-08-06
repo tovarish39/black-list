@@ -1,5 +1,37 @@
 <%= render '/partials/nav'%>
 
 <main class='moderators'>
+    <div class='moderators-wrap'   data-controller='moderators'>
+        <%= render 'modal-create-moderator'%>
+        <%= render '/partials/modal-send-message'%>
+        <div class='moderators__header'>
+            <%= render '/partials/search' %>
+            <%= render '/partials/show_modal'%>
+            <p class='moderators__stats'>stats will be here</p>
+            <%= render 'create'%>
+        </div>
 
+        <div class='moderators__table'>
+            <div class='moderators__row'>
+                    <div class='moderators__cell moderators__cell-checkbox'><%= render '/partials/checkbox', id:'general', type:'general'%></div>
+                    <div class='moderators__cell moderators__cell-telegram-id'>telegram_id</div>
+                    <div class='moderators__cell moderators__cell-username'>@username</div>
+                    <div class='moderators__cell moderators__cell-status'>status</div>
+                    <div class='moderators__cell moderators__cell-registration'>registration</div>
+           </div>
+
+           <% for moderator in @moderators%>
+
+            <div class='moderator__row moderator__row_item moderator__row_none' 
+            data=<%=formatting_data(moderator) %>     
+            >
+                    <div class='moderators__cell moderators__cell-checkbox'><%= render '/partials/checkbox', id:user.id, type:'local' %></div>
+                    <div class='moderators__cell moderators__cell-telegram-id'><%= user[:telegram_id] %></div>
+                    <div class='moderators__cell moderators__cell-username'>@<%= user[:username] %></div>
+                    <div class='moderators__cell moderators__cell-status'><%= render 'select_status', status_options:default_options(@status_options, moderator[:status]), id:moderator.id %></div>
+                    <div class='moderators__cell moderators__cell-registration'><%= user[:created_at].strftime('%d.%m.%Y') %></div>
+           </div>
+           <% end%>
+        </div>
+    </div>
 </main>

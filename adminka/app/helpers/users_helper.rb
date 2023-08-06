@@ -6,7 +6,5 @@ module UsersHelper
         end
         new_order_statuses.map {|option| option.split(":").first}
     end
-    def formatting_data user
-        {lg:user[:lg], username:user[:username], telegram_id:user[:telegram_id]}.to_json
-    end
+
 end
