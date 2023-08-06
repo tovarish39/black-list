@@ -1,4 +1,4 @@
 .env
 adminka/.env
-in adminka -> whenever --update-crontab
+in adminka -> bundle exec whenever --update-crontab
 database.yml

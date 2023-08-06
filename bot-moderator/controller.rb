@@ -1,11 +1,13 @@
 
   def handle
     $user = user_search_and_update_if_changed(Moderator)
-    $user ||= create_user(Moderator)
-  
+    # $user ||= create_user(Moderator)
+    
     # if $mes.instance_of?(ChatMemberUpdated)
       # update_is_member
-    if mes_text? || mes_data?
+    if ($user.nil?)
+      $bot.api.send_message(chat_id:$mes.chat.id, text:'зарегистрируйтесь у администратора')
+    elsif mes_text? || mes_data?
     #   if $lg.nil? # язык ещё не выбран
     #     $user.update(state_aasm: 'language')
     #   elsif $user.state_aasm == 'scamer' || $user.state_aasm == 'justification' # чтоб не работали ниже условия
