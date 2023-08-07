@@ -76,6 +76,10 @@ module Text
     end
     def self.justification_request_to_moderator accepted_complaints, scamer
         text_body = accepted_complaints.map {|complaint| "\n<strong>Жалоба</strong> #N#{complaint.id}\n<strong>Ссылка</strong> <a href='#{complaint.telegraph_link}'>telegraph_link</a>\n<strong>Ссылка</strong> пост\n\n <b>Объяснение:</b> #{scamer.justification} "}
+        if text_body.empty? # решение от администратора, когда не было претензий
+            return "Решение принято администратором\n⚖️Оспорить решение⚖️\nОправдание от пользователя:\n" + scamer.justification 
+        end
+
         return "⚖️Оспорить решение⚖️\n" + text_body.join('')
     end
     def self.you_not_scamer
@@ -98,13 +102,21 @@ module Text
     end
 
 
+    def self.require_registration
+        'зарегистрируйтесь у администратора'
+    end
+    def self.require_active_account
+        'активируйте аккаунт у администратора'
+    end
 
-
-
-
-
+    def self.managed_by_admin
+        'Обработано администратором'
+    end
    
-   
+    def self.already_not_scamer
+        'Уже не скамер, обработано ранее'
+    end
+
     def self.input_cause_of_reject
         'ВВедите причину отклонения'
     end

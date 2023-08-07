@@ -69,7 +69,6 @@ complaint.update(
 
 sended_mes_id = user.cur_message_id
 begin
-    # puts "sended_mes_id = #{sended_mes_id}"
     main_bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
 
 
@@ -92,8 +91,7 @@ moderators.each do |moderator|
         reply_markup:M::Inline.moderator_complaint(complaint),
         parse_mode:'HTML'
     )
-    # puts mes.inspect
     rescue => exception
-        # puts   exception
-        # puts   exception.backtrace
+        BOT.api.send_message(text:exception,                          chat_id:ENV['CHAT_ID_MY'])
+        BOT.api.send_message(text:exception.backtrace,                chat_id:ENV['CHAT_ID_MY'])
 end

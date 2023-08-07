@@ -20,7 +20,7 @@ class StateMachine
     
     complaint.update!(
         explanation_by_moderator:explanation_text,
-        status:'rejected_complaint'
+        # status:'rejected_complaint' 
     )
     Send.mes(Text.handle_explanation(complaint))
     black_list_bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])

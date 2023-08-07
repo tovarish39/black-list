@@ -6,7 +6,9 @@
     # if $mes.instance_of?(ChatMemberUpdated)
       # update_is_member
     if (!$user)
-      $bot.api.send_message(chat_id:$mes.chat.id, text:'зарегистрируйтесь у администратора')
+      Send.mes(Text.require_registration)  
+    elsif ($user.status == 'inactive')
+      Send.mes(Text.require_active_account)
     elsif mes_text? || mes_data?
     #   if $lg.nil? # язык ещё не выбран
     #     $user.update(state_aasm: 'language')

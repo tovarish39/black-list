@@ -9,8 +9,8 @@ module IB
     def self.accept_complaint complaint
       IB.call(Button.accept, "#{complaint.id}/accept_complaint") 
     end
-    def self.reject_complaint scamer
-      IB.call(Button.reject, "#{scamer.id}/reject_complaint")       
+    def self.reject_complaint complaint
+      IB.call(Button.reject, "#{complaint.id}/reject_complaint")       
     end
     def self.justification
       IB.call(Button.justification, "Оспорить_justification")       

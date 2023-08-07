@@ -19,7 +19,6 @@ class ModeratorsController < ApplicationController
   end
 
   def send_message
-    bot = Telegram::Bot::Client.new(ENV['TOKEN_MODERATOR'])
     
     ids = params[:checked_ids].keys 
     message = params[:inputValue]
@@ -29,7 +28,7 @@ class ModeratorsController < ApplicationController
     ids.each do |id|
       if params[:checked_ids][id] != false
         threads << Thread.new do
-          bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
+          bot = Telegram::Bot::Client.new(ENV['TOKEN_MODERATOR'])
           user = Moderator.find(id)
     
           begin

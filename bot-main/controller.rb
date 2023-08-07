@@ -5,7 +5,6 @@ def handle
 
 
 
-
   # ####### group
   #   if $mes.class == Message && mes_from_group?
   #     if verify_with_text?
@@ -21,9 +20,9 @@ def handle
   
   
     # elsif $mes.instance_of?(ChatMemberUpdated) # реагирует только от private chat
-    if user_blocked? 
+    if user_is_blocked_by_moderator? 
     elsif !is_bot_administrator_of_channel? # сообщение себе
-    elsif !user_is_member_of_channel?
+    elsif !user_is_member_of_channel? && $lg.present? # если выбран язык, но не подписан на канал
       require_subscribe_channel()
     elsif mes_text? || mes_data? || is_user_shared? || mes_photo?
       
@@ -31,7 +30,7 @@ def handle
         $user.update(state_aasm: 'language')
       elsif user_is_scamer? 
         state = $user.state_aasm
-        $user.update(state_aasm:'scamer') if state != 'scamer' && state != 'justification' 
+        $user.update(state_aasm:'scamer') if !['scamer','justification'].include?(state) 
         # elsif $user.state_aasm == 'scamer' || $user.state_aasm == 'justification' # чтоб не работали ниже условия
       elsif mes_text? && Button.all_main.include?($mes.text) # кнопка главного меню или /start
         $user.update(state_aasm: 'start')
@@ -50,7 +49,7 @@ def handle
     end
   end
   
-  def user_blocked?
+  def user_is_blocked_by_moderator?
      $user.status === 'scamer:blocked_by_moderator'
   end
   

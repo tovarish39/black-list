@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_06_144836) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_07_104201) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -31,6 +31,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_06_144836) do
     t.string "mes_id_published_in_channel"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "handled_moderator_id"
     t.index ["user_id"], name: "index_complaints_on_user_id"
   end
 

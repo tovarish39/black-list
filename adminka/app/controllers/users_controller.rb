@@ -14,7 +14,15 @@ require 'telegram/bot'
   def update
     user = User.find(params[:id])
     formatted_new_status = "#{params[:new_status_value]}:managed_by_admin"
-    user.update!(status: formatted_new_status)
+
+    # cброс статусов претезий
+    users_complaints = Complaint.where(telegram_id:user.telegram_id)
+    
+    update_complaints(users_complaints, 'accepted_complaint') if formatted_new_status == 'scamer:managed_by_admin'
+    update_complaints(users_complaints, 'rejected_complaint') if formatted_new_status == 'not_scamer:managed_by_admin'
+    update_complaints(users_complaints, 'rejected_complaint') if formatted_new_status == 'verified:managed_by_admin'
+    
+    user.update!(status: formatted_new_status,justification:nil)
     sleep 1 # имитация ожидания
 
     render json: { updated_status: user.status.split(":").first }
@@ -47,5 +55,9 @@ require 'telegram/bot'
     
     head :ok 
     
+  end
+  private
+  def update_complaints complaints, new_status
+    complaints.each {|complaint| complaint.update(status:new_status)} 
   end
 end
