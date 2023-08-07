@@ -6,7 +6,8 @@ def handle
 
 
   # ####### group
-  #   if $mes.class == Message && mes_from_group?
+    if mes_from_group?
+      # if $mes.class == Message && mes_from_group?
   #     if verify_with_text?
   #       username = $mes.text.split(' ').last
   #       verifying_text(username)
@@ -19,8 +20,9 @@ def handle
   # ##############
   
   
-    # elsif $mes.instance_of?(ChatMemberUpdated) # реагирует только от private chat
-    if user_is_blocked_by_moderator? 
+    elsif $mes.instance_of?(ChatMemberUpdated) # реагирует только от private chat
+      $user.update(chat_member_status: $mes.new_chat_member.status ) if $mes.new_chat_member.status.present?
+    elsif user_is_blocked_by_moderator? 
     elsif !is_bot_administrator_of_channel? # сообщение себе
     elsif !user_is_member_of_channel? && $lg.present? # если выбран язык, но не подписан на канал
       require_subscribe_channel()

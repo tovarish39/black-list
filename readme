@@ -1,4 +1,16 @@
 .env
 adminka/.env
 in adminka -> bundle exec whenever --update-crontab
+
 database.yml
+
+in telegram-bot-ruby 
+module Telegram
+  module Bot
+    module Types
+      class ChatMember < Base
+        attribute :status, Types::String
+      end
+    end
+  end
+end
