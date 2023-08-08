@@ -71,7 +71,7 @@ def users_whith_actual_justifications
 end
 
 def actual_scamer?(user)
-    user.justification.present? && (user.status =~ /^scamer/)
+    user.justification.present? && (user.status =~ /^scamer/) && !(user.status =~ /blocked/)
 end
 
 def view_complaints
