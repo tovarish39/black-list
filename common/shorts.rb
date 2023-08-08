@@ -52,7 +52,7 @@ def mes_photo?
     $mes.photo.present?
 end
 
-def mes_from_group?
+def mes_from_group_and_text?
     mes_text? &&  $mes.chat.type == 'group'
 end
 

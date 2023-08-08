@@ -1,25 +1,41 @@
+# def pretty_print_object(obj, indent = 0)
+#   obj.each do |key, value|
+#     if value.is_a?(Hash) || value.is_a?(Telegram::Bot::Types::Base)
+#       puts "#{' ' * indent}#{key}:"
+#       pretty_print_object(value, indent + 2)
+#     else
+#       puts "#{' ' * indent}#{key}: #{value.inspect}"
+#     end
+#   end
+# end
+      # json = JSON.parse($mes.to_json)
+      # puts pretty_print_object(json, 1)
+
+$is_next_forward_message = false
+$forwarder_user_telegram_id = ''
+
 def handle
     $user = user_search_and_update_if_changed(User)
     $user ||= create_user(User)
     $lg = $user.lg
-
-
-
   # ####### group
-    if mes_from_group?
-      # if $mes.class == Message && mes_from_group?
-  #     if verify_with_text?
-  #       username = $mes.text.split(' ').last
-  #       verifying_text(username)
-  #     elsif verify_text_only? # если /verify + forwarted
-  #       $user.update(verifying_by_time:Time.now)
-  #     elsif next_forwarted_message?
-  #       $user.update(verifying_by_time:nil)
-  #       verifying_by_forwarted_mes()
-  #     end
+    if mes_from_group_and_text?
+      # для forward следующий mes проверяется
+      if $mes.text =~ /^\/verify$/ 
+        puts '1'
+        $is_next_forward_message = true
+        $forwarder_user_telegram_id = $mes.from.id
+      # проверка следующего после /verify с forwarted
+      elsif $is_next_forward_message && $forwarder_user_telegram_id == $mes.from.id && $mes.forward_from.present?
+        $is_next_forward_message = false
+        $forwarder_user_telegram_id = ''
+        handle_forwarded_message_to_verifying()
+      # проверка по ид или юзернейму
+      elsif $mes.text =~ /^\/verify / 
+        $is_next_forward_message = false
+        handle_verify_with_id_or_username()        
+      end
   # ##############
-  
-  
     elsif $mes.instance_of?(ChatMemberUpdated) # реагирует только от private chat
       $user.update(chat_member_status: $mes.new_chat_member.status ) if $mes.new_chat_member.status.present?
     elsif user_is_blocked_by_moderator? 
@@ -49,8 +65,37 @@ def handle
       new_state = event_bot.aasm.current_state
       $user.update(state_aasm: new_state)
     end
+end
+
+
+def result_of_verifying user, data
+  if user.present? && user.status =~ /^scamer/
+    Send.mes(Text.verifying_user(user, 'scamer'))
+  elsif user.present? && user.status =~ /^verified/
+    Send.mes(Text.verifying_user(user,'verified'))
+  elsif user.present?  && user.status =~ /^not_scamer/
+    Send.mes(Text.verifying_user(user, 'not_scamer'))
+  elsif user.nil?
+    Send.mes(Text.verifying_data(data, 'not_scamer'))
   end
-  
+end
+
+def handle_forwarded_message_to_verifying
+  checking_telegram_id = $mes.forward_from.id
+  user = User.find_by(telegram_id:checking_telegram_id)
+  result_of_verifying(user, checking_telegram_id)
+end
+
+def handle_verify_with_id_or_username
+  data = $mes.text.split(' ')[1]
+  user = if data =~ /^\d+$/ # telegram_id
+    User.find_by(telegram_id:data)
+  else # username
+    User.find_by(username:data.sub('@', ''))
+  end
+  result_of_verifying(user, data)
+end
+
   def user_is_blocked_by_moderator?
      $user.status === 'scamer:blocked_by_moderator'
   end

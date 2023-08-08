@@ -22,27 +22,6 @@ class StateMachine
   def greeting_mod
     Send.mes(Text.greeting_mod, M::Reply.greeting_mod)
 end
-# request_to_moderator     not_scamer или verified
-# accept_complaint         scamer 
-
-#'not_scamer:default',              -> 
-#        
-#'scamer:managed_by_admin',         ->
-#'scamer:managed_by_moderator',     ->
-#'scamer:blocked_by_moderator',     ->
-#
-#'not_scamer:managed_by_admin',     ->
-#'not_scamer:managed_by_moderator', ->
-#
-#'verified:managed_by_admin',       -> 
-
-# jutification
-
-# filling_by_user
-# request_to_moderator
-# accepted_complaint
-# rejected_complaint
-
 
 def already_handled
     Send.mes(Text.was_handled)

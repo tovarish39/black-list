@@ -101,9 +101,13 @@ module Text
         "#{users_data}  - скамер <a href='#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}'>ссылка</a> на пост"
     end
 
+    def self.verifying_user user, status
+        "#{Text.user_info(user)} \n#{status}"
+    end
 
-
-
+    def self.verifying_data data, status
+        "#{data} #{status}"
+    end
 
 
 
