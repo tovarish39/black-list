@@ -53,7 +53,7 @@ def mes_photo?
 end
 
 def mes_from_group?
-    $mes.chat.type == 'group'
+    mes_text? &&  $mes.chat.type == 'group'
 end
 
 def mes_text? compare = nil # сообщение text любое или соответствие сравниваемому

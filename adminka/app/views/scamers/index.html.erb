@@ -2,6 +2,18 @@
 
 <main class='scamers'>
     <div class='scamers-wrap'   data-controller='scamers'>
+
+        <div class="form_radio_group">
+            <div class="form_radio_group-item">
+              <input id="radio-active" type="radio" name="radio" checked>
+              <label for="radio-active">active</label>
+            </div>
+            <div class="form_radio_group-item">
+              <input id="radio-inactive" type="radio" name="radio">
+              <label for="radio-inactive">inactive</label>
+            </div>
+        </div>
+
         <div class='scamers__table'>
             <div class='scamers__row'>
                     <div class='scamers__cell scamers__cell-telegram-id'>telegram_id</div>
@@ -13,12 +25,14 @@
 
            <% for scamer in @scamers%>
 
-            <div class='scamers__row scamers__row_item '>
+            <div class='scamers__row scamers__row_item scamers__row_item_none' data='<%= scamer['chat_member_status'].present? ? scamer['chat_member_status']  : 'nil'%>'>
                     <div class='scamers__cell scamers__cell-telegram-id'><%= scamer['telegram_id'] %></div>
                     <div class='scamers__cell scamers__cell-username'>@<%= scamer['username'] %></div>
-                    <div class='scamers__cell scamers__cell-telegraph-post'><%= scamer['telegraph_post'] %></div>
-                    <div class='scamers__cell scamers__cell-telegram-post'><%= scamer['telegram_post'] %></div>
-                    <div class='scamers__cell scamers__cell-became-a-scamer'><%= scamer['date_when_became_a_scamer']&.strftime('%d.%m.%Y') %></div>
+                    <div class='scamers__cell scamers__cell-telegraph-post'><a href='<%= scamer['telegraph_link'] %>' target='_blank'>telegraph link</a></div>
+                    <div class='scamers__cell scamers__cell-telegram-post'><a href='<%= scamer['telegram_link'] %>' target='_blank'>telegram link</a></div>
+                    <div class='scamers__cell scamers__cell-became-a-scamer'>
+                        <%= DateTime.parse(scamer['date_when_became_a_scamer']).strftime('%d.%m.%Y') if scamer['date_when_became_a_scamer'].present?%>
+                    </div>
            </div>
            <% end%>
         </div>

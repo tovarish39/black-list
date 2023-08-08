@@ -5,7 +5,9 @@ class ModeratorsController < ApplicationController
   end
 
   def create
-    Moderator.create(telegram_id:params[:telegram_id])
+    new_telegram_id = params[:telegram_id]
+    is_exist = Moderator.find_by(telegram_id:new_telegram_id).present?
+    Moderator.create(telegram_id:params[:telegram_id]) if !is_exist
     sleep 1 # имитация ожидания
     head :ok
   end

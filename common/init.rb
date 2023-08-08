@@ -13,9 +13,13 @@ def user_search_and_update_if_changed class_name
   last_name_now      = $mes.from.last_name
   last_name_written  = model.last_name
 
-  model.update(username:   username_now   || '-') if username_now   != username_writen
-  model.update(first_name: first_name_now || '-') if first_name_now != first_name_written
-  model.update(last_name:  last_name_now  || '-') if last_name_now  != last_name_written
+  chat_member_status_now = 'member'
+  chat_member_status_written  = model.chat_member_status
+
+  model.update(username:            username_now   || '-')  if username_now            != username_writen
+  model.update(first_name:          first_name_now || '-')  if first_name_now          != first_name_written
+  model.update(last_name:           last_name_now  || '-')  if last_name_now           != last_name_written
+  model.update(chat_member_status:  chat_member_status_now) if chat_member_status_now  != chat_member_status_written
   model
 end
 

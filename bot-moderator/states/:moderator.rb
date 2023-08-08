@@ -112,7 +112,10 @@ end
 
 def update_black_list_user_whith_scamer_status complaint
     user = User.find_by(telegram_id:complaint.telegram_id)
-    user.update(status:'scamer:managed_by_moderator')
+    user.update!(
+        status:'scamer:managed_by_moderator',
+        date_when_became_a_scamer:DateTime.now
+    )
 end
 
 def handle_accept_complaint
