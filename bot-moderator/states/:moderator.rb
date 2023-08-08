@@ -44,9 +44,9 @@ end
 # rejected_complaint
 
 
-# def already_handled
-#     Send.mes(Text.was_handled)
-# end
+def already_handled
+    Send.mes(Text.was_handled)
+end
 
 
 # request_to_moderator     not_scamer или verified
