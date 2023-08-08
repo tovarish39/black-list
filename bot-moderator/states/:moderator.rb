@@ -78,6 +78,8 @@ def view_complaints
     complaints_to_moderator = actual_complaints() # request_to_moderator     not_scamer или verified
     userTo_justifications = users_whith_actual_justifications()
 
+    date_time_now = DateTime.now.strftime('%d.%m.%Y %H:%M')
+    Send.mes(Text.date_time_now(date_time_now))
 
 
     complaints_to_moderator.each do |complaint|

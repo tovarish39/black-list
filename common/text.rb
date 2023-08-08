@@ -102,6 +102,18 @@ module Text
     end
 
 
+
+
+
+
+
+
+
+    def self.date_time_now date_time_now
+        "Сейчас #{date_time_now}"
+    end
+
+
     def self.require_registration
         'зарегистрируйтесь у администратора'
     end
