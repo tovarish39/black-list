@@ -5,9 +5,16 @@
     <div class='users-wrap'   data-controller='users'>
         <%= render '/partials/modal-send-message'%>
         <div class='users__header'>
-            <%= render '/partials/search' %>
-            <%= render '/partials/show_modal'%>
-            <p class='users__stats'>stats will be here</p>
+            <div class='users__buttons-block1'>
+                <%= render '/partials/search' %>
+                <%= render '/partials/show_modal'%>
+            </div>
+            <ul class='users__stats'>
+                complaints per
+                <li>day   - <%= @complaints_per_day.size %></li>
+                <li>week  - <%= @complaints_per_week.size %></li>
+                <li>month - <%= @complaints_per_month.size %></li>
+            </ul>
             <%= render 'languages'%>
         </div>
 

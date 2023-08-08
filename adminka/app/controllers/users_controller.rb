@@ -9,6 +9,16 @@ require 'telegram/bot'
       {label:'es', value:'es', checked:false},
     ]
     @status_options = ['scamer', 'not_scamer', 'verified' ]
+
+    complaints_for_statistic = Complaint.where.not(status:'filling_by_user')
+    @complaints_per_day = []
+    @complaints_per_week = []
+    @complaints_per_month = []
+    complaints_for_statistic.each do |complaint|
+      @complaints_per_day   << complaint if complaint.created_at > 1.day.ago
+      @complaints_per_week  << complaint if complaint.created_at > 1.week.ago
+      @complaints_per_month << complaint if complaint.created_at > 1.month.ago
+    end
   end
 
   def update

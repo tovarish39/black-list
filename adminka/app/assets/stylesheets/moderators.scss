@@ -2,6 +2,11 @@
   padding: 20px;
   flex: 1;
   box-sizing: border-box;
+
+  .users__show-modal-button {
+    margin-top: 0;
+    margin-left: 20px;
+  }
   &__stats {
     color: white;
   }
@@ -10,7 +15,7 @@
   }
   &__header {
     display: flex;
-    justify-content: space-between;
+    // justify-content: space-between;
     margin-bottom: 20px;
   }
 
@@ -81,6 +86,8 @@
 .show-modal-create-moderator {
   background-color: var(--bg-active);
   border-radius: 5px;
+  height: 45px;
   border: none;
+  margin-left: auto;
   cursor: pointer;
 }
