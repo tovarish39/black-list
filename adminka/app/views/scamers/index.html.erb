@@ -25,11 +25,21 @@
 
            <% for scamer in @scamers%>
 
+
+
             <div class='scamers__row scamers__row_item scamers__row_item_none' data='<%= scamer['chat_member_status'].present? ? scamer['chat_member_status']  : 'nil'%>'>
                     <div class='scamers__cell scamers__cell-telegram-id'><%= scamer['telegram_id'] %></div>
                     <div class='scamers__cell scamers__cell-username'>@<%= scamer['username'] %></div>
-                    <div class='scamers__cell scamers__cell-telegraph-post'><a href='<%= scamer['telegraph_link'] %>' target='_blank'>telegraph link</a></div>
-                    <div class='scamers__cell scamers__cell-telegram-post'><a href='<%= scamer['telegram_link'] %>' target='_blank'>telegram link</a></div>
+                    <div class='scamers__cell scamers__cell-telegraph-post'>
+                        <% if scamer['telegraph_link']%>
+                            <a href='<%= scamer['telegraph_link'] %>' target='_blank'>telegraph link</a>
+                        <%end%>
+                    </div>
+                    <div class='scamers__cell scamers__cell-telegram-post'>
+                        <% if scamer['telegram_link']%>
+                            <a href='<%= scamer['telegram_link'] %>' target='_blank'>telegram link</a>
+                        <%end%>
+                    </div>
                     <div class='scamers__cell scamers__cell-became-a-scamer'>
                         <%= DateTime.parse(scamer['date_when_became_a_scamer']).strftime('%d.%m.%Y') if scamer['date_when_became_a_scamer'].present?%>
                     </div>
