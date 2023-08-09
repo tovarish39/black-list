@@ -59,14 +59,20 @@ def handle_photo
   min_size = 2 # availible 3 variants (indexes)
   file = $mes.photo[min_size]
 
-  return if file.nil?
-  
+  if file.nil? # неверныф формат
+    Send.mes(Text.require_anothe_format_image)
+    return 
+  end
   
   file = Get.file(file.file_id)
   complaint = Complaint.find($user.cur_complaint_id)
   write_file(file, complaint) if file.present?
 
-  Send.mes(Text.handle_photo(complaint.photos_amount))
+  if (complaint.photos_amount == ENV['MAX_PHOTOS_AMOUNT'].to_i)
+    Send.mes(Text.push_ready(complaint.photos_amount))
+  else
+    Send.mes(Text.handle_photo(complaint.photos_amount))
+  end
 end
 
 

@@ -28,7 +28,7 @@ module Text
         'Отправьте скриншоты диалога на которых виден процесс обмана, после отправки нажмите кнопку “Готово”'
     end
     def self.notice_max_photos_size
-        "Максимальное количество фотографий #{ENV['MAX_PHOTOS_AMOUNT']}"
+        "Максимальное количество фотографий #{ENV['MAX_PHOTOS_AMOUNT']}, нажмите 'Готово'"
     end
     def self.notice_min_photos_size
         'Необходимо отправить фото'
@@ -38,6 +38,12 @@ module Text
     # end
     def self.handle_photo photos_size
         "Изображение №#{photos_size} успешно принято, вы можете отправить еще или продолжить подачу жалобы нажав кнопку “Готово”"
+    end
+    def self.push_ready photos_size
+        "Изображение №#{photos_size} успешно принято, нажмите 'Готово'"
+    end
+    def self.require_anothe_format_image
+        'Отправьте другой формат картинки'
     end
     def self.compare_user_id
         'Перешлите сообщения ответчика из чата, соответствующие скрину'

@@ -15,6 +15,7 @@ $is_next_forward_message = false
 $forwarder_user_telegram_id = ''
 
 def handle
+  puts 'start handle'
     $user = user_search_and_update_if_changed(User)
     $user ||= create_user(User)
     $lg = $user.lg
@@ -65,6 +66,8 @@ def handle
       new_state = event_bot.aasm.current_state
       $user.update(state_aasm: new_state)
     end
+  puts 'stop handle'
+
 end
 
 
