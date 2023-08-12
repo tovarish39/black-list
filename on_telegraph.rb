@@ -74,7 +74,7 @@ begin
 
     main_bot.api.edit_message_text(
         chat_id:user.telegram_id, 
-        text:"Ваша жалоба #N#{complaint.id} была отправлена на проверку модератором, ожидайте её рассмотрения о результатах вас оповестит бот", 
+        text:Text.complaint_request_to_moderator(complaint)#  "Ваша жалоба #N#{complaint.id} была отправлена на проверку модератором, ожидайте её рассмотрения о результатах вас оповестит бот", 
         message_id:sended_mes_id
     )            
 rescue => exception
