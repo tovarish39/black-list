@@ -7,6 +7,7 @@ require 'telegram/bot'
       {label:'ru', value:'ru', checked:true},
       {label:'en', value:'en', checked:false},
       {label:'es', value:'es', checked:false},
+      {label:'cn', value:'cn', checked:false},
     ]
     @status_options = ['scamer', 'not_scamer', 'verified' ]
 
