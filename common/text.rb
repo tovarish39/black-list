@@ -230,21 +230,21 @@ module Text
 
     def self.verifying_user user, status
         formatted_status =
-            if    $lg == Ru && status 'scamer';     'Кидок.'
-            elsif $lg == Ru && status 'not_scamer'; 'Не кидок.'
-            elsif $lg == Ru && status 'verified';   'Верифицированный.'
+            if    $lg == Ru && status == 'scamer';     'Кидок.'
+            elsif $lg == Ru && status == 'not_scamer'; 'Не кидок.'
+            elsif $lg == Ru && status == 'verified';   'Верифицированный.'
 
-            elsif $lg == En && status 'scamer';     'Ripper.'
-            elsif $lg == En && status 'not_scamer'; 'Not a ripper.'
-            elsif $lg == En && status 'verified';   'Verified.'
+            elsif $lg == En && status == 'scamer';     'Ripper.'
+            elsif $lg == En && status == 'not_scamer'; 'Not a ripper.'
+            elsif $lg == En && status == 'verified';   'Verified.'
             
-            elsif $lg == Es && status 'scamer';     'Ripper.'
-            elsif $lg == Es && status 'not_scamer'; 'No es una ripper.'
-            elsif $lg == Es && status 'verified';   'Verificado.'
+            elsif $lg == Es && status == 'scamer';     'Ripper.'
+            elsif $lg == Es && status == 'not_scamer'; 'No es una ripper.'
+            elsif $lg == Es && status == 'verified';   'Verificado.'
           
-            elsif $lg == Cn && status 'scamer';     '骗子.'
-            elsif $lg == Cn && status 'not_scamer'; '不是骗局.'
-            elsif $lg == Cn && status 'verified';   '已验证.'
+            elsif $lg == Cn && status == 'scamer';     '骗子.'
+            elsif $lg == Cn && status == 'not_scamer'; '不是骗局.'
+            elsif $lg == Cn && status == 'verified';   '已验证.'
             end
 
         "#{Text.user_info(user)} \n#{formatted_status}"
