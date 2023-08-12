@@ -298,7 +298,7 @@ module Text
     end
 
     def self.input_cause_of_reject
-        'ВВедите причину отклонения'
+        'Введите причину отклонения'
     end
     def self.handle_accept_complaint complaint
         %{Обработано. <a href='#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}'>ссылка</a> на пост на канале  }
