@@ -6,7 +6,8 @@ module M
 
     def self.lang
       self::IM.call([
-                      [IB.ru, IB.en]
+                      [IB.ru, IB.en],
+                      [IB.es, IB.cn]
                     ])
     end
     def self.moderator_complaint complaint
@@ -27,7 +28,17 @@ module M
         [IB.block_user(user)]
       ])
     end
-
+    def self.link_to_oracles_tips
+      self::IM.call([
+        [IB.link_to_oracles_tips],
+      ])
+    end
+    def self.link_to_support
+      self::IM.call([
+        [IB.link_to_support],
+      ])
+    end
+    
 
   end
 
@@ -44,7 +55,8 @@ module M
         [Button.make_a_complaint],
         [Button.request_status],
         [Button.account_status],
-        # [Button.request_history]
+        [Button.support],
+        [Button.oracle_tips]
       )
     end
 

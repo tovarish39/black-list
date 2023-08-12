@@ -42,9 +42,15 @@ def view_requests
   if complaints.any?
     complaints.each do |complaint|
       to_user = User.find_by(telegram_id:complaint.telegram_id)
-      text = """#{Text.complaint(complaint)}\n#{Text.user_info(to_user)}\n<strong>Ссылка:</strong>  <a href='#{complaint.telegraph_link}'>telegraph_link</a>\n"""
-      text << get_footer(complaint)
-      $bot.api.send_message(text:text, chat_id:$mes.chat.id, parse_mode:"HTML")
+
+      Send.mes(Text.notify_reject_complaint(complaint, to_user)) if complaint.status == 'rejected_complaint'
+      Send.mes(Text.notify_access_complaint(complaint, to_user)) if complaint.status == 'accepted_complaint'
+      Send.mes(Text.notify_pending_complaint(complaint, to_user)) if complaint.status == 'request_to_moderator'
+
+      # text = """#{Text.complaint(complaint)}\n#{Text.user_info(to_user)}\n<strong>Ссылка:</strong>  <a href='#{complaint.telegraph_link}'>telegraph_link</a>\n"""
+      # text << get_footer(complaint)
+      # $bot.api.send_message(text:text, chat_id:$mes.chat.id, parse_mode:"HTML")
+
     end
   else
     Send.mes(Text.not_complaints)

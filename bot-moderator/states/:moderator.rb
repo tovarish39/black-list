@@ -9,8 +9,9 @@ class StateMachine
 
           transitions if: -> { mes_text?(Button.active_complaints) }, after: :view_complaints        , to: :moderator
 
-          transitions if: -> { mes_data?(/accept_complaint/)}       , after: :handle_accept_complaint, to: :moderator
-          transitions if: -> { mes_data?(/reject_complaint/)}       , after: :handle_reject_complaint, to: :explanation
+          transitions if: -> { mes_data?(/accept_complaint/) && actual_user_status_and_complaint_status?()}       , after: :handle_accept_complaint, to: :moderator
+          transitions if: -> { mes_data?(/reject_complaint/) && actual_user_status_and_complaint_status?()}       , after: :handle_reject_complaint, to: :explanation
+          transitions if: -> { mes_data?(/reject_complaint/) || mes_data?(/accept_complaint/)}                    , after: :already_handled, to: :moderator
 
           transitions if: -> { mes_data?(/access_justification/) }  , after: :accessing_justification, to: :moderator
           transitions if: -> { mes_data?(/block_user/) }            , after: :blocking_scamer        , to: :moderator
@@ -30,6 +31,21 @@ end
 
 # request_to_moderator     not_scamer или verified
 # если определено было админинстратором, то сбрасываются статус претензий
+
+def actual_user_status_and_complaint_status?
+    complaint = get_complaint_by_button()
+    raise 'complaint not found by button' if complaint.nil?
+
+    is_actual_complaint_status = complaint.status == 'request_to_moderator'
+    return false if !is_actual_complaint_status
+
+    actual_user_statuses = ['not_scamer:default','not_scamer:managed_by_admin','not_scamer:managed_by_moderator','verified:managed_by_admin']
+    is_actual_user_status = actual_user_statuses.include?(User.find_by(telegram_id:complaint.telegram_id).status)
+    return false if !is_actual_user_status
+
+    true
+end
+
 def actual_complaint? complaint
     actual_complaint_status = complaint.status == 'request_to_moderator' 
     return false if !actual_complaint_status
@@ -136,10 +152,10 @@ def is_already_handled?
 end
 
 def handle_reject_complaint
-    complaint = get_complaint_by_button()
-    return if complaint.nil?
+    # complaint = get_complaint_by_button()
+    # return if complaint.nil?
 
-    if  actual_complaint?(complaint)
+    # if  actual_complaint?(complaint)
         $user.reject_amount = $user.reject_amount + 1
         $user.decisions_per_day_amount = $user.decisions_per_day_amount + 1
         $user.save
@@ -152,9 +168,9 @@ def handle_reject_complaint
         )
         $user.update(cur_complaint_id:complaint.id)
         Send.mes(Text.input_cause_of_reject)
-    else
-        Send.mes(Text.was_handled)
-    end
+    # else
+    #     Send.mes(Text.was_handled)
+    # end
 end
 
 def get_scamer_by_button
@@ -166,7 +182,8 @@ def send_notify_to user, text
     main_bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
     main_bot.api.send_message(
         chat_id:user.telegram_id,
-        text:text
+        text:text,
+        parse_mode:'HTML'
     )
 end
 
@@ -213,9 +230,11 @@ def blocking_scamer
         $user.decisions_per_day_amount = $user.decisions_per_day_amount + 1
         $user.save
 
+        complaint = Complaint.where(telegram_id:scamer.telegram_id).find_by(status:'accepted_complaint')
+
         scamer.update!(status:'scamer:blocked_by_moderator')
         Send.mes(Text.blocking_user)
-        send_notify_to(scamer, Text.you_blocked)
+        send_notify_to(scamer, Text.you_blocked(complaint, scamer))
     else
         already_handled
     end

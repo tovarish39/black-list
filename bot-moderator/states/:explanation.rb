@@ -17,15 +17,16 @@ class StateMachine
   def handle_explanation
     complaint = Complaint.find($user.cur_complaint_id)
     explanation_text = $mes.text
-    
+    potincial_scamer = User.find_by(telegram_id:complaint.telegram_id) 
     complaint.update!(
         explanation_by_moderator:explanation_text,
         # status:'rejected_complaint' 
     )
-    Send.mes(Text.handle_explanation(complaint))
+    Send.mes(Text.handle_explanation(complaint, potincial_scamer))
     black_list_bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
     black_list_bot.api.send_message(
-        text:Text.handle_explanation(complaint),
-        chat_id:complaint.user.telegram_id
+        text:Text.handle_explanation(complaint, potincial_scamer),
+        chat_id:complaint.user.telegram_id,
+        parse_mode:'HTML'
     )
 end

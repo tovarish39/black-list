@@ -15,7 +15,7 @@ $is_next_forward_message = false
 $forwarder_user_telegram_id = ''
 
 def handle
-  puts 'start handle'
+  # puts 'start handle'
     $user = user_search_and_update_if_changed(User)
     $user ||= create_user(User)
     $lg = $user.lg
@@ -23,7 +23,7 @@ def handle
     if mes_from_group_and_text?
       # для forward следующий mes проверяется
       if $mes.text =~ /^\/verify$/ 
-        puts '1'
+        # puts '1'
         $is_next_forward_message = true
         $forwarder_user_telegram_id = $mes.from.id
       # проверка следующего после /verify с forwarted
@@ -43,6 +43,12 @@ def handle
     elsif !is_bot_administrator_of_channel? # сообщение себе
     elsif !user_is_member_of_channel? && $lg.present? # если выбран язык, но не подписан на канал
       require_subscribe_channel()
+# при любых state_aasm 
+    elsif mes_text?(Text.support)
+      Send.mes(Text.support, M::Inline.link_to_support)
+    elsif mes_text?(Text.oracle_tips)
+      Send.mes(Text.oracle_tips, M::Inline.link_to_oracles_tips)
+###################### 
     elsif mes_text? || mes_data? || is_user_shared? || mes_photo?
       
       if $lg.nil? # язык ещё не выбран
@@ -66,7 +72,7 @@ def handle
       new_state = event_bot.aasm.current_state
       $user.update(state_aasm: new_state)
     end
-  puts 'stop handle'
+  # puts 'stop handle ----------------------'
 
 end
 
