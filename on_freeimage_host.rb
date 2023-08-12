@@ -53,7 +53,7 @@ begin
         
         if base64_image.present?
           direct_link = upload_and_get_direct_link(base64_image, url)
-          urls = complaint.photo_urls_remote_tmp
+          urls = complaint.photo_urls_remote_tmp || []
           complaint.update(photo_urls_remote_tmp:urls << direct_link)
 
 
