@@ -19,6 +19,7 @@ def handle
     $user = user_search_and_update_if_changed(User)
     $user ||= create_user(User)
     $lg = $user.lg
+    puts $user.inspect
   # ####### group
     if mes_from_group_and_text?
       # для forward следующий mes проверяется
@@ -44,7 +45,7 @@ def handle
     elsif !user_is_member_of_channel? && $lg.present? # если выбран язык, но не подписан на канал
       require_subscribe_channel()
 # при любых state_aasm 
-    elsif mes_text?(Text.support)
+    elsif $lg.present? && mes_text?(Text.support)
       Send.mes(Text.support, M::Inline.link_to_support)
     elsif mes_text?(Text.oracle_tips)
       Send.mes(Text.oracle_tips, M::Inline.link_to_oracles_tips)
