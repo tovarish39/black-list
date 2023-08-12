@@ -19,7 +19,7 @@ def handle
     $user = user_search_and_update_if_changed(User)
     $user ||= create_user(User)
     $lg = $user.lg
-    puts $user.inspect
+    # puts $user.inspect
   # ####### group
     if mes_from_group_and_text?
       # для forward следующий mes проверяется
@@ -50,6 +50,7 @@ def handle
     elsif mes_text?(Text.oracle_tips)
       Send.mes(Text.oracle_tips, M::Inline.link_to_oracles_tips)
 ###################### 
+    elsif mes_text?('/reset_lg') $user.update(lg:nil)
     elsif mes_text? || mes_data? || is_user_shared? || mes_photo?
       
       if $lg.nil? # язык ещё не выбран

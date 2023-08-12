@@ -152,10 +152,10 @@ def is_already_handled?
 end
 
 def handle_reject_complaint
-    # complaint = get_complaint_by_button()
-    # return if complaint.nil?
+    complaint = get_complaint_by_button()
+    return if complaint.nil?
 
-    # if  actual_complaint?(complaint)
+    if  actual_complaint?(complaint)
         $user.reject_amount = $user.reject_amount + 1
         $user.decisions_per_day_amount = $user.decisions_per_day_amount + 1
         $user.save
@@ -168,9 +168,9 @@ def handle_reject_complaint
         )
         $user.update(cur_complaint_id:complaint.id)
         Send.mes(Text.input_cause_of_reject)
-    # else
-    #     Send.mes(Text.was_handled)
-    # end
+    else
+        Send.mes(Text.was_handled)
+    end
 end
 
 def get_scamer_by_button
