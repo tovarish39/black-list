@@ -215,7 +215,7 @@ def accessing_justification
 
             clear_user = scamer
             Send.mes(Text.accessing_justification)
-            send_notify_to(clear_user, Text.you_not_scamer)
+            send_notify_to(clear_user, Text.you_not_scamer(scamer))
 
     else
         already_handled

@@ -185,11 +185,11 @@ module Text
 
         return "⚖️Оспорить решение⚖️\n" + text_body.join('')
     end
-    def self.you_not_scamer
-        return 'Ваш аккаунт не ограничен. Против вас не зарегистрировано никаких жалоб. Продолжайте в том же духе!' if $lg == Ru 
-        return 'Your account is not subject to any restrictions. There are no pending or approved ripper reports against you. Continue to maintain this standard.' if $lg == En 
-        return 'Su cuenta no tiene ninguna restricción. No hemos encontrado informes pendientes ni aprobados de estafas en su contra. Por favor, siga manteniendo esta conducta ejemplar.' if $lg == Es 
-        return '您的账户没有任何限制。我们未发现任何针对您的未解决或已经核实的欺诈报告。请继续保持这种合规行为。' if $lg == Cn
+    def self.you_not_scamer scamer
+        return 'Ваш аккаунт не ограничен. Против вас не зарегистрировано никаких жалоб. Продолжайте в том же духе!' if scamer.lg == Ru 
+        return 'Your account is not subject to any restrictions. There are no pending or approved ripper reports against you. Continue to maintain this standard.' if scamer.lg == En 
+        return 'Su cuenta no tiene ninguna restricción. No hemos encontrado informes pendientes ni aprobados de estafas en su contra. Por favor, siga manteniendo esta conducta ejemplar.' if scamer.lg == Es 
+        return '您的账户没有任何限制。我们未发现任何针对您的未解决或已经核实的欺诈报告。请继续保持这种合规行为。' if scamer.lg == Cn
         # 'Ура, вы не скамер'
     end
     def self.you_blocked complaint, scamer
