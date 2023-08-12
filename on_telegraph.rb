@@ -68,20 +68,22 @@ complaint.update(
 )
 
 sended_mes_id = user.cur_message_id
+
+def complaint_request_to_moderator complaint, user
+    return "Ваша жалоба #N#{complaint.id} была успешно подана и в настоящее время ожидает рассмотрения. Вы будете уведомлены, как только будет принято решение." if user.lg == Ru 
+    return "Your report #N#{complaint.id} has been successfully submitted and is currently awaiting review. You will be notified as soon as a decision has been made." if user.lg == En 
+    return "Tu informe #N#{complaint.id} se ha enviado con éxito y está esperando revisión. Se te notificará tan pronto como se tome una decisión." if user.lg == Es 
+    return "您的报告＃N#{complaint.id}已成功提交，目前正在等待审查。一旦做出决定，您将立即收到通知。" if user.lg == Cn
+end
+
 begin
     main_bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
 ###################### из Text.
-    def complaint_request_to_moderator complaint
-        return "Ваша жалоба #N#{complaint.id} была успешно подана и в настоящее время ожидает рассмотрения. Вы будете уведомлены, как только будет принято решение." if user.lg == Ru 
-        return "Your report #N#{complaint.id} has been successfully submitted and is currently awaiting review. You will be notified as soon as a decision has been made." if user.$lg == En 
-        return "Tu informe #N#{complaint.id} se ha enviado con éxito y está esperando revisión. Se te notificará tan pronto como se tome una decisión." if user.lg == Es 
-        return "您的报告＃N#{complaint.id}已成功提交，目前正在等待审查。一旦做出决定，您将立即收到通知。" if user.lg == Cn
-    end
 
 
     main_bot.api.edit_message_text(
         chat_id:user.telegram_id, 
-        text:complaint_request_to_moderator(complaint)#  "Ваша жалоба #N#{complaint.id} была отправлена на проверку модератором, ожидайте её рассмотрения о результатах вас оповестит бот", 
+        text:complaint_request_to_moderator(complaint, user),#  "Ваша жалоба #N#{complaint.id} была отправлена на проверку модератором, ожидайте её рассмотрения о результатах вас оповестит бот", 
         message_id:sended_mes_id
     )            
 rescue => exception

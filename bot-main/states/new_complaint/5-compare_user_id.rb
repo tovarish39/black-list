@@ -76,5 +76,5 @@ def skip_proof
     system("bundle exec ruby #{UPLOAD_ON_FREEIMAGE} #{complaint.id} #{$user.id}") 
     create_or_update_potential_user_scamer(complaint)
 
-
+    # puts "#{complaint.id} #{$user.id}"
 end
