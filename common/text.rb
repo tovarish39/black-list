@@ -307,7 +307,7 @@ module Text
         'Был ранее обработан'
     end
     def self.greeting_mod
-        'Приветствие модератору'
+        'Че по чем?'
     end
     def self.accessing_justification
         "Обработано"

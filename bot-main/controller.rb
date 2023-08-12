@@ -50,7 +50,8 @@ def handle
     elsif mes_text?(Text.oracle_tips)
       Send.mes(Text.oracle_tips, M::Inline.link_to_oracles_tips)
 ###################### 
-    elsif mes_text?('/reset_lg') $user.update(lg:nil)
+    elsif mes_text?('/reset_lg')
+       $user.update(lg:nil)
     elsif mes_text? || mes_data? || is_user_shared? || mes_photo?
       
       if $lg.nil? # язык ещё не выбран
