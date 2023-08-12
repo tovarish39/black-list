@@ -1,0 +1,8 @@
+<div class="select-wrapper" data-controller="selectstatus">
+  <select class="custom-select" id=<%=id%>>
+    <% for option in status_options %>
+      <option value="<%= option %>"><%= option %></option>
+    <% end %>
+  </select>
+<div class="spinner" data-selectstatus-target="spinner"></div>
+</div>
