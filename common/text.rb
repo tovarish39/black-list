@@ -130,14 +130,14 @@ module Text
     def self.handle_explanation complaint, potincial_scamer
         return "Жалоба #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nСсылка: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nСтатус: Отклонена \nПричина: #{complaint.explanation_by_moderator}" if complaint.user.lg == Ru 
         return "Report #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nDirect Link: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nStatus: Rejected \nReason: #{complaint.explanation_by_moderator}" if complaint.user.lg == En 
-        return "Informe #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nEnlace directo: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: Rechazado \n<Razón: #{complaint.explanation_by_moderator}" if complaint.user.lg == Es 
+        return "Informe #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nEnlace directo: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: Rechazado \nRazón: #{complaint.explanation_by_moderator}" if complaint.user.lg == Es 
         return "报告 #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\n直接链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: 已拒绝 \n原因: #{complaint.explanation_by_moderator}" if complaint.user.lg == Cn
     end
 # от юзера
     def self.notify_reject_complaint complaint, potincial_scamer
         return "Жалоба #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nСсылка: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nСтатус: Отклонена \nПричина: #{complaint.explanation_by_moderator}" if $lg == Ru 
         return "Report #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nDirect Link: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nStatus: Rejected \nReason: #{complaint.explanation_by_moderator}" if $lg == En 
-        return "Informe #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nEnlace directo: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: Rechazado \n<Razón: #{complaint.explanation_by_moderator}" if $lg == Es 
+        return "Informe #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nEnlace directo: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: Rechazado \nRazón: #{complaint.explanation_by_moderator}" if $lg == Es 
         return "报告 #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\n直接链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: 已拒绝 \n原因: #{complaint.explanation_by_moderator}" if $lg == Cn
     end
     def self.notify_access_complaint complaint, potincial_scamer
