@@ -66,7 +66,7 @@ module Text
     #     "Необходимо отправить хотя бы одно фото"
     # end
     def self.handle_photo photos_size
-        return "Скриншот №#{photos_size} был успешно добавлен. Вы можете отправить дополнительные скриншоты или нажать кнопку 'Готово'." if $lg == Ru 
+        return "Скриншот №#{photos_size} был успешно добавлен. Вы можете отправить дополнительные скриншоты или нажать кнопку \"Готово\"." if $lg == Ru 
         return "Screenshot №#{photos_size} has been successfully added. You may send additional screenshots or click the 'That`s it' button." if $lg == En 
         return "La captura de pantalla №#{photos_size} ha sido agregada exitosamente. Puede enviar más capturas de pantalla o hacer clic en el botón 'Eso es todo'." if $lg == Es 
         return "截图编号#{photos_size}已成功添加。您可以发送更多的截图或点击“就是这个”按钮。" if $lg == Cn
@@ -77,7 +77,7 @@ module Text
         # return "" if $lg == En 
         # return "" if $lg == Es 
         # return "" if $lg == Cn
-        "Изображение №#{photos_size} успешно принято, нажмите 'Готово'"
+        "Изображение №#{photos_size} успешно принято, нажмите \"Готово\""
     end
     def self.require_anothe_format_image
         # return '' if $lg == Ru 
