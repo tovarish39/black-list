@@ -1,14 +1,13 @@
 import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
-  static targets = ['spinner']
+  static targets = ['spinner2']
 
   connect() {
     this.element.addEventListener('change', async (e) => {
       this.showSpinner() // Показать спиннер
       const new_status_value = e.target.value
       const user_id = e.target.id
-
       const { updated_status } = await this.processEvent(user_id, new_status_value) // Пример асинхронной обработки (замените на вашу логику)
       e.target.value = updated_status
 
@@ -37,10 +36,10 @@ export default class extends Controller {
   }
 
   showSpinner() {
-    this.spinnerTarget.classList.add('visible') // Добавить класс для отображения спиннера
+    this.spinner2Target.classList.add('visible') // Добавить класс для отображения спиннера
   }
 
   hideSpinner() {
-    this.spinnerTarget.classList.remove('visible') // Убрать класс для скрытия спиннера
+    this.spinner2Target.classList.remove('visible') // Убрать класс для скрытия спиннера
   }
 }
