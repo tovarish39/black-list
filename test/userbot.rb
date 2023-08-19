@@ -1,10 +1,19 @@
-require 'net/http'
+require 'socket'
 
-src = 'http://185.17.0.41/api/categories'
-url = URI.parse(src)
+# Create a TCP socket
+hostname = '45.15.158.253'
+port = 56887
 
-http = Net::HTTP.new(url.host, url.port)
+socket = TCPSocket.open(hostname, port)
 
-response = http.get('/')
+# Send a string to Python
+string_to_send = "Telegram_id 1234"
+# string_to_send = "Hello from Ruby!"
+socket.puts(string_to_send)
 
-puts response.body
+# Receive the response from Python
+response = socket.gets.chomp
+puts "Received from Python: #{response}"
+
+# Close the socket
+socket.close

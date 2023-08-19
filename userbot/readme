@@ -1,0 +1,3 @@
+Установить питон - sudo apt install python
+Зависимость - pip install telethon
+Запуск - python main.py
