@@ -1,16 +1,14 @@
-# def pretty_print_object(obj, indent = 0)
-#   obj.each do |key, value|
-#     if value.is_a?(Hash) || value.is_a?(Telegram::Bot::Types::Base)
-#       puts "#{' ' * indent}#{key}:"
-#       pretty_print_object(value, indent + 2)
-#     else
-#       puts "#{' ' * indent}#{key}: #{value.inspect}"
-#     end
-#   end
-# end
-      # json = JSON.parse($mes.to_json)
-      # puts pretty_print_object(json, 1)
-
+def pretty_print_object(obj, indent = 0)
+  obj.each do |key, value|
+    if value.is_a?(Hash) || value.is_a?(Telegram::Bot::Types::Base)
+      puts "#{' ' * indent}#{key}:"
+      pretty_print_object(value, indent + 2)
+    else
+      puts "#{' ' * indent}#{key}: #{value.inspect}"
+    end
+  end
+end
+   
 $is_next_forward_message = false
 $forwarder_user_telegram_id = ''
 
@@ -22,22 +20,33 @@ def handle
     # puts $user.inspect
   # ####### group
     if mes_from_group_and_text?
-      # для forward следующий mes проверяется
-      if $mes.text =~ /^\/verify$/ 
-        # puts '1'
-        $is_next_forward_message = true
-        $forwarder_user_telegram_id = $mes.from.id
-      # проверка следующего после /verify с forwarted
-      elsif $is_next_forward_message && $forwarder_user_telegram_id == $mes.from.id && $mes.forward_from.present?
-        $is_next_forward_message = false
+      if $user.status =~ /^scamer/ # если в группе пишет скаммер
+      # json = JSON.parse($mes.to_json)
+      # puts pretty_print_object(json, 1)
+      $bot.api.send_message(
+        chat_id:$mes.chat.id,
+        reply_to_message_id:$mes.message_id,
+        text:Text.verifying_user($user, 'scamer')
+      )
+
+      else # /verify и не скаммер сам
+        # для forward следующий mes проверяется
+        if $mes.text =~ /^\/verify$/ 
+          # puts '1'
+          $is_next_forward_message = true
+          $forwarder_user_telegram_id = $mes.from.id
+          # проверка следующего после /verify с forwarted
+        elsif $is_next_forward_message && $forwarder_user_telegram_id == $mes.from.id && $mes.forward_from.present?
+          $is_next_forward_message = false
         $forwarder_user_telegram_id = ''
         handle_forwarded_message_to_verifying()
-      # проверка по ид или юзернейму
+        # проверка по ид или юзернейму
       elsif $mes.text =~ /^\/verify / 
         $is_next_forward_message = false
         handle_verify_with_id_or_username()        
       end
-  # ##############
+    end
+      # ##############
     elsif $mes.instance_of?(ChatMemberUpdated) # реагирует только от private chat
       $user.update(chat_member_status: $mes.new_chat_member.status ) if $mes.new_chat_member.status.present?
     elsif user_is_blocked_by_moderator? 

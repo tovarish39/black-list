@@ -55,6 +55,7 @@ module M
         [Button.make_a_complaint],
         [Button.request_status],
         [Button.account_status],
+        [Button.verify_by_userbot],
         [Button.support],
         [Button.oracle_tips]
       )

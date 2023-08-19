@@ -4,10 +4,11 @@ class StateMachine
   aasm do
     state :start
     event :start_action, from: :start do
-      transitions if: -> { mes_text?(Button.make_a_complaint) }, after: :to_search_user, to: :search_user
-      transitions if: -> { mes_text?(Button.request_status) }  , after: :view_requests , to: :start
-      transitions if: -> { mes_text?(Button.account_status) }  , after: :notify_account, to: :start
-      transitions if: -> { mes_text?('/start') }               , after: :to_start      , to: :start
+      transitions if: -> { mes_text?(Button.make_a_complaint) }  , after: :to_search_user, to: :search_user
+      transitions if: -> { mes_text?(Button.request_status) }    , after: :view_requests , to: :start
+      transitions if: -> { mes_text?(Button.account_status) }    , after: :notify_account, to: :start
+      transitions if: -> { mes_text?(Button.verify_by_userbot) } , after: :to_userbot    , to: :request_to_userbot
+      transitions if: -> { mes_text?('/start') }                 , after: :to_start      , to: :start
     end   
   end
 end
@@ -16,6 +17,9 @@ def clear_account
   true
 end
 
+def to_userbot
+  Send.mes(Text.to_userbot)
+end
 
 def notify_account
   Send.mes(Text.clear_account)

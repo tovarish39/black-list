@@ -1,26 +1,19 @@
-require 'telegram/bot'
-require 'dotenv'
-Dotenv.load
+require 'socket'
 
+# Create a TCP socket
+hostname = '77.91.84.82'
+port = 3500
 
-def user_is_member_of_channel?
-    begin
-    res = $bot.api.getChatMember(chat_id: ENV['TELEGRAM_CHANNEL_ID'], user_id: $mes.from.id)
-    rescue  => e
-        puts 'include bot as administrator of channel'
-    end
-    status = res['result']['status']
-    return true if status == 'member' || status == 'creator' # !'left' !'kicked'
-    false
-  end
-  
+socket = TCPSocket.open(hostname, port)
 
-Telegram::Bot::Client.run(ENV['TOKEN_MAIN']) do |bot|
-    bot.listen do |message|
-      $bot = bot 
-      $mes = message 
+# Send a string to Python
+string_to_send = "/telegram_id/${12341234}"
+socket.puts(string_to_send)
 
-puts      user_is_member_of_channel?
+# Receive the response from Python
+socket.close_write # Without this line, the next line hangs
+response = socket.read
+puts response
 
-    end
-  end
+# Close the socket
+socket.close

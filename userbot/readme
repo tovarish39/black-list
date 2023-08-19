@@ -1,3 +1,6 @@
 Установить питон - sudo apt install python
 Зависимость - pip install telethon
-Запуск - python main.py
+Запуск - python3 main.py
+
+ввод телефона 16802075177
+ввод ответа аккаунта

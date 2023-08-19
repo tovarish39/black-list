@@ -19,7 +19,9 @@ export default class extends Controller {
     const body = { new_status_value: new_status_value }
     const csrfToken = document.querySelector("[name='csrf-token']").content
 
-    const path = window.location.pathname
+    const pathRaw = window.location.pathname
+    const isRoot = pathRaw === '/'
+    const path = isRoot ? '/users' : pathRaw
     const res = await fetch(`${path}/${user_id}`, {
       method: 'PUT',
       body: JSON.stringify(body),

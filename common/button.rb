@@ -4,7 +4,7 @@ module Button
             self.make_a_complaint,
             self.request_status,
             self.account_status,
-            # self.request_history,
+            self.verify_by_userbot,
             '/start'
         ]
     end
@@ -30,6 +30,12 @@ module Button
         return '📛 Check My Account Status' if $lg == En 
         return '📛 Verificar el Estado de Mi Cuenta' if $lg == Es 
         return '📛 检查我的账户状态' if $lg == Cn
+    end
+    def self.verify_by_userbot
+        return 'Проверить контрагента' if $lg == Ru
+        return 'Lookup the counterparty' if $lg == En
+        return 'Verificar al contratante' if $lg == Es
+        return '检查对方' if $lg == Cn
     end
     def self.support
         return 'Связаться с поддержкой' if $lg == Ru 

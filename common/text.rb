@@ -267,7 +267,12 @@ module Text
     def self.oracle_tips
         'Oracle`s Tips'
     end
-
+    def self.to_userbot
+        return 'Пожалуйста, выберите чат с человеком, которого хотите проверить. Так же, вы можете отправь ссылку на аккаунт или ІD.' if $lg == Ru 
+        return 'Please select the chat with the person you want to check. Also, you can send a link to the account or ID.' if $lg == En 
+        return 'Por favor, seleccione el chat con la persona que desea verificar. También puede enviar un enlace a la cuenta o ID.' if $lg == Es 
+        return '请选择您想要检查的人的聊天。您也可以发送账户链接或ID' if $lg == Cn
+    end
 
 
 
