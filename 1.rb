@@ -1,7 +1,7 @@
 require 'socket'
 
 # Create a TCP socket
-hostname = '77.91.84.82'
+hostname = 'localhost'
 port = 3500
 
 socket = TCPSocket.open(hostname, port)
