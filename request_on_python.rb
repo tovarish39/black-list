@@ -72,18 +72,63 @@ def delete_text_after_char str, char
     str.slice(0,last_index + 1)
 end
 
+
+def formating_month old_month
+    case old_month
+    when 'янв'; "01"#
+    when 'фев'; "02"#
+    when 'мар'; "03"
+    when 'апр'; "04"
+    when 'май'; "05"
+    when 'июн'; "06"#
+    when 'июл'; "07"#
+    when 'авг'; "08"#
+    when 'сен'; "09"
+    when 'окт'; "10"#
+    when 'ноя'; "11"#
+    when 'дек'; "12"#
+    end
+end
+
+def date_formatting line
+    old_date = line.split('≈').last
+    old_month = old_date.split(',').first
+    year = old_date.split(' ').first.split(',').last
+    years_amount = old_date.split('(').last.split(' ').first
+    month = formating_month(old_month)
+    years_text = years_amount.to_i > 1 ? "years" : "year" 
+    "#{month}/#{year} (#{years_amount} #{years_text})"
+end
+
 def formatting_lines lines
     stop_words = ['Телефон', 'Возможные сервера']
+    change_words = [
+        { exist: 'Регистрация', new: 'Account Creation Date' },
+        { exist: 'Изменения профиля', new: 'Profile changes' },
+    ]
     new_lines = []
     lines.each do |line|
         formatted_line = line.force_encoding('UTF-8').encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
         is_in_stop = false
+# удаление лишних строк
         stop_words.each do |word| 
             is_in_stop = true if formatted_line.include?(word)
         end
-        new_lines.push if !is_in_stop
+# изменение языка слов
+        change_words.each do |word|
+            if  formatted_line.include?(word[:exist])
+                if word[:exist] == 'Регистрация'
+# изменение даты регистрации
+                    formatted_date = date_formatting(formatted_line)
+                    formatted_line = formatted_line.gsub('`', '')
+                    formatted_line =  formatted_line.split('≈').first + "≈" + formatted_date
+                end
+                formatted_line = formatted_line.gsub(word[:exist], word[:new])
+            end
+        end 
+# puts "formatted_line = #{formatted_line}"
+        new_lines.push(formatted_line) if !is_in_stop
     end
-    puts  '------------------------------------'
     new_lines
 end
 
@@ -94,14 +139,11 @@ def format_res res
     formatted_lines.join("\n")
 end
 
-#  /lookup yuliapopova00
-
-
 result_message = response.present? && response == 'Error' ?  
     Text.not_availible : 
     format_res(response)
 
-
+# puts result_message
 bot.api.delete_message(chat_id: group_chat_id|| $user.telegram_id,  message_id:message_id)
 bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,  text:result_message, parse_mode:'Markdown')
 def notify_scammer
