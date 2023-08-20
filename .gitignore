@@ -39,4 +39,5 @@
 !/photos/.keep
 
 /userbot/goosebumps.session
+/userbot/goosebumps.session-journal
 /userbot/__pycache__/*
