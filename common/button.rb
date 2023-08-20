@@ -38,10 +38,11 @@ module Button
         return '检查对方' if $lg == Cn
     end
     def self.support
-        return 'Связаться с поддержкой' if $lg == Ru 
-        return 'Contact Support Service' if $lg == En 
-        return 'Contactar con el Servicio de Soporte' if $lg == Es 
-        return '联系支持服务' if $lg == Cn
+        '🆘'
+        # return 'Связаться с поддержкой' if $lg == Ru 
+        # return 'Contact Support Service' if $lg == En 
+        # return 'Contactar con el Servicio de Soporte' if $lg == Es 
+        # return '联系支持服务' if $lg == Cn
     end
     def self.oracle_tips
         'Oracle`s Tips'

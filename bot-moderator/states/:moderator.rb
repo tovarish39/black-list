@@ -79,8 +79,10 @@ def view_complaints
 
     complaints_to_moderator.each do |complaint|
         userFrom = complaint.user
+        userTo = User.find_by(telegram_id:complaint.telegram_id)
+        # puts userFrom, userTo
         Send.mes(
-            Text.moderator_complaint(userFrom, complaint), 
+            Text.moderator_complaint(userFrom, userTo, complaint), 
             M::Inline.moderator_complaint(complaint),
         )
     end

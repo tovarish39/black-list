@@ -69,7 +69,7 @@ def handle_photo
   write_file(file, complaint) if file.present?
 
   if (complaint.photos_amount == ENV['MAX_PHOTOS_AMOUNT'].to_i)
-    Send.mes(Text.push_ready(complaint.photos_amount))
+    Send.mes(Text.handle_last_photo(complaint.photos_amount))
   else
     Send.mes(Text.handle_photo(complaint.photos_amount))
   end
@@ -77,7 +77,7 @@ end
 
 
 def notice_max_photos_size
-  Send.mes(Text.notice_max_photos_size)
+  Send.mes(Text.push_ready)
 end 
 
 def notice_min_photos_size

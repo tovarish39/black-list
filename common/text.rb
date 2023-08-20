@@ -8,11 +8,11 @@ module Text
         return '嘿，伙计！欢迎使用Oracle的骗子名单机器人。这个机器人是Oracle网络的一部分，旨在让你远离骗子——就像有99%的保证让你远离骗子一样！它会让你举报骗子，挖掘关于你的伙伴的信息，获取Telegram账户的详细信息，以及更多。你应该对自己好点，看看上面的视频，以了解如何使用这个机器人的全部信息。如果你正确使用它，它将成为改变游戏规则的东西。' if $lg == Cn
     end
     def self.clear_account
-        # return '' if $lg == Ru 
-        # return '' if $lg == En 
-        # return '' if $lg == Es 
-        # return '' if $lg == Cn
-        'Вы не находитесь в списке скамеров!' 
+        return 'Вы не были обнаружены в списке скамеров. Так держать! Если же вы хотите пройти верификацию, и получить статус верифицированного или проверенного продавца, свяжитесь с @oraclesupport' if $lg == Ru 
+        return 'You were not found on the scammers` list. Keep it up! If you want to undergo verification and obtain the status of a verified or trusted seller, contact @oraclesupport.' if $lg == En 
+        return 'No fue encontrado en la lista de estafadores. ¡Sigue así! Si desea pasar por una verificación y obtener el estado de vendedor verificado o confiable, contacte a @oraclesupport.' if $lg == Es 
+        return '您没有被列入骗子名单。继续保持！如果您想要进行验证并获得已验证或受信任的卖家的身份，请联系@oraclesupport。' if $lg == Cn
+        # 'Вы не находитесь в списке скамеров!' 
     end
     def self.search_user
         return 'Отправьте нам ID подозреваемого' if $lg == Ru 
@@ -72,19 +72,25 @@ module Text
         return "截图编号#{photos_size}已成功添加。您可以发送更多的截图或点击“就是这个”按钮。" if $lg == Cn
         # "Изображение №#{photos_size} успешно принято, вы можете отправить еще или продолжить подачу жалобы нажав кнопку “Готово”"
     end
-    def self.push_ready photos_size
-        # return "" if $lg == Ru 
-        # return "" if $lg == En 
-        # return "" if $lg == Es 
-        # return "" if $lg == Cn
-        "Изображение №#{photos_size} успешно принято, нажмите \"Готово\""
+    def self.handle_last_photo photos_size
+        return "Скриншот №#{photos_size} был успешно добавлен." if $lg == Ru 
+        return "Screenshot №#{photos_size} has been successfully added." if $lg == En 
+        return "La captura de pantalla №#{photos_size} ha sido agregada exitosamente." if $lg == Es 
+        return "截图编号#{photos_size}已成功添加。" if $lg == Cn
+    end
+    def self.push_ready 
+        return "Достигнут лимит изображений!" if $lg == Ru 
+        return "Image limit reached!" if $lg == En 
+        return "¡Límite de imágenes alcanzado!" if $lg == Es 
+        return "已达到图片限制！" if $lg == Cn
+        # "Изображение №#{photos_size} успешно принято, нажмите \"Готово\""
     end
     def self.require_anothe_format_image
-        # return '' if $lg == Ru 
-        # return '' if $lg == En 
-        # return '' if $lg == Es 
-        # return '' if $lg == Cn
-        'Отправьте другой формат картинки'
+        return 'Пожалуйста, отправьте скришот повторно в формате сжатого изображения.' if $lg == Ru 
+        return 'Please resend the screenshot in a compressed image format.' if $lg == En 
+        return 'Por favor, reenvíe la captura de pantalla en formato de imagen comprimida.' if $lg == Es 
+        return '请以压缩图像格式重新发送截图。' if $lg == Cn
+        # 'Отправьте другой формат картинки'
     end
     def self.compare_user_id
         return 'Перешлите нам сообщения от подозреваемого, подтверждающие достоверность скриншотов.' if $lg == Ru 
@@ -97,6 +103,7 @@ module Text
         return "User info: \nID: #{user.telegram_id} \n#{"First Name: #{user.first_name}\n" if user.first_name.present?}#{"Username: @#{user.username}\n" if user.username.present?}" if $lg == En 
         return "Información del usuario: \nID: #{user.telegram_id} \n#{"Nombre: #{user.first_name}\n" if user.first_name.present?}#{"Nombre de usuario: @#{user.username}\n" if user.username.present?}" if $lg == Es 
         return "用户信息: \nID: #{user.telegram_id} \n#{"名字: #{user.first_name}\n" if user.first_name.present?}#{"用户名: @#{user.username}\n" if user.username.present?}" if $lg == Cn
+        "User info: \nID: #{user.telegram_id} \n#{"First Name: #{user.first_name}\n" if user.first_name.present?}#{"Username: @#{user.username}\n" if user.username.present?}"
     end
     def self.complaint_request_to_moderator complaint
         return "Ваша жалоба #N#{complaint.id} была успешно подана и в настоящее время ожидает рассмотрения. Вы будете уведомлены, как только будет принято решение. ⏳" if $lg == Ru 
@@ -104,21 +111,7 @@ module Text
         return "Tu informe #N#{complaint.id} se ha enviado con éxito y está esperando revisión. Se te notificará tan pronto como se tome una decisión. ⏳" if $lg == Es 
         return "您的报告＃N#{complaint.id}已成功提交，目前正在等待审查。一旦做出决定，您将立即收到通知。⏳" if $lg == Cn
     end
-    def self.moderator_complaint user, complaint
-        return '' if $lg == Ru 
-        return '' if $lg == En 
-        return '' if $lg == Es 
-        return '' if $lg == Cn
-        %{\n
-            <strong>Жалоба</strong> #N#{complaint.id}
 
-<strong>ОТ</strong>
-#{Text.user_info(user)}\n
-<strong>На</strong>
-#{Text.user_info(complaint)}
-<strong>Ссылка</strong> <a href='#{complaint.telegraph_link}'>telegraph_link</a>
-}
-    end
 # от модератора
     def self.complaint_published complaint
         return "Ваша жалоба #N#{complaint.id} была рассмотрена и принята модераторами. Вы можете проверить её по <a href='#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}'>ссылке</a>" if complaint.user.lg == Ru 
@@ -134,56 +127,83 @@ module Text
         return "报告 #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\n直接链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: 已拒绝 \n原因: #{complaint.explanation_by_moderator}" if complaint.user.lg == Cn
     end
 # от юзера
-    def self.notify_reject_complaint complaint, potincial_scamer
-        return "Жалоба #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nСсылка: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nСтатус: Отклонена \nПричина: #{complaint.explanation_by_moderator}" if $lg == Ru 
-        return "Report #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nDirect Link: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nStatus: Rejected \nReason: #{complaint.explanation_by_moderator}" if $lg == En 
-        return "Informe #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nEnlace directo: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: Rechazado \nRazón: #{complaint.explanation_by_moderator}" if $lg == Es 
-        return "报告 #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\n直接链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: 已拒绝 \n原因: #{complaint.explanation_by_moderator}" if $lg == Cn
+    def self.complaint_status complaint
+        status = complaint.status
+
+        if $lg == Ru
+            return 'одобрена' if status == 'accepted_complaint'
+            return 'отклонена' if status == 'rejected_complaint'
+            return 'на рассмотрении' if status == 'request_to_moderator'
+        elsif $lg == En
+            return 'Approved' if status == 'accepted_complaint'
+            return 'Rejected' if status == 'rejected_complaint'
+            return 'Under Review' if status == 'request_to_moderator'
+        elsif $lg == Es
+            return 'Aprobado' if status == 'accepted_complaint'
+            return 'Rechazado' if status == 'rejected_complaint'
+            return 'En revisión' if status == 'request_to_moderator'
+        elsif $lg == Cn
+            return '已批准' if status == 'accepted_complaint'
+            return '已拒绝' if status == 'rejected_complaint'
+            return '审核中' if status == 'request_to_moderator'
+        end
     end
-    def self.notify_access_complaint complaint, potincial_scamer
-        return "Жалоба #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nСсылка: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nСтатус: Одобрена" if $lg == Ru 
-        return "Report #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nDirect Link: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nStatus: Approved" if $lg == En 
-        return "Informe #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nEnlace directo: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: Aprobado" if $lg == Es 
-        return "报告 #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\n直接链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: 已批准" if $lg == Cn
+    def self.notify_request_complaints complaint, potincial_scamer
+        status = Text.complaint_status complaint
+        return "Жалоба #N#{complaint.id} \nОт#{Text.user_info($user)} \nНа#{Text.user_info(potincial_scamer)} \nСсылка: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nСтатус: #{status}" if $lg == Ru 
+        return "Report #N#{complaint.id} \nFrom#{Text.user_info($user)} \nAgainst#{Text.user_info(potincial_scamer)} \nLink: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nStatus: #{status}" if $lg == En 
+        return "Informe #N#{complaint.id} \nDe#{Text.user_info($user)} \nContra#{Text.user_info(potincial_scamer)} \nEnlace: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: #{status}" if $lg == Es 
+        return "报告 #N#{complaint.id} \n来自#{Text.user_info($user)} \n针对#{Text.user_info(potincial_scamer)} \n链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: #{status}" if $lg == Cn 
     end
-    def self.notify_pending_complaint complaint, potincial_scamer
-        return "Жалоба #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nСсылка: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nСтатус: Рассмотрение" if $lg == Ru 
-        return "Report #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nDirect Link: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nStatus: Under review" if $lg == En 
-        return "Informe #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nEnlace directo: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: En revisión" if $lg == Es 
-        return "报告 #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\n直接链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: 审核中" if $lg == Cn
-    end
+
+    # def self.notify_reject_complaint complaint, potincial_scamer
+    #     return "Жалоба #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nСсылка: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nСтатус: Отклонена \nПричина: #{complaint.explanation_by_moderator}" if $lg == Ru 
+    #     return "Report #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nDirect Link: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nStatus: Rejected \nReason: #{complaint.explanation_by_moderator}" if $lg == En 
+    #     return "Informe #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nEnlace directo: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: Rechazado \nRazón: #{complaint.explanation_by_moderator}" if $lg == Es 
+    #     return "报告 #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\n直接链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: 已拒绝 \n原因: #{complaint.explanation_by_moderator}" if $lg == Cn
+    # end
+    # def self.notify_access_complaint complaint, potincial_scamer
+    #     return "Жалоба #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nСсылка: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nСтатус: Одобрена" if $lg == Ru 
+    #     return "Report #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nDirect Link: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nStatus: Approved" if $lg == En 
+    #     return "Informe #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nEnlace directo: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: Aprobado" if $lg == Es 
+    #     return "报告 #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\n直接链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: 已批准" if $lg == Cn
+    # end
+    # def self.notify_pending_complaint complaint, potincial_scamer
+    #     return "Жалоба #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nСсылка: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nСтатус: Рассмотрение" if $lg == Ru 
+    #     return "Report #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nDirect Link: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nStatus: Under review" if $lg == En 
+    #     return "Informe #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\nEnlace directo: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: En revisión" if $lg == Es 
+    #     return "报告 #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\n直接链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: 审核中" if $lg == Cn
+    # end
 #############################
     def self.view_complaints telegraph_links
-        # return '' if $lg == Ru 
-        # return '' if $lg == En 
-        # return '' if $lg == Es 
-        # return '' if $lg == Cn
         text_body = telegraph_links.map {|link| "\nСсылка:<a href='#{link}'>telegraph_link</a>"}
-        return "Вы обнаружены в списке скамеров!" + text_body.join('')
+        return "Вы обнаружены в списке скамеров!\n #{text_body.join('')}" if $lg == Ru 
+        return "You have been found on the scammers' list!\n #{text_body.join('')}" if $lg == En 
+        return "¡Has sido encontrado en la lista de rippers!\n #{text_body.join('')}" if $lg == Es 
+        return "您已被列入欺诈者名单！上诉版主的决定，恢复您的清白名誉并发布反驳！\n #{text_body.join('')}" if $lg == Cn
     end
+    def self.justification_already_used
+        return "Вы были обнаружены в списке кидков! Опротестуйте решение модератора, чтобы восстановить своё честное имя и опубликовать опровержение!" if $lg == Ru 
+        return "You have been found on the list of fraudsters! Appeal the moderator's decision to restore your honest name and publish a refutation!" if $lg == En 
+        return "¡Has sido encontrado en la lista de estafadores! ¡Apela la decisión del moderador para restaurar tu nombre honesto y publicar una refutación!" if $lg == Es 
+        return "您被发现在骗子名单上！" if $lg == Cn
+        # return 'Ваша заявка находится на рассмотрении!' if $lg == Ru 
+    end
+    # def self.justification_already_used
+    #     return 'Ваша заявка находится на рассмотрении!' if $lg == Ru 
+    #     return 'Your appeal is under review!' if $lg == En 
+    #     return '¡Su apelación está bajo revisión!' if $lg == Es 
+    #     return '您的上诉正在审查中！' if $lg == Cn
+    #     # return 'Ваша заявка находится на рассмотрении!' if $lg == Ru 
+    # end
+
+
+
     def self.explain_justification
         return 'Пожалуйста, опишите вашу версию событий!' if $lg == Ru 
         return 'Describe this case from your perspective please! ' if $lg == En 
         return '¡Por favor, describa este caso desde su perspectiva!' if $lg == Es 
         return '请从您的角度描述这个案例！' if $lg == Cn
-    end
-    def self.justification_already_used
-        return 'Ваша заявка находится на рассмотрении!' if $lg == Ru 
-        return 'Your appeal is under review!' if $lg == En 
-        return '¡Su apelación está bajo revisión!' if $lg == Es 
-        return '您的上诉正在审查中！' if $lg == Cn
-    end
-    def self.justification_request_to_moderator accepted_complaints, scamer
-        # return '' if $lg == Ru 
-        # return '' if $lg == En 
-        # return '' if $lg == Es 
-        # return '' if $lg == Cn
-        text_body = accepted_complaints.map {|complaint| "\n<strong>Жалоба</strong> #N#{complaint.id}\n<strong>Ссылка</strong> <a href='#{complaint.telegraph_link}'>telegraph_link</a>\n<strong>Ссылка</strong> пост\n\n <b>Объяснение:</b> #{scamer.justification} "}
-        if text_body.empty? # решение от администратора, когда не было претензий
-            return "Решение принято администратором\n⚖️Оспорить решение⚖️\nОправдание от пользователя:\n" + scamer.justification 
-        end
-
-        return "⚖️Оспорить решение⚖️\n" + text_body.join('')
     end
     def self.you_not_scamer scamer
         return 'Ваш аккаунт не ограничен. Против вас не зарегистрировано никаких жалоб. Продолжайте в том же духе!' if scamer.lg == Ru 
@@ -258,14 +278,17 @@ module Text
         "#{data} #{status}"
     end
     def self.support
-        return 'Связаться с поддержкой' if $lg == Ru 
-        return 'Contact Support Service' if $lg == En 
-        return 'Contactar con el Servicio de Soporte' if $lg == Es 
-        return '联系支持服务' if $lg == Cn
+        return 'Вы можете связаться с поддержкой Oracle для решения экстренных вопросов, подачи заявлений на верификацию, по вопросам сотрудничества и прочему. Пожалуйста, подавайте ваши репроты с помощью интерфейса бота, а не через службу поддержки. Связаться со службой поддержки' if $lg == Ru 
+        return "You can contact Oracle support for urgent matters, to apply for verification, for collaboration inquiries, and more. Please submit your reports using the bot interface, not through the support service.\n\nContact the support service." if $lg == En 
+        return "Puede ponerse en contacto con el soporte de Oracle para asuntos urgentes, para solicitar verificación, para consultas de colaboración y más. Por favor, envíe sus informes utilizando la interfaz del bot, no a través del servicio de soporte.\n\nContactar con el servicio de soporte." if $lg == Es 
+        return "您可以联系Oracle支持解决紧急问题、申请验证、合作咨询等。请通过机器人界面提交您的报告，而不是通过支持服务。\n\n联系支持服务。" if $lg == Cn
         # 'Связаться c поддержкой'
     end
     def self.oracle_tips
-        'Oracle`s Tips'
+        return 'Каждый день мы получаем десятки репортов о кидке. Но по-настоящему изящных кидков из них не более 10%. Остальные 90% кидков работают по древним и тупым схемам. Вы сможете обезопасить себя от них, подробно изучив наши инструкции и советы по безопасной работе в Telegram в разделе Oracle`s Tips. Ознакомиться прямо сейчас!' if $lg == Ru
+        return 'Every day, we receive dozens of scam reports. However, only about 10% of them are truly sophisticated scams. The other 90% operate on old and dull schemes. You can protect yourself from these by thoroughly studying our instructions and safety tips for working in Telegram under the Oracle`s Tips section. Check it out right now!' if $lg == En
+        return 'Todos los días recibimos decenas de informes de estafas. Sin embargo, solo alrededor del 10% de ellos son estafas verdaderamente sofisticadas. El otro 90% opera con esquemas antiguos y simplones. Puede protegerse de estos estudiando detalladamente nuestras instrucciones y consejos de seguridad para trabajar en Telegram en la sección Consejos de Oracle. ¡Revíselo ahora mismo!' if $lg == Es
+        return '我们每天都收到数十份有关欺诈的报告。但其中真正精细的欺诈只占大约10%。其他90%的欺诈都是使用古老且愚蠢的手段。您可以通过仔细研究我们在Oracle`s Tips部分的Telegram安全工作指南和建议来保护自己免受这些欺诈的侵害。\n\n现在就来看看！' if $lg == Cn
     end
     def self.to_userbot
         return 'Пожалуйста, выберите чат с человеком, которого хотите проверить. Так же, вы можете отправь ссылку на аккаунт или ІD.' if $lg == Ru 
@@ -273,6 +296,15 @@ module Text
         return 'Por favor, seleccione el chat con la persona que desea verificar. También puede enviar un enlace a la cuenta o ID.' if $lg == Es 
         return '请选择您想要检查的人的聊天。您也可以发送账户链接或ID' if $lg == Cn
     end
+    def self.checking
+        return 'Проверяем...' if $lg == Ru
+        return 'Checking...' if $lg == En
+        return 'Verificando...' if $lg == Es
+        return '正在检查...' if $lg == Cn
+    end
+    def self.not_availible
+        'Сервис временно не доступен'
+    end
 
 
 
@@ -292,12 +324,28 @@ module Text
 
 
 
+    def self.moderator_complaint userFrom, userTo, complaint
+        %{\n
+            <b>Жалоба</b> #N#{complaint.id}
 
-
-
+<b>ОТ</b>
+#{Text.user_info(userFrom)}\n
+<b>На</b>
+#{Text.user_info(userTo)}
+<b>Ссылка</b> <a href='#{complaint.telegraph_link}'>telegraph_link</a>
+}
+    end
 
     def self.date_time_now date_time_now
         "Сейчас #{date_time_now}"
+    end
+    def self.justification_request_to_moderator accepted_complaints, scamer
+        text_body = accepted_complaints.map {|complaint| "\n<strong>Жалоба</strong> #N#{complaint.id}\n<strong>Ссылка</strong> <a href='#{complaint.telegraph_link}'>telegraph_link</a>\n<strong>Ссылка</strong> <a href='#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}'>пост</a>\n\n <b>Объяснение:</b> #{scamer.justification} "}
+        if text_body.empty? # решение от администратора, когда не было претензий
+            return "Решение принято администратором\n⚖️Оспорить решение⚖️\nОправдание от пользователя:\n" + scamer.justification 
+        end
+
+        return "⚖️Оспорить решение⚖️\n" + text_body.join('')
     end
 
 

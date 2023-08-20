@@ -8,9 +8,14 @@ def pretty_print_object(obj, indent = 0)
     end
   end
 end
-   
+# json = JSON.parse($mes.to_json)
+# puts pretty_print_object(json, 1)
+
+
 $is_next_forward_message = false
 $forwarder_user_telegram_id = ''
+$lookuping = false
+$verifing = false
 
 def handle
   # puts 'start handle'
@@ -29,22 +34,38 @@ def handle
         text:Text.verifying_user($user, 'scamer')
       )
 
-      else # /verify и не скаммер сам
+      else # /verify или /lookup и не скаммер сам
         # для forward следующий mes проверяется
-        if $mes.text =~ /^\/verify$/ 
-          # puts '1'
+        if mes_text?(/^\/lookup$/)
+          $is_next_forward_message = true
+          $forwarder_user_telegram_id = $mes.chat.id
+          $lookuping = true
+          # проверка следующего после /lookup с forwarted
+        elsif $lookuping && $is_next_forward_message && ($forwarder_user_telegram_id == $mes.chat.id) && $mes.forward_from.present?
+          $is_next_forward_message = false
+          $forwarder_user_telegram_id = ''
+          $lookuping = false
+          handle_text_to_lookup($mes.chat.id)
+        
+          # для forward следующий mes проверяется
+        elsif mes_text?(/^\/verify$/)
           $is_next_forward_message = true
           $forwarder_user_telegram_id = $mes.from.id
+          $verifing = true
           # проверка следующего после /verify с forwarted
-        elsif $is_next_forward_message && $forwarder_user_telegram_id == $mes.from.id && $mes.forward_from.present?
+        elsif $verifing && $is_next_forward_message && ($forwarder_user_telegram_id == $mes.from.id) && $mes.forward_from.present?
           $is_next_forward_message = false
-        $forwarder_user_telegram_id = ''
-        handle_forwarded_message_to_verifying()
+          $forwarder_user_telegram_id = ''
+          $verifing = false
+          handle_forwarded_message_to_verifying()
         # проверка по ид или юзернейму
-      elsif $mes.text =~ /^\/verify / 
-        $is_next_forward_message = false
-        handle_verify_with_id_or_username()        
-      end
+        elsif mes_text?(/^\/lookup /) 
+          $is_next_forward_message = false
+          handle_text_to_lookup($mes.chat.id)
+        elsif mes_text?(/^\/verify /) 
+          $is_next_forward_message = false
+          handle_verify_with_id_or_username()        
+        end
     end
       # ##############
     elsif $mes.instance_of?(ChatMemberUpdated) # реагирует только от private chat

@@ -29,14 +29,14 @@ async def main():
 
             # Receive the string from Ruby
             received_string = client_socket.recv(MAX_RECV_BYTE).decode()
-            received_string = re.findall(r"(?<={).*(?=})|$", received_string)
+            received_string = re.findall(r"(?<=\/telegram_id\/).*|$", received_string)
             if not received_string or received_string == '':
                 client_socket.send(response.encode())
                 client_socket.close()
                 continue
 
             # Send the string to the bot
-            await client.send_message('opencheckbot', '#' + received_string[0])
+            await client.send_message('opencheckbot', received_string[0])
 
             sleep(1)
 
@@ -46,7 +46,7 @@ async def main():
                     for button_list in message.buttons:
                         for button in button_list:
                             if button.text == 'Telegram' and not button_flag:
-                                await message.click()
+                                await button.click()
                                 button_flag = True
                                 break
                         else:

@@ -14,9 +14,10 @@ def already_used_justification?
 end
 
 def view_complaints_to_scamer
-  accepted_complaints = Complaint.where(telegram_id:$user.telegram_id).filter {|complaint| complaint.status == 'accepted_complaint'}
-  telegraph_links = accepted_complaints.map(&:telegraph_link) 
-  Send.mes(Text.view_complaints(telegraph_links), M::Inline.view_complaints)
+  # accepted_complaints = Complaint.where(telegram_id:$user.telegram_id).filter {|complaint| complaint.status == 'accepted_complaint'}
+  # telegraph_links = accepted_complaints.map(&:telegraph_link) 
+  # Send.mes(Text.view_complaints(telegraph_links), M::Inline.view_complaints)
+  Send.mes(Text.justification_already_used, M::Inline.view_complaints)
 end
 
 def to_justification
@@ -24,5 +25,8 @@ def to_justification
 end
 
 def justification_already_used
-  Send.mes(Text.justification_already_used)
+  accepted_complaints = Complaint.where(telegram_id:$user.telegram_id).filter {|complaint| complaint.status == 'accepted_complaint'}
+  telegraph_links = accepted_complaints.map(&:telegraph_link)
+  Send.mes(Text.view_complaints(telegraph_links))
+  # Send.mes(Text.justification_already_used)
 end

@@ -47,9 +47,10 @@ def view_requests
     complaints.each do |complaint|
       to_user = User.find_by(telegram_id:complaint.telegram_id)
 
-      Send.mes(Text.notify_reject_complaint(complaint, to_user)) if complaint.status == 'rejected_complaint'
-      Send.mes(Text.notify_access_complaint(complaint, to_user)) if complaint.status == 'accepted_complaint'
-      Send.mes(Text.notify_pending_complaint(complaint, to_user)) if complaint.status == 'request_to_moderator'
+      Send.mes(Text.notify_request_complaints(complaint, to_user))
+      # Send.mes(Text.notify_reject_complaint(complaint, to_user)) if complaint.status == 'rejected_complaint'
+      # Send.mes(Text.notify_access_complaint(complaint, to_user)) if complaint.status == 'accepted_complaint'
+      # Send.mes(Text.notify_pending_complaint(complaint, to_user)) if complaint.status == 'request_to_moderator'
 
       # text = """#{Text.complaint(complaint)}\n#{Text.user_info(to_user)}\n<strong>Ссылка:</strong>  <a href='#{complaint.telegraph_link}'>telegraph_link</a>\n"""
       # text << get_footer(complaint)
