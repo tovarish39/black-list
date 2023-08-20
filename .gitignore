@@ -37,3 +37,6 @@
 
 /photos/*
 !/photos/.keep
+
+/userbot/goosebumps.session
+/userbot/__pycache__/*
