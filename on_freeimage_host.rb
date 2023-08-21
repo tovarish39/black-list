@@ -6,7 +6,7 @@ require 'fileutils'
 UPLOAD_ON_TELEGRAPH_PATH='./on_telegraph.rb'
 
 complaint_id = ARGV[0]
-user_id   = ARGV[1]
+user_id   = ARGV[1] # userFrom
 
 
 complaint = Complaint.find(complaint_id)
@@ -64,8 +64,6 @@ begin
     system("bundle exec ruby #{UPLOAD_ON_TELEGRAPH_PATH} #{complaint.id} #{user_id}")
           
 rescue => exception
-    BOT.api.send_message(text:exception,                          chat_id:ENV['CHAT_ID_MY'])
+    BOT.api.send_message(text:"freeimage #{exception}",                          chat_id:ENV['CHAT_ID_MY'])
     BOT.api.send_message(text:exception.backtrace,                chat_id:ENV['CHAT_ID_MY'])
 end
-
-    

@@ -6,8 +6,12 @@
     display: flex;
     flex-direction: column;
   }
+  &__lookup {
+    color: white;
+  }
   &__stats {
     color: white;
+    margin: 0;
   }
   &-wrap {
     width: -webkit-fill-available;

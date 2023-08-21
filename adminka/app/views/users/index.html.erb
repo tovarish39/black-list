@@ -9,6 +9,9 @@
                 <%= render '/partials/search' %>
                 <%= render '/partials/show_modal'%>
             </div>
+
+            <span class='users__lookup'><b>/lookup</b> requests per day : <%= @lookup_counter %>  </span>
+
             <ul class='users__stats'>
                 complaints per
                 <li>day   - <%= @complaints_per_day.size %></li>

@@ -100,6 +100,10 @@ def date_formatting line
     "#{month}/#{year} (#{years_amount} #{years_text})"
 end
 
+def to_UTF8 text
+    text.force_encoding('UTF-8').encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+end
+
 def formatting_lines lines
     stop_words = ['Телефон', 'Возможные сервера']
     change_words = [
@@ -108,7 +112,7 @@ def formatting_lines lines
     ]
     new_lines = []
     lines.each do |line|
-        formatted_line = line.force_encoding('UTF-8').encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+        formatted_line = to_UTF8(line)
         is_in_stop = false
 # удаление лишних строк
         stop_words.each do |word| 
@@ -133,12 +137,26 @@ def formatting_lines lines
 end
 
 def format_res res 
-    text =  delete_text_after_char(res, '|')
+    utf8 = to_UTF8(res)
+
+    if utf8.include?('Изменения профиля')
+        # когда есть 'Изменения профиля'
+        text =  delete_text_after_char(res, '|')
+    end
+        
+
+    # когда нету 'Изменения профиля'
     lines = text.split("\n")
+
+    if utf8.include?('Изменения профиля')
+        lines = lines.slice(0, 3)
+    end
+
     formatted_lines = formatting_lines(lines)
     formatted_lines.join("\n")
 end
 
+puts response
 result_message = response.present? && response == 'Error' ?  
     Text.not_availible : 
     format_res(response)

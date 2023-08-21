@@ -14,3 +14,6 @@ module Telegram
     end
   end
 end
+
+rails c
+Counter.create

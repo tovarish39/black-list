@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_07_154323) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_21_133318) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -33,6 +33,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_07_154323) do
     t.datetime "updated_at", null: false
     t.string "handled_moderator_id"
     t.index ["user_id"], name: "index_complaints_on_user_id"
+  end
+
+  create_table "counters", force: :cascade do |t|
+    t.integer "lookup_requests_from_bots", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "moderators", force: :cascade do |t|

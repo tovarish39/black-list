@@ -19,5 +19,9 @@ def handle_text_to_lookup group_chat_id = nil
             else
                 $mes.text =~ /\/lookup/ ? $mes.text.split(' ')[1] : $mes.text
             end
+    
+    lookup_requests = Counter.first.lookup_requests_from_bots
+    Counter.first.update(lookup_requests_from_bots: lookup_requests + 1 )
+
     spawn("bundle exec ruby #{$root_path}/request_on_python.rb #{data} #{$user.telegram_id} #{group_chat_id}")
 end
