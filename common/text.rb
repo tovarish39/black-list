@@ -148,12 +148,25 @@ module Text
             return '审核中' if status == 'request_to_moderator'
         end
     end
+
+
+
+
+
+
+    def self.user_info_without_prefix user
+        return "ID: #{user.telegram_id} \n#{"First Name: #{user.first_name}\n" if user.first_name.present?}#{"Username: @#{user.username}\n" if user.username.present?}" if $lg == Ru 
+        return "ID: #{user.telegram_id} \n#{"First Name: #{user.first_name}\n" if user.first_name.present?}#{"Username: @#{user.username}\n" if user.username.present?}" if $lg == En 
+        return "ID: #{user.telegram_id} \n#{"Nombre: #{user.first_name}\n" if user.first_name.present?}#{"Nombre de usuario: @#{user.username}\n" if user.username.present?}" if $lg == Es 
+        return "ID: #{user.telegram_id} \n#{"名字: #{user.first_name}\n" if user.first_name.present?}#{"用户名: @#{user.username}\n" if user.username.present?}" if $lg == Cn
+        "User info: \nID: #{user.telegram_id} \n#{"First Name: #{user.first_name}\n" if user.first_name.present?}#{"Username: @#{user.username}\n" if user.username.present?}"
+    end
     def self.notify_request_complaints complaint, potincial_scamer
         status = Text.complaint_status complaint
-        return "Жалоба #N#{complaint.id} \nОт#{Text.user_info($user)} \nНа#{Text.user_info(potincial_scamer)} \nСсылка: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nСтатус: #{status}" if $lg == Ru 
-        return "Report #N#{complaint.id} \nFrom#{Text.user_info($user)} \nAgainst#{Text.user_info(potincial_scamer)} \nLink: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nStatus: #{status}" if $lg == En 
-        return "Informe #N#{complaint.id} \nDe#{Text.user_info($user)} \nContra#{Text.user_info(potincial_scamer)} \nEnlace: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: #{status}" if $lg == Es 
-        return "报告 #N#{complaint.id} \n来自#{Text.user_info($user)} \n针对#{Text.user_info(potincial_scamer)} \n链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: #{status}" if $lg == Cn 
+        return "Жалоба #N#{complaint.id} \nОт#{Text.user_info_without_prefix($user)} \nНа#{Text.user_info_without_prefix(potincial_scamer)} \nСсылка: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nСтатус: #{status}" if $lg == Ru 
+        return "Report #N#{complaint.id} \nFrom#{Text.user_info_without_prefix($user)} \nAgainst#{Text.user_info_without_prefix(potincial_scamer)} \nLink: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nStatus: #{status}" if $lg == En 
+        return "Informe #N#{complaint.id} \nDe#{Text.user_info_without_prefix($user)} \nContra#{Text.user_info_without_prefix(potincial_scamer)} \nEnlace: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: #{status}" if $lg == Es 
+        return "报告 #N#{complaint.id} \n来自#{Text.user_info_without_prefix($user)} \n针对#{Text.user_info_without_prefix(potincial_scamer)} \n链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: #{status}" if $lg == Cn 
     end
 
     # def self.notify_reject_complaint complaint, potincial_scamer

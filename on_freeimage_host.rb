@@ -45,40 +45,19 @@ end
 
 begin
     photo_names.each do |photo_name|
-        file_path = "#{photos_dir_path}/#{photo_name}"
-        
-        # Открываем файл и читаем его содержимое в бинарном режиме
-        file_content = File.open(file_path, 'rb') { |file| file.read }
-        base64_image = Base64.encode64(file_content)
-        
-        if base64_image.present?
-          direct_link = upload_and_get_direct_link(base64_image, url)
-          urls = complaint.photo_urls_remote_tmp || []
-          complaint.update(photo_urls_remote_tmp:urls << direct_link)
-
-
-
-
-
-          # rescue => exception
-          #   BOT.api.send_message(text:'from freeimage retry',                          chat_id:MY_CHAT_ID)
-          #   BOT.api.send_message(text:exception,                          chat_id:MY_CHAT_ID)
-            
-          #   begin
-          #   direct_link = upload_and_get_direct_link(base64_image, url)
-          #   urls = complaint.photo_urls_remote_tmp
-          #   complaint.update(photo_urls_remote_tmp:urls << direct_link)
-          #   rescue => exception
-          #     BOT.api.send_message(text:'from freeimage error',                          chat_id:MY_CHAT_ID)
-          #     BOT.api.send_message(text:exception,                          chat_id:MY_CHAT_ID)
-          #   end
-          # end
-
-          
-
-        else next
-        end
+      file_path = "#{photos_dir_path}/#{photo_name}"
+      
+      # Открываем файл и читаем его содержимое в бинарном режиме
+      file_content = File.open(file_path, 'rb') { |file| file.read }
+      base64_image = Base64.encode64(file_content)
+      
+      if base64_image.present?
+        direct_link = upload_and_get_direct_link(base64_image, url)
+        urls = complaint.photo_urls_remote_tmp || []
+        complaint.update!(photo_urls_remote_tmp:urls << direct_link)
+      else next
       end
+    end
       
     ############ удаление папки с фотками
     FileUtils.rm_rf(photos_dir_path)
