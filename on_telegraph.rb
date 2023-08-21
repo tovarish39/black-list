@@ -11,6 +11,7 @@ user_id   = ARGV[1]
 
 complaint = Complaint.find(complaint_id)
 user = User.find(user_id)
+userTo = complaint.user
 
 access_token = '17bfdc2d653bbef801cfbb3c3caff533b4011513e06dfefad55b87178a81'
 
@@ -97,12 +98,12 @@ bot = Telegram::Bot::Client.new(ENV['TOKEN_MODERATOR'])
 moderators = Moderator.all
 moderators.each do |moderator|
     mes = bot.api.send_message(
-        text:Text.moderator_complaint(user, complaint), 
+        text:Text.moderator_complaint(user, userTo, complaint), 
         chat_id:moderator.telegram_id,
         reply_markup:M::Inline.moderator_complaint(complaint),
         parse_mode:'HTML'
     )
     rescue => exception
-        BOT.api.send_message(text:exception,                          chat_id:ENV['CHAT_ID_MY'])
-        BOT.api.send_message(text:exception.backtrace,                chat_id:ENV['CHAT_ID_MY'])
+        bot.api.send_message(text:exception,                          chat_id:ENV['CHAT_ID_MY'])
+        bot.api.send_message(text:exception.backtrace,                chat_id:ENV['CHAT_ID_MY'])
 end

@@ -182,20 +182,20 @@ module Text
         return "¡Has sido encontrado en la lista de rippers!\n #{text_body.join('')}" if $lg == Es 
         return "您已被列入欺诈者名单！上诉版主的决定，恢复您的清白名誉并发布反驳！\n #{text_body.join('')}" if $lg == Cn
     end
-    def self.justification_already_used
+    def self.become_scamer
         return "Вы были обнаружены в списке кидков! Опротестуйте решение модератора, чтобы восстановить своё честное имя и опубликовать опровержение!" if $lg == Ru 
         return "You have been found on the list of fraudsters! Appeal the moderator's decision to restore your honest name and publish a refutation!" if $lg == En 
         return "¡Has sido encontrado en la lista de estafadores! ¡Apela la decisión del moderador para restaurar tu nombre honesto y publicar una refutación!" if $lg == Es 
         return "您被发现在骗子名单上！" if $lg == Cn
         # return 'Ваша заявка находится на рассмотрении!' if $lg == Ru 
     end
-    # def self.justification_already_used
-    #     return 'Ваша заявка находится на рассмотрении!' if $lg == Ru 
-    #     return 'Your appeal is under review!' if $lg == En 
-    #     return '¡Su apelación está bajo revisión!' if $lg == Es 
-    #     return '您的上诉正在审查中！' if $lg == Cn
-    #     # return 'Ваша заявка находится на рассмотрении!' if $lg == Ru 
-    # end
+    def self.justification_already_used
+        return 'Ваша заявка находится на рассмотрении!' if $lg == Ru 
+        return 'Your appeal is under review!' if $lg == En 
+        return '¡Su apelación está bajo revisión!' if $lg == Es 
+        return '您的上诉正在审查中！' if $lg == Cn
+        # return 'Ваша заявка находится на рассмотрении!' if $lg == Ru 
+    end
 
 
 
