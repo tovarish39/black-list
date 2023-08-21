@@ -163,10 +163,10 @@ module Text
     end
     def self.notify_request_complaints complaint, potincial_scamer
         status = Text.complaint_status complaint
-        return "Жалоба #N#{complaint.id} \nОт#{Text.user_info_without_prefix($user)} \nНа#{Text.user_info_without_prefix(potincial_scamer)} \nСсылка: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nСтатус: #{status}" if $lg == Ru 
-        return "Report #N#{complaint.id} \nFrom#{Text.user_info_without_prefix($user)} \nAgainst#{Text.user_info_without_prefix(potincial_scamer)} \nLink: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nStatus: #{status}" if $lg == En 
-        return "Informe #N#{complaint.id} \nDe#{Text.user_info_without_prefix($user)} \nContra#{Text.user_info_without_prefix(potincial_scamer)} \nEnlace: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: #{status}" if $lg == Es 
-        return "报告 #N#{complaint.id} \n来自#{Text.user_info_without_prefix($user)} \n针对#{Text.user_info_without_prefix(potincial_scamer)} \n链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: #{status}" if $lg == Cn 
+        return "Жалоба #N#{complaint.id} \nОт\n#{Text.user_info_without_prefix($user)} \nНа\n#{Text.user_info_without_prefix(potincial_scamer)} \nСсылка: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nСтатус: #{status}" if $lg == Ru 
+        return "Report #N#{complaint.id} \nFrom\n#{Text.user_info_without_prefix($user)} \nAgainst\n#{Text.user_info_without_prefix(potincial_scamer)} \nLink: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nStatus: #{status}" if $lg == En 
+        return "Informe #N#{complaint.id} \nDe\n#{Text.user_info_without_prefix($user)} \nContra\n#{Text.user_info_without_prefix(potincial_scamer)} \nEnlace: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \nEstado: #{status}" if $lg == Es 
+        return "报告 #N#{complaint.id} \n来自\n#{Text.user_info_without_prefix($user)} \n针对\n#{Text.user_info_without_prefix(potincial_scamer)} \n链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: #{status}" if $lg == Cn 
     end
 
     # def self.notify_reject_complaint complaint, potincial_scamer
