@@ -18,7 +18,6 @@ $lookuping = false
 $verifing = false
 
 def handle
-  puts 'start handle'
     $user = user_search_and_update_if_changed(User)
     $user ||= create_user(User)
     $lg = $user.lg

@@ -130,38 +130,35 @@ def formatting_lines lines
                 formatted_line = formatted_line.gsub(word[:exist], word[:new])
             end
         end 
-# puts "formatted_line = #{formatted_line}"
         new_lines.push(formatted_line) if !is_in_stop
     end
     new_lines
 end
 
 def format_res res 
+    # задача перевести на английский
+    # убрать не нужные строки
     utf8 = to_UTF8(res)
 
     if utf8.include?('Изменения профиля')
         # когда есть 'Изменения профиля'
         text =  delete_text_after_char(res, '|')
     end
-        
-
+    
     # когда нету 'Изменения профиля'
-    lines = text.split("\n")
-
-    if utf8.include?('Изменения профиля')
+    lines = text&.split("\n") || res.split("\n")
+    
+    if !utf8.include?('Изменения профиля')
         lines = lines.slice(0, 3)
     end
-
     formatted_lines = formatting_lines(lines)
     formatted_lines.join("\n")
 end
 
-puts response
 result_message = response.present? && response == 'Error' ?  
     Text.not_availible : 
     format_res(response)
 
-# puts result_message
 bot.api.delete_message(chat_id: group_chat_id|| $user.telegram_id,  message_id:message_id)
 bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,  text:result_message, parse_mode:'Markdown')
 def notify_scammer
