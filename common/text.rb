@@ -175,18 +175,25 @@ module Text
     #     return "报告 #N#{complaint.id}\n#{Text.user_info(potincial_scamer)}\n直接链接: <a href='#{complaint.telegraph_link}'>telegraph_link</a> \n状态: 审核中" if $lg == Cn
     # end
 #############################
+    def self.link
+        return 'Ссылка' if $lg == Ru 
+        return 'Link' if $lg == En 
+        return 'Enlace' if $lg == Es 
+        return '链接' if $lg == Cn
+    end
+
     def self.view_complaints telegraph_links
-        text_body = telegraph_links.map {|link| "\nСсылка:<a href='#{link}'>telegraph_link</a>"}
+        text_body = telegraph_links.map {|link| "\n#{Text.link}:<a href='#{link}'>telegraph_link</a>"}
         return "Вы обнаружены в списке скамеров!\n #{text_body.join('')}" if $lg == Ru 
         return "You have been found on the scammers' list!\n #{text_body.join('')}" if $lg == En 
         return "¡Has sido encontrado en la lista de rippers!\n #{text_body.join('')}" if $lg == Es 
-        return "您已被列入欺诈者名单！上诉版主的决定，恢复您的清白名誉并发布反驳！\n #{text_body.join('')}" if $lg == Cn
+        return "您被发现在骗子名单上！\n #{text_body.join('')}" if $lg == Cn
     end
     def self.become_scamer
         return "Вы были обнаружены в списке кидков! Опротестуйте решение модератора, чтобы восстановить своё честное имя и опубликовать опровержение!" if $lg == Ru 
         return "You have been found on the list of fraudsters! Appeal the moderator's decision to restore your honest name and publish a refutation!" if $lg == En 
         return "¡Has sido encontrado en la lista de estafadores! ¡Apela la decisión del moderador para restaurar tu nombre honesto y publicar una refutación!" if $lg == Es 
-        return "您被发现在骗子名单上！" if $lg == Cn
+        return "您已被列入欺诈者名单！上诉版主的决定，恢复您的清白名誉并发布反驳！" if $lg == Cn
         # return 'Ваша заявка находится на рассмотрении!' if $lg == Ru 
     end
     def self.justification_already_used
