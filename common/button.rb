@@ -37,12 +37,23 @@ module Button
         return 'Verificar al contratante' if $lg == Es
         return '检查对方' if $lg == Cn
     end
+    def self.support_inline
+        return 'Связаться со службой поддержки.' if $lg == Ru 
+        return 'Contact the support service.' if $lg == En 
+        return 'Contactar con el servicio de soporte.' if $lg == Es 
+        return '联系支持服务。' if $lg == Cn
+    end
     def self.support
-        '🆘'
-        # return 'Связаться с поддержкой' if $lg == Ru 
-        # return 'Contact Support Service' if $lg == En 
-        # return 'Contactar con el Servicio de Soporte' if $lg == Es 
-        # return '联系支持服务' if $lg == Cn
+        return 'Связаться с поддержкой' if $lg == Ru 
+        return 'Contact Support Service' if $lg == En 
+        return 'Contactar con el Servicio de Soporte' if $lg == Es 
+        return '联系支持服务' if $lg == Cn
+    end
+    def self.oracle_tips_inline
+        return 'Ознакомиться прямо сейчас!' if $lg == Ru 
+        return 'Check it out right now!' if $lg == En 
+        return '¡Revíselo ahora mismo!' if $lg == Es 
+        return '现在就来看看！' if $lg == Cn
     end
     def self.oracle_tips
         'Oracle`s Tips'

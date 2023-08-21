@@ -278,17 +278,17 @@ module Text
         "#{data} #{status}"
     end
     def self.support
-        return 'Вы можете связаться с поддержкой Oracle для решения экстренных вопросов, подачи заявлений на верификацию, по вопросам сотрудничества и прочему. Пожалуйста, подавайте ваши репроты с помощью интерфейса бота, а не через службу поддержки. Связаться со службой поддержки' if $lg == Ru 
-        return "You can contact Oracle support for urgent matters, to apply for verification, for collaboration inquiries, and more. Please submit your reports using the bot interface, not through the support service.\n\nContact the support service." if $lg == En 
-        return "Puede ponerse en contacto con el soporte de Oracle para asuntos urgentes, para solicitar verificación, para consultas de colaboración y más. Por favor, envíe sus informes utilizando la interfaz del bot, no a través del servicio de soporte.\n\nContactar con el servicio de soporte." if $lg == Es 
-        return "您可以联系Oracle支持解决紧急问题、申请验证、合作咨询等。请通过机器人界面提交您的报告，而不是通过支持服务。\n\n联系支持服务。" if $lg == Cn
+        return 'Вы можете связаться с поддержкой Oracle для решения экстренных вопросов, подачи заявлений на верификацию, по вопросам сотрудничества и прочему. Пожалуйста, подавайте ваши репроты с помощью интерфейса бота, а не через службу поддержки.' if $lg == Ru 
+        return "You can contact Oracle support for urgent matters, to apply for verification, for collaboration inquiries, and more. Please submit your reports using the bot interface, not through the support service." if $lg == En 
+        return "Puede ponerse en contacto con el soporte de Oracle para asuntos urgentes, para solicitar verificación, para consultas de colaboración y más. Por favor, envíe sus informes utilizando la interfaz del bot, no a través del servicio de soporte." if $lg == Es 
+        return "您可以联系Oracle支持解决紧急问题、申请验证、合作咨询等。请通过机器人界面提交您的报告，而不是通过支持服务。" if $lg == Cn
         # 'Связаться c поддержкой'
     end
     def self.oracle_tips
-        return 'Каждый день мы получаем десятки репортов о кидке. Но по-настоящему изящных кидков из них не более 10%. Остальные 90% кидков работают по древним и тупым схемам. Вы сможете обезопасить себя от них, подробно изучив наши инструкции и советы по безопасной работе в Telegram в разделе Oracle`s Tips. Ознакомиться прямо сейчас!' if $lg == Ru
-        return 'Every day, we receive dozens of scam reports. However, only about 10% of them are truly sophisticated scams. The other 90% operate on old and dull schemes. You can protect yourself from these by thoroughly studying our instructions and safety tips for working in Telegram under the Oracle`s Tips section. Check it out right now!' if $lg == En
-        return 'Todos los días recibimos decenas de informes de estafas. Sin embargo, solo alrededor del 10% de ellos son estafas verdaderamente sofisticadas. El otro 90% opera con esquemas antiguos y simplones. Puede protegerse de estos estudiando detalladamente nuestras instrucciones y consejos de seguridad para trabajar en Telegram en la sección Consejos de Oracle. ¡Revíselo ahora mismo!' if $lg == Es
-        return '我们每天都收到数十份有关欺诈的报告。但其中真正精细的欺诈只占大约10%。其他90%的欺诈都是使用古老且愚蠢的手段。您可以通过仔细研究我们在Oracle`s Tips部分的Telegram安全工作指南和建议来保护自己免受这些欺诈的侵害。\n\n现在就来看看！' if $lg == Cn
+        return 'Каждый день мы получаем десятки репортов о кидке. Но по-настоящему изящных кидков из них не более 10%. Остальные 90% кидков работают по древним и тупым схемам. Вы сможете обезопасить себя от них, подробно изучив наши инструкции и советы по безопасной работе в Telegram в разделе Oracle`s Tips.' if $lg == Ru
+        return 'Every day, we receive dozens of scam reports. However, only about 10% of them are truly sophisticated scams. The other 90% operate on old and dull schemes. You can protect yourself from these by thoroughly studying our instructions and safety tips for working in Telegram under the Oracle`s Tips section.' if $lg == En
+        return 'Todos los días recibimos decenas de informes de estafas. Sin embargo, solo alrededor del 10% de ellos son estafas verdaderamente sofisticadas. El otro 90% opera con esquemas antiguos y simplones. Puede protegerse de estos estudiando detalladamente nuestras instrucciones y consejos de seguridad para trabajar en Telegram en la sección Consejos de Oracle.' if $lg == Es
+        return '我们每天都收到数十份有关欺诈的报告。但其中真正精细的欺诈只占大约10%。其他90%的欺诈都是使用古老且愚蠢的手段。您可以通过仔细研究我们在Oracle`s Tips部分的Telegram安全工作指南和建议来保护自己免受这些欺诈的侵害。' if $lg == Cn
     end
     def self.to_userbot
         return 'Пожалуйста, выберите чат с человеком, которого хотите проверить. Так же, вы можете отправь ссылку на аккаунт или ІD.' if $lg == Ru 

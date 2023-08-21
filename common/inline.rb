@@ -25,9 +25,9 @@ module IB
     end
 
     def self.link_to_support
-      Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Support',  url:ENV['SUPPORT_PATH'])             
+      Telegram::Bot::Types::InlineKeyboardButton.new(text: Button.support_inline,  url:ENV['SUPPORT_PATH'])             
     end
     def self.link_to_oracles_tips
-      Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Oracle`s Tips',  url:ENV['ORACLES_TIPS_PATH'])             
+      Telegram::Bot::Types::InlineKeyboardButton.new(text: Button.oracle_tips_inline,  url:ENV['ORACLES_TIPS_PATH'])             
     end
 end

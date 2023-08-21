@@ -13,6 +13,7 @@ Telegram::Bot::Client.run(ENV['TOKEN_MAIN']) do |bot|
     $bot = bot 
     $mes = message 
     handle if $mes
+    puts 'come'
     rescue  => e
       Send.mes(e, to: ENV['CHAT_ID_MY'])
       Send.mes(e.backtrace, to: ENV['CHAT_ID_MY'])
