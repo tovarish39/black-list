@@ -139,22 +139,44 @@ def format_res res
     # задача перевести на английский
     # убрать не нужные строки
     utf8 = to_UTF8(res)
+    lines = utf8.split("\n")
 
-    if utf8.include?('Изменения профиля')
-        # когда есть 'Изменения профиля'
-        text =  delete_text_after_char(res, '|')
+    new_lines = [lines[0], lines[1]] # первые 2-е всегда нужны
+    need_words_in_line = ['Изменения профиля', 'Регистрация']
+
+    flag = false
+    lines.each do |line|
+        new_lines.push(line) if line.include?('Регистрация')
+
+        if flag && !line.empty?
+            new_lines.push(line)
+        else flag = false
+        end
+
+        if line.include?('Изменения профиля')
+            new_lines.push(line)
+            flag = true
+        end
+
+
     end
+    # if utf8.include?('Изменения профиля')
+    #     # когда есть 'Изменения профиля'
+    #     text =  delete_text_after_char(res, '|')
+    # end
     
-    # когда нету 'Изменения профиля'
-    lines = text&.split("\n") || res.split("\n")
+    # # когда нету 'Изменения профиля'
+    # lines = text&.split("\n") || res.split("\n")
     
-    if !utf8.include?('Изменения профиля')
-        lines = lines.slice(0, 3)
-    end
-    formatted_lines = formatting_lines(lines)
+    # if !utf8.include?('Изменения профиля')
+    #     lines = lines.slice(0, 3)
+    # end
+
+
+    formatted_lines = formatting_lines(new_lines)
     formatted_lines.join("\n")
 end
-
+# puts response
 result_message = response.present? && response == 'Error' ?  
     Text.not_availible : 
     format_res(response)
