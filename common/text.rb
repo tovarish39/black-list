@@ -273,21 +273,36 @@ module Text
             if    $lg == Ru && status == 'scamer';     'Кидок.'
             elsif $lg == Ru && status == 'not_scamer'; 'Не кидок.'
             elsif $lg == Ru && status == 'verified';   'Верифицированный.'
+            elsif $lg == Ru && status == 'trusted';    'trusted.'
+            elsif $lg == Ru && status == 'dwc';        'dwc.'
 
             elsif $lg == En && status == 'scamer';     'Ripper.'
             elsif $lg == En && status == 'not_scamer'; 'Not a ripper.'
             elsif $lg == En && status == 'verified';   'Verified.'
-            
+            elsif $lg == En && status == 'trusted';    'trusted.'
+            elsif $lg == En && status == 'dwc';        'dwc.'
+
             elsif $lg == Es && status == 'scamer';     'Ripper.'
             elsif $lg == Es && status == 'not_scamer'; 'No es una ripper.'
             elsif $lg == Es && status == 'verified';   'Verificado.'
+            elsif $lg == Es && status == 'trusted';    'trusted.'
+            elsif $lg == Es && status == 'dwc';        'dwc.'
           
             elsif $lg == Cn && status == 'scamer';     '骗子.'
             elsif $lg == Cn && status == 'not_scamer'; '不是骗局.'
             elsif $lg == Cn && status == 'verified';   '已验证.'
+            elsif $lg == Cn && status == 'trusted';    'trusted.'
+            elsif $lg == Cn && status == 'dwc';        'dwc.'
             end
-
-        "#{Text.user_info(user)} \n#{formatted_status}"
+        if $lg.present?
+            return "#{Text.user_info(user)} \n#{formatted_status} <a href='https://t.me/ripperlistbot'>@oralcelist</a>"
+        elsif $lg.nil? && status == 'scamer' # когда в других группах в любых, где язык не опрделён
+            complaint = Complaint.find_by(telegram_id:user.telegram_id)
+            text = "#{Text.user_info(user)} \nripper / кидала / 骗子 \n"
+            text << "<a href='#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}'>report</a>\n\n" if complaint && complaint.mes_id_published_in_channel
+            text << "<a href='https://t.me/ripperlistbot'>@oralcelist</a>"
+            return text
+        end
     end
 
     def self.verifying_data data, status
@@ -295,7 +310,7 @@ module Text
         # return '' if $lg == En 
         # return '' if $lg == Es 
         # return '' if $lg == Cn
-        "#{data} #{status}"
+        "#{data} #{status} <a href='https://t.me/ripperlistbot'>@oralcelist</a>"
     end
     def self.support
         return 'Вы можете связаться с поддержкой Oracle для решения экстренных вопросов, подачи заявлений на верификацию, по вопросам сотрудничества и прочему. Пожалуйста, подавайте ваши репроты с помощью интерфейса бота, а не через службу поддержки.' if $lg == Ru 
@@ -326,7 +341,12 @@ module Text
         'Сервис временно не доступен'
     end
 
-
+    def self.option_details
+        return 'Пожалуйста, прикрепите всю доступную вам информацию о человеке, включая его платежные реквизиты, ники, имена, голосовые сообщение, IP адреса, скриншоты его экрана, отправленные им кружочки, и прочую информацию.' if $lg == Ru
+        return 'Please provide all available information about the person, including their payment details, nicknames, names, voice messages, IP addresses, screenshots of their screen, circles sent by them, and other information.' if $lg == En
+        return 'Por favor, adjunte toda la información disponible que tenga sobre la persona, incluyendo sus datos de pago, apodos, nombres, mensajes de voz, direcciones IP, capturas de pantalla de su pantalla, los círculos enviados por él y otra información relevante.' if $lg == Es
+        return '请提供您所掌握的有关此人的所有信息，包括支付数据、昵称、姓名、语音消息、IP地址、屏幕截图、他发送的圆圈等其他相关信息。' if $lg == Cn
+    end
 
 
 
@@ -352,6 +372,7 @@ module Text
 #{Text.user_info(userFrom)}\n
 <b>На</b>
 #{Text.user_info(userTo)}
+#{"Дополнительная информация:\n#{complaint.option_details}\n" if complaint.option_details.present?}
 <b>Ссылка</b> <a href='#{complaint.telegraph_link}'>telegraph_link</a>
 }
     end

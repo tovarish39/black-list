@@ -6,17 +6,17 @@ class StateMachine
   
         event :compare_user_id_action, from: :compare_user_id do
           transitions if: -> { mes_text?(Button.cancel) }, after: :to_start    , to: :start
-          transitions if: -> { mes_text?(Button.skip) }  , after: :skip_proof  , to: :start
+          transitions if: -> { mes_text?(Button.skip) }  , after: :skip_proof  , to: :option_details
 
-          transitions if: -> { forwarted? &&  match? }   , after: :handle_proof, to: :start
+          transitions if: -> { forwarted? &&  match? }   , after: :handle_proof, to: :option_details
           transitions if: -> { forwarted? && !match? }   , after: :nothing     , to: :compare_user_id
 
         end
       end
     end
-  end
+end
   
-  def forwarted?
+def forwarted?
     $mes.forward_from.present? 
 end
 
@@ -50,31 +50,18 @@ def create_or_update_potential_user_scamer complaint
 end
 
 
-def notice_request complaint
-    res =  Send.mes(Text.complaint_request_to_moderator(complaint))
-    mes_id = res['result']['message_id']
-    $user.update(cur_message_id:mes_id)
-    # puts mes_id
-    to_start    
-end
+
 
 def handle_proof
     complaint = Complaint.find_by(id:$user.cur_complaint_id)
     complaint.update(is_proofed_by_forwarted_mes:true)
     
-    notice_request complaint
-    system("bundle exec ruby #{UPLOAD_ON_FREEIMAGE} #{complaint.id} #{$user.id}") 
-    create_or_update_potential_user_scamer(complaint)
-
+    Send.mes(Text.option_details)
 end
 
 def skip_proof
     complaint = Complaint.find_by(id:$user.cur_complaint_id)
     complaint.update(photo_urls_remote_tmp:[]) # чтоб не добавлялись фото, при неудачной загрузке не телеграф
 
-    notice_request complaint
-    system("bundle exec ruby #{UPLOAD_ON_FREEIMAGE} #{complaint.id} #{$user.id}") 
-    create_or_update_potential_user_scamer(complaint)
-
-    # puts "#{complaint.id} #{$user.id}"
+    Send.mes(Text.option_details)
 end

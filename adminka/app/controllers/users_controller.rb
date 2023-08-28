@@ -9,7 +9,7 @@ require 'telegram/bot'
       {label:'es', value:'es', checked:false},
       {label:'cn', value:'cn', checked:false},
     ]
-    @status_options = ['scamer', 'not_scamer', 'verified' ]
+    @status_options = ['scamer', 'not_scamer', 'verified', 'trusted', 'dwc' ]
 
     complaints_for_statistic = Complaint.where.not(status:'filling_by_user')
     @complaints_per_day = []

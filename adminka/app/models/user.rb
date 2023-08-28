@@ -12,5 +12,10 @@ class User < ApplicationRecord
         'not_scamer:managed_by_moderator',
         
         'verified:managed_by_admin', 
+        
+        'trusted:managed_by_admin', 
+        'dwc:managed_by_admin', 
+
+        
       ]}
 end

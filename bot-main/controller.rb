@@ -24,13 +24,15 @@ def handle
     # puts $user.inspect
   # ####### group
     if mes_from_group_and_text?
+      # $lg ||= Ru # если в группах любых где у пользователя не определён язык
       if $user.status =~ /^scamer/ # если в группе пишет скаммер
       # json = JSON.parse($mes.to_json)
       # puts pretty_print_object(json, 1)
       $bot.api.send_message(
         chat_id:$mes.chat.id,
         reply_to_message_id:$mes.message_id,
-        text:Text.verifying_user($user, 'scamer')
+        text:Text.verifying_user($user, 'scamer'),
+        parse_mode:'HTML'
       )
 
       else # /verify или /lookup и не скаммер сам
@@ -118,6 +120,10 @@ def result_of_verifying user, data
     Send.mes(Text.verifying_user(user, 'not_scamer'))
   elsif user.nil?
     Send.mes(Text.verifying_data(data, 'not_scamer'))
+  elsif user.present? && user.status =~ /trusted/
+    Send.mes(Text.verifying_data(data, 'trusted'))
+  elsif user.present? && user.status =~ /dwc/
+    Send.mes(Text.verifying_data(data, 'dwc'))
   end
 end
 

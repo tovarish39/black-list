@@ -142,13 +142,13 @@ def format_res res
     lines = utf8.split("\n")
 
     new_lines = [lines[0], lines[1]] # первые 2-е всегда нужны
-    need_words_in_line = ['Изменения профиля', 'Регистрация']
+    # need_words_in_line = ['Изменения профиля', 'Регистрация']
 
     flag = false
     lines.each do |line|
         new_lines.push(line) if line.include?('Регистрация')
 
-        if flag && !line.empty?
+        if flag && !line.empty? # строки после 'Изменения профиля'
             new_lines.push(line)
         else flag = false
         end

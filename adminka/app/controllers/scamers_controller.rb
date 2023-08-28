@@ -3,7 +3,7 @@ class ScamersController < ApplicationController
   Dotenv.load
 
   def index
-    scamers = User.where("status LIKE ? AND status NOT LIKE ?", "scamer%", "not_scamer%")
+    scamers = User.where("status ~ '^scamer'")
     @scamers = scamers.map do |user|
       complaint = Complaint.where(telegram_id:user.telegram_id).where(status:'accepted_complaint').first
       user_data = user.as_json
