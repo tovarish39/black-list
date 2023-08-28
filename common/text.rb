@@ -269,6 +269,8 @@ module Text
     end
 
     def self.verifying_user user, status
+        puts user.inspect 
+        puts status
         formatted_status =
             if    $lg == Ru && status == 'scamer';     'Кидок.'
             elsif $lg == Ru && status == 'not_scamer'; 'Не кидок.'
@@ -298,7 +300,8 @@ module Text
             return "#{Text.user_info(user)} \n#{formatted_status} <a href='https://t.me/ripperlistbot'>@oralcelist</a>"
         elsif $lg.nil? && status == 'scamer' # когда в других группах в любых, где язык не опрделён
             complaint = Complaint.find_by(telegram_id:user.telegram_id)
-            text = "#{Text.user_info(user)} \nripper / кидала / 骗子 \n"
+            text = "#{Text.user_info(user)} \n"
+            text << "ripper / кидала / 骗子 \n" if status == 'scamer'
             text << "<a href='#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}'>report</a>\n\n" if complaint && complaint.mes_id_published_in_channel
             text << "<a href='https://t.me/ripperlistbot'>@oralcelist</a>"
             return text

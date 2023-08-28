@@ -31,10 +31,7 @@
            </div>
 
            <% for user in @users%>
-
-            <div class='users__row users__row_item users__row_none' 
-            data=<%=formatting_data(user) %>     
-            >
+            <div class='users__row users__row_item users__row_none' data=<%=formatting_data(user) %>     >
                     <div class='users__cell users__cell-checkbox'><%= render '/partials/checkbox', id:user.id, type:'local' %></div>
                     <div class='users__cell users__cell-telegram-id'><%= user[:telegram_id] %></div>
                     <div class='users__cell users__cell-username'>@<%= user[:username] %></div>

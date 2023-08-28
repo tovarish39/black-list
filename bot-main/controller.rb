@@ -34,7 +34,6 @@ def handle
         text:Text.verifying_user($user, 'scamer'),
         parse_mode:'HTML'
       )
-
       else # /verify или /lookup и не скаммер сам
         # для forward следующий mes проверяется
         if mes_text?(/^\/lookup$/)
@@ -112,6 +111,8 @@ end
 
 
 def result_of_verifying user, data
+  puts user
+puts data
   if user.present? && user.status =~ /^scamer/
     Send.mes(Text.verifying_user(user, 'scamer'))
   elsif user.present? && user.status =~ /^verified/
@@ -119,27 +120,30 @@ def result_of_verifying user, data
   elsif user.present?  && user.status =~ /^not_scamer/
     Send.mes(Text.verifying_user(user, 'not_scamer'))
   elsif user.nil?
-    Send.mes(Text.verifying_data(data, 'not_scamer'))
+    Send.mes(Text.verifying_user(data, 'not_scamer'))
   elsif user.present? && user.status =~ /trusted/
-    Send.mes(Text.verifying_data(data, 'trusted'))
+    Send.mes(Text.verifying_user(data, 'trusted'))
   elsif user.present? && user.status =~ /dwc/
-    Send.mes(Text.verifying_data(data, 'dwc'))
+    Send.mes(Text.verifying_user(data, 'dwc'))
   end
 end
 
 def handle_forwarded_message_to_verifying
+  puts '2'
+
   checking_telegram_id = $mes.forward_from.id
   user = User.find_by(telegram_id:checking_telegram_id)
   result_of_verifying(user, checking_telegram_id)
 end
 
 def handle_verify_with_id_or_username
+  puts '1'
   data = $mes.text.split(' ')[1]
   user = if data =~ /^\d+$/ # telegram_id
-    User.find_by(telegram_id:data)
-  else # username
-    User.find_by(username:data.sub('@', ''))
-  end
+           User.find_by(telegram_id:data)
+         else # username
+           User.find_by(username:data.sub('@', ''))
+         end
   result_of_verifying(user, data)
 end
 
