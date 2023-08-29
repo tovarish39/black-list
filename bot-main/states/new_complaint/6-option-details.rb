@@ -15,7 +15,23 @@ class StateMachine
     end
 end
 
+def create_or_update_potential_user_scamer complaint
+    potential_scamer = User.find_by(telegram_id:complaint.telegram_id)
 
+    if potential_scamer.nil?
+        User.create(
+            telegram_id:complaint.telegram_id,
+            username:   complaint.username,
+            first_name: complaint.first_name,
+            last_name:  complaint.last_name
+        ) 
+    else
+        potential_scamer.username   = complaint.username   if complaint.username.present?
+        potential_scamer.first_name = complaint.first_name if complaint.first_name.present?
+        potential_scamer.last_name  = complaint.last_name  if complaint.last_name.present?
+        potential_scamer.save
+    end
+end
 
 def notice_request complaint
     res =  Send.mes(Text.complaint_request_to_moderator(complaint))
@@ -30,8 +46,8 @@ def skip_details
     complaint = Complaint.find_by(id:$user.cur_complaint_id)
 
     notice_request complaint
-    system("bundle exec ruby #{UPLOAD_ON_FREEIMAGE} #{complaint.id} #{$user.id}") 
     create_or_update_potential_user_scamer(complaint)
+    system("bundle exec ruby #{UPLOAD_ON_FREEIMAGE} #{complaint.id} #{$user.id}") 
 end
 
 def handle_details
@@ -40,6 +56,6 @@ def handle_details
     
     
     notice_request complaint
-    system("bundle exec ruby #{UPLOAD_ON_FREEIMAGE} #{complaint.id} #{$user.id}") 
     create_or_update_potential_user_scamer(complaint)
+    system("bundle exec ruby #{UPLOAD_ON_FREEIMAGE} #{complaint.id} #{$user.id}") 
 end

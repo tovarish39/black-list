@@ -5,13 +5,15 @@ require 'nokogiri'
 require 'telegram/bot'
 
 require_relative './config/requires'
-
-complaint_id = ARGV[0]
-user_id   = ARGV[1]
+# Dotenv.load
+complaint_id = '31' #ARGV[0]
+user_id   =  '1' #ARGV[1]
 
 complaint = Complaint.find(complaint_id)
-user = User.find(user_id)
-userTo = complaint.user
+user = User.find(user_id) # userFrom
+userTo = User.find_by(telegram_id:complaint.telegram_id)   
+
+
 
 access_token = '17bfdc2d653bbef801cfbb3c3caff533b4011513e06dfefad55b87178a81'
 
@@ -30,10 +32,16 @@ def create_page(title, content, access_token)
 end
 
 
-title = 'Заголовок страницы'
+title = "NEW REPORT ##{complaint.id}"
+# content = %Q{[
+#     {"tag":"p","children":["Приветствие!"]}
+# }
+title_image_telegraph_url = 'https://telegra.ph/file/b3a08cf6a1f45940acf92.png'
 content = %Q{[
-    {"tag":"p","children":["Приветствие!"]}
+    {"tag":"img", "attrs":{"src":"#{title_image_telegraph_url}"}}
 }
+
+
 
 complaint.photo_urls_remote_tmp.each do |url|
     img = %Q{
@@ -47,13 +55,27 @@ user_info << "\nUsername : @#{complaint.username}" if complaint.username.present
 user_info << "\nFirst_name : #{complaint.first_name}" if complaint.first_name.present?
 user_info << "\nLast_name : #{complaint.last_name}" if complaint.last_name.present?
 
-complaint_text = "Complaint : #{complaint.complaint_text}"
+complaint_text = complaint.complaint_text
+# complaint_text = "Complaint : #{complaint.complaint_text}"
+
+# content << %Q{
+#     ,{"tag":"p","children":["#{user_info}"]}
+# }
+content << %Q{
+         ,{"tag":"p","children":["REPORT REASON:"]}
+     }
 
 content << %Q{
-    ,{"tag":"p","children":["#{user_info}"]}
-}
-content << %Q{
     ,{"tag":"p","children":["#{complaint_text}"]}
+}
+
+content << %Q{
+    ,{"tag":"br"}
+    ,{"tag":"br"}
+    ,{"tag":"a","attrs":{"href":"#{ENV['ORACLE_LIST']}"},"children":["@oraclelist"]},{"tag":"p","children":[" - the brand new international rippers list"]}
+    ,{"tag":"a","attrs":{"href":"#{ENV['ORACLE_NEWS']}"},"children":["@oraclesnews"]},{"tag":"p","children":[" - one-stop spot for all telegram, crypto and fraud related news in 3 languages"]}
+    ,{"tag":"a","attrs":{"href":"#{ENV['ORACLE_MARKET']}"},"children":["@oraclesmarket"]},{"tag":"p","children":[" - only verified sellers market"]}
+
 }
 
 
@@ -88,10 +110,9 @@ begin
         message_id:sended_mes_id
     )            
 rescue => exception
-    BOT.api.send_message(text:exception,                          chat_id:ENV['CHAT_ID_MY'])
+    main_bot.api.send_message(text:exception,                          chat_id:ENV['CHAT_ID_MY'])
 
 end
-
 
 
 bot = Telegram::Bot::Client.new(ENV['TOKEN_MODERATOR'])
