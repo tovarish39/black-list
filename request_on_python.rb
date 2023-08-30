@@ -112,7 +112,7 @@ def formatting_lines lines
     ]
     new_lines = []
     lines.each do |line|
-        next if line.empty? || line.nil?
+        next if  line.nil? || line.empty? 
         formatted_line = to_UTF8(line)
         is_in_stop = false
 # удаление лишних строк
