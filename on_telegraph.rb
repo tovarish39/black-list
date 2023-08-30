@@ -25,8 +25,8 @@ def create_page(title, content, access_token)
         'title'        => title, 
         'content'      => content, 
         'access_token' => access_token, 
-        'author_url'   => 'https://t.me/keria500', 
-        'author_name'  => 'asdf'
+        'author_url'   => ENV['MAIN_BOT_LINK'], 
+        'author_name'  => 'black-list-bot'
         })
     return JSON.parse(response.body)
 end
