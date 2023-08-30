@@ -6,8 +6,8 @@ require 'telegram/bot'
 
 require_relative './config/requires'
 # Dotenv.load
-complaint_id = '31' #ARGV[0]
-user_id   =  '1' #ARGV[1]
+complaint_id = ARGV[0]
+user_id   =  ARGV[1]
 
 complaint = Complaint.find(complaint_id)
 user = User.find(user_id) # userFrom
