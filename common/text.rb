@@ -269,8 +269,6 @@ module Text
     end
 
     def self.verifying_user user, status
-        puts user.inspect 
-        puts status
         formatted_status =
             if    $lg == Ru && status == 'scamer';     'Кидок.'
             elsif $lg == Ru && status == 'not_scamer'; 'Не кидок.'
