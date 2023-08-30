@@ -99,6 +99,8 @@ module Text
         return '将疑似人员的消息转发给我们，这些消息证实了屏幕截图的合法性。' if $lg == Cn
     end
     def self.user_info user
+
+        # если 
         return "User info: \nID: #{user.telegram_id} \n#{"First Name: #{user.first_name}\n" if user.first_name.present?}#{"Username: @#{user.username}\n" if user.username.present?}" if $lg == Ru 
         return "User info: \nID: #{user.telegram_id} \n#{"First Name: #{user.first_name}\n" if user.first_name.present?}#{"Username: @#{user.username}\n" if user.username.present?}" if $lg == En 
         return "Información del usuario: \nID: #{user.telegram_id} \n#{"Nombre: #{user.first_name}\n" if user.first_name.present?}#{"Nombre de usuario: @#{user.username}\n" if user.username.present?}" if $lg == Es 
@@ -298,8 +300,11 @@ module Text
             return "#{Text.user_info(user)} \n#{formatted_status} <a href='https://t.me/ripperlistbot'>@oralcelist</a>"
         elsif $lg.nil? && status == 'scamer' # когда в других группах в любых, где язык не опрделён
             complaint = Complaint.find_by(telegram_id:user.telegram_id)
-            text = "#{Text.user_info(user)} \n"
+            text = ""
+            # text << "#{Text.user_info(user)} \n" if user.nil?
+            text << "#{Text.user_info(user)} \n" if user.present?
             text << "ripper / кидала / 骗子 \n" if status == 'scamer'
+            text << "<a href='#{ENV['MAIN_BOT_LINK']}'>APPEAL  / ОБЖАЛОВАТЬ / 上诉 / APELACIÓN</a>"
             text << "<a href='#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}'>report</a>\n\n" if complaint && complaint.mes_id_published_in_channel
             text << "<a href='https://t.me/ripperlistbot'>@oralcelist</a>"
             return text

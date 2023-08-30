@@ -58,6 +58,7 @@ def handle
           $forwarder_user_telegram_id = ''
           $verifing = false
           handle_forwarded_message_to_verifying()
+          
         # проверка по ид или юзернейму
         elsif mes_text?(/^\/lookup /) 
           $is_next_forward_message = false
