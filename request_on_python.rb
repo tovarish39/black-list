@@ -177,10 +177,12 @@ def format_res res
     formatted_lines = formatting_lines(new_lines)
     formatted_lines.join("\n")
 end
-# puts response
 result_message = response.present? && response == 'Error' ?  
     Text.not_availible : 
     format_res(response)
+
+puts 'response',response
+puts  'format_res(response)', format_res(response)
 
 bot.api.delete_message(chat_id: group_chat_id|| $user.telegram_id,  message_id:message_id)
 bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,  text:result_message, parse_mode:'Markdown')
@@ -216,7 +218,7 @@ end
 #  /verifying by id | username
 
 
-def result_of_verifying_local user, group_chat_id, data
+def result_of_verifying_local user, group_chat_id, data, bot
 #   puts user
 # puts data
   if user.present? && user.status =~ /^scamer/
@@ -233,13 +235,13 @@ def result_of_verifying_local user, group_chat_id, data
     bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,  text:Text.verifying_user(user, 'dwc', data), parse_mode:'HTML')
   end
 end
-def handle_verify_with_id_or_username data, group_chat_id
+def handle_verify_with_id_or_username data, group_chat_id, bot
   user = if data =~ /^\d+$/ # telegram_id
            User.find_by(telegram_id:data)
          else # username
            User.find_by(username:data.sub('@', ''))
          end
-         result_of_verifying_local(user, group_chat_id, data)
+         result_of_verifying_local(user, group_chat_id, data, bot)
 end
 
-handle_verify_with_id_or_username(data, group_chat_id)
+handle_verify_with_id_or_username(data, group_chat_id, bot)
