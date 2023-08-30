@@ -177,7 +177,7 @@ def format_res res
     formatted_lines = formatting_lines(new_lines)
     formatted_lines.join("\n")
 end
-result_message = (response.present? && response == 'Error') || response.include?('Запрос принят, ожидайте') ?  
+result_message = (response.present? && response == 'Error') || format_res(response).include?('Запрос принят, ожидайте') ?  
     Text.not_availible : 
     format_res(response)
 
