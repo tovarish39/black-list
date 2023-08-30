@@ -177,12 +177,12 @@ def format_res res
     formatted_lines = formatting_lines(new_lines)
     formatted_lines.join("\n")
 end
-result_message = response.present? && response == 'Error' ?  
+result_message = (response.present? && response == 'Error') || response.include?('Запрос принят, ожидайте') ?  
     Text.not_availible : 
     format_res(response)
 
-puts 'response',response
-puts  'format_res(response)', format_res(response)
+# puts 'response',response
+# puts  'format_res(response)', format_res(response)
 
 bot.api.delete_message(chat_id: group_chat_id|| $user.telegram_id,  message_id:message_id)
 bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,  text:result_message, parse_mode:'Markdown')
