@@ -33,6 +33,8 @@ require 'telegram/bot'
     update_complaints(users_complaints, 'accepted_complaint') if formatted_new_status == 'scamer:managed_by_admin'
     update_complaints(users_complaints, 'rejected_complaint') if formatted_new_status == 'not_scamer:managed_by_admin'
     update_complaints(users_complaints, 'rejected_complaint') if formatted_new_status == 'verified:managed_by_admin'
+    update_complaints(users_complaints, 'rejected_complaint') if formatted_new_status == 'trusted:managed_by_admin'
+    update_complaints(users_complaints, 'rejected_complaint') if formatted_new_status == 'dwc:managed_by_admin'
 
     if (formatted_new_status == 'scamer:managed_by_admin')
       user.update!(date_when_became_a_scamer:DateTime.now)
