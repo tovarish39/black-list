@@ -216,21 +216,21 @@ end
 
 $bot = bot
 
-def result_of_verifying user, group_chat_id
+def result_of_verifying_local user, group_chat_id, data
 #   puts user
 # puts data
   if user.present? && user.status =~ /^scamer/
-    Send.mes(Text.verifying_user(user, 'scamer'), to:group_chat_id)
+    Send.mes(Text.verifying_user(user, 'scamer', data), to:group_chat_id)
   elsif user.present? && user.status =~ /^verified/
-    Send.mes(Text.verifying_user(user,'verified'), to:group_chat_id)
+    Send.mes(Text.verifying_user(user,'verified', data), to:group_chat_id)
   elsif user.present?  && user.status =~ /^not_scamer/
-    Send.mes(Text.verifying_user(user, 'not_scamer'), to:group_chat_id)
+    Send.mes(Text.verifying_user(user, 'not_scamer', data), to:group_chat_id)
   elsif user.nil?
-    Send.mes(Text.verifying_user(user, 'not_scamer'), to:group_chat_id)
+    Send.mes(Text.verifying_user(user, 'not_scamer', data), to:group_chat_id)
   elsif user.present? && user.status =~ /trusted/
-    Send.mes(Text.verifying_user(user, 'trusted'), to:group_chat_id)
+    Send.mes(Text.verifying_user(user, 'trusted', data), to:group_chat_id)
   elsif user.present? && user.status =~ /dwc/
-    Send.mes(Text.verifying_user(user, 'dwc') , to:group_chat_id)
+    Send.mes(Text.verifying_user(user, 'dwc', data) , to:group_chat_id)
   end
 end
 def handle_verify_with_id_or_username data, group_chat_id
@@ -239,7 +239,7 @@ def handle_verify_with_id_or_username data, group_chat_id
          else # username
            User.find_by(username:data.sub('@', ''))
          end
-  result_of_verifying(user, group_chat_id)
+         result_of_verifying_local(user, group_chat_id, data)
 end
 
 handle_verify_with_id_or_username(data, group_chat_id)

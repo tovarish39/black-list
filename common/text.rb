@@ -270,7 +270,7 @@ module Text
         # "#{users_data}  - скамер <a href='#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}'>ссылка</a> на пост"
     end
 
-    def self.verifying_user user, status
+    def self.verifying_user user, status, data = nil
         formatted_status =
             if    $lg == Ru && status == 'scamer';     'Кидок.'
             elsif $lg == Ru && status == 'not_scamer'; 'Не кидок.'
@@ -297,11 +297,15 @@ module Text
             elsif $lg == Cn && status == 'dwc';        'dwc.'
             end
         if $lg.present?
-            return "#{Text.user_info(user)} \n#{formatted_status} <a href='https://t.me/ripperlistbot'>@oralcelist</a>"
+            text = ""
+            text << "#{data} \n" if user.nil?
+            text << "#{Text.user_info(user)} \n" if user.present?
+            text << "#{formatted_status} <a href='https://t.me/ripperlistbot'>@oralcelist</a>"
+            return text
         elsif $lg.nil? && status == 'scamer' # когда в других группах в любых, где язык не опрделён
             complaint = Complaint.find_by(telegram_id:user.telegram_id)
             text = ""
-            # text << "#{Text.user_info(user)} \n" if user.nil?
+            text << "#{data} \n" if user.nil?
             text << "#{Text.user_info(user)} \n" if user.present?
             text << "ripper / кидала / 骗子 \n" if status == 'scamer'
             text << "<a href='#{ENV['MAIN_BOT_LINK']}'>APPEAL  / ОБЖАЛОВАТЬ / 上诉 / APELACIÓN</a>"
