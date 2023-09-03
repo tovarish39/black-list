@@ -98,6 +98,7 @@ export default class extends Controller {
       all_user_elements.forEach((user_element) => {
         const dataString = user_element.getAttribute('data') // Получаем значение атрибута data
         const userData = JSON.parse(dataString)
+        if (userData['lg'] === null) userData['lg'] = 'en' // заглушка для юзеров без языка
         const is_in_current_lg = userData['lg'] === lg
         const regex = new RegExp('^' + search_value, 'i')
         const is_in_current_search_value = regex.test(userData['telegram_id']) || regex.test(userData['username'])

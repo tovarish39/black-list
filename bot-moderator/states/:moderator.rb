@@ -39,7 +39,14 @@ def actual_user_status_and_complaint_status?
     is_actual_complaint_status = complaint.status == 'request_to_moderator'
     return false if !is_actual_complaint_status
 
-    actual_user_statuses = ['not_scamer:default','not_scamer:managed_by_admin','not_scamer:managed_by_moderator','verified:managed_by_admin']
+    actual_user_statuses = [
+        'not_scamer:default',
+        'not_scamer:managed_by_admin',
+        'not_scamer:managed_by_moderator',
+        'verified:managed_by_admin',
+        'trusted:managed_by_admin', 
+        'dwc:managed_by_admin', 
+    ]
     is_actual_user_status = actual_user_statuses.include?(User.find_by(telegram_id:complaint.telegram_id).status)
     return false if !is_actual_user_status
 
@@ -100,7 +107,10 @@ end
 
 def publishing_in_channel complaint
     main_bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
-    res = main_bot.api.send_message(text:complaint.telegraph_link, chat_id:ENV['TELEGRAM_CHANNEL_ID'])
+
+    scammer = User.find_by(telegram_id:complaint.telegram_id)
+
+    res = main_bot.api.send_message(text:Text.publication_in_channel(complaint, scammer), chat_id:ENV['TELEGRAM_CHANNEL_ID'], parse_mode:"HTML")
     complaint.update(mes_id_published_in_channel:res['result']['message_id'])
 end
 

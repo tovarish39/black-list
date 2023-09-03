@@ -9,10 +9,39 @@ class StateMachine
       event :search_user_action, from: :search_user do
         transitions if: -> { mes_text?(Button.cancel) }, after: :to_start, to: :start
 
+        transitions if: -> { (is_user_shared? || mes_text?) && already_scammer_status? },       after: :notify_already_scammer_status, to: :search_user
+        transitions if: -> { (is_user_shared? || mes_text?) && already_requesting_complaint? }, after: :notify_already_has_requesting_complaint, to: :search_user
         transitions if: -> { is_user_shared? || mes_text? }, after: :to_verify_user_info, to: :verify_user_info
       end
     end
   end
+end
+
+
+def already_requesting_complaint?
+  userTo_telegram_id = get_userTo_telegram_id()
+  has_requesting_complain = Complaint.where(telegram_id:userTo_telegram_id).where(status:'request_to_moderator')
+  return true if has_requesting_complain.any?
+  false
+end
+
+def already_scammer_status?
+  userTo_telegram_id = get_userTo_telegram_id()
+
+  userTo = User.find_by(telegram_id:userTo_telegram_id)
+  return false if userTo.nil?
+
+  return false if  !(userTo.status =~ /^scamer/)
+
+  return true
+end
+
+def notify_already_scammer_status
+  Send.mes(Text.notify_already_scammer_status, M::Reply.search_user)
+end
+
+def notify_already_has_requesting_complaint
+  Send.mes(Text.notify_already_has_requesting_complaint, M::Reply.search_user)
 end
 
 def is_user_shared?
@@ -59,6 +88,12 @@ def to_verify_user_info
     complaint.first_name = data['first_name']
     complaint.last_name  = data['last_name']
   rescue StandardError
+    usetTo = User.find_by(telegram_id:userTo_telegram_id)
+    if usetTo.present?
+      complaint.username   = usetTo.username
+      complaint.first_name = usetTo.first_name
+      complaint.last_name  = usetTo.last_name
+    end
   end
   complaint.save
 

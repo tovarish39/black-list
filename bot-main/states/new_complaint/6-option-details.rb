@@ -41,9 +41,37 @@ def notice_request complaint
     to_start    
 end
 
+def already_requesting_complaint_6? complaint
+    has_requesting_complain = Complaint.where(telegram_id:complaint.telegram_id).where(status:'request_to_moderator')
+    return true if has_requesting_complain.any?
+    false
+  end
+  
+  def already_scammer_status_6? complaint
+    userTo = User.find_by(telegram_id:complaint.telegram_id)
+    return false if userTo.nil?
+    return true if  userTo.status =~ /^scamer/
+    return false
+  end
 
 def skip_details
     complaint = Complaint.find_by(id:$user.cur_complaint_id)
+    
+    is_scamer = already_scammer_status_6?(complaint)
+    if is_scamer
+         Send.mes(Text.notify_already_scammer_status)
+         Send.mes(Text.greet, M::Reply.start)
+         return
+    end
+
+    has_complaints = already_requesting_complaint_6?(complaint)
+    if has_complaints
+        Send.mes(Text.notify_already_has_requesting_complaint)
+        Send.mes(Text.greet, M::Reply.start)
+        return
+   end
+
+
 
     notice_request complaint
     create_or_update_potential_user_scamer(complaint)
@@ -52,6 +80,22 @@ end
 
 def handle_details
     complaint = Complaint.find_by(id:$user.cur_complaint_id)
+
+    is_scamer = already_scammer_status_6?(complaint)
+    if is_scamer
+         Send.mes(Text.notify_already_scammer_status)
+         Send.mes(Text.greet, M::Reply.start)
+         return
+    end
+
+    has_complaints = already_requesting_complaint_6?(complaint)
+    if has_complaints
+        Send.mes(Text.notify_already_has_requesting_complaint)
+        Send.mes(Text.greet, M::Reply.start)
+        return
+   end
+
+
     complaint.update(option_details:$mes.text)
     
     

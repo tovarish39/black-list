@@ -358,10 +358,27 @@ module Text
         return '请提供您所掌握的有关此人的所有信息，包括支付数据、昵称、姓名、语音消息、IP地址、屏幕截图、他发送的圆圈等其他相关信息。' if $lg == Cn
     end
 
+    def self.publication_in_channel complaint, scammer
+"NEW REPORT #N#{complaint.id} 
+#{"@#{scammer.username} " if scammer.username.present?}ripper · 骗子 · scammer
+    
+<a href='#{complaint.telegraph_link}'>Link</a>
+    
+<b>ID:</b> <code>#{scammer.id}</code>
 
+✅ APPROVED · 已确认 · SE CONFIRMA · CONFIRMÉ
+    
+🛡 <a href='#{ENV['MAIN_BOT_LINK']}'>SUBMIT A REPORT OR AN APPEAL</a>
+    
+<a href='#{ENV['ORACLE_LIST']}'>@oraclelist</a>"
+    end
 
-
-
+    def self.notify_already_has_requesting_complaint
+        'На выбранного пользователя уже была отправлена жалоба. В данный момент она на рассмотрении. В случае её отклонения модератором, появится возможность отправлять новую жалобу.'
+    end
+    def self.notify_already_scammer_status
+        'Выбранный пользователь находится в списке скамеров. Новые жалобы можно будет отправлять, после того как будет доказано, что пользователь - не скамер.'
+    end
 
 
 
