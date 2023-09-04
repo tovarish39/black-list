@@ -125,7 +125,7 @@ moderators.each do |moderator|
         parse_mode:'HTML'
     )
     rescue => ResponseError
-        if ResponseError.error_code !== 400
+        if ResponseError.error_code != 400
             bot.api.send_message(text:"telegraph #{exception}",                          chat_id:ENV['CHAT_ID_MY'])
             bot.api.send_message(text:exception.backtrace,                chat_id:ENV['CHAT_ID_MY'])
         end
