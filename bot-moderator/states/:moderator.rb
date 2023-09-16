@@ -133,19 +133,25 @@ def getUsernameOfChannelByUserbot scammer_data
     # Create a TCP socket
     hostname = 'localhost'
     port = 3400
-    
+  puts '1'  
     socket = TCPSocket.open(hostname, port)
+  puts '2'  
     
     # Send a string to Python
     string_to_send = "/user_data/#{scammer_data}"
     socket.puts(string_to_send)
+  puts '3'  
     
     # Receive the response from Python
     socket.close_write # Without this line, the next line hangs
+  puts '4'  
+    
     result = socket.read
+  puts '5'  
     
     # Close the socket
     socket.close
+    puts result  
 
     result
 end
