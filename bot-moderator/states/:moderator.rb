@@ -176,8 +176,12 @@ def handle_accept_complaint
         main_bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
 
         begin
+            puts '!!!!!!!!'
+            puts scammer_data
             usernameOfChannelByUserbot = getUsernameOfChannelByUserbot(scammer_data)
-            
+            puts usernameOfChannelByUserbot
+            puts '1111111111'
+
             voices = complaint.media_data["voice_file_ids"]
             videos = complaint.media_data["video_note_file_ids"]
             option_texts = complaint.media_data["texts"]
