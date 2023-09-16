@@ -19,7 +19,7 @@ def user_search_and_update_if_changed class_name
   model.update(username:            username_now   || '-')  if username_now            != username_writen
   model.update(first_name:          first_name_now || '-')  if first_name_now          != first_name_written
   model.update(last_name:           last_name_now  || '-')  if last_name_now           != last_name_written
-  model.update(chat_member_status:  chat_member_status_now) if chat_member_status_now  != chat_member_status_written
+  model.update(chat_member_status:  chat_member_status_now) if (chat_member_status_now  != chat_member_status_written) && !mes_from_group?
   model
 end
 
@@ -29,5 +29,6 @@ def create_user class_name
     username:    $mes.from.username   || '-',
     first_name:  $mes.from.first_name || '-',
     last_name:   $mes.from.last_name  || '-'
+
   ) 
 end

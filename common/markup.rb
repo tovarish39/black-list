@@ -88,6 +88,13 @@ module M
       )
     end
 
+    def self.to_6_point
+      self::RM.call(
+        [Button.ready],
+        [Button.cancel]
+      )
+    end
+
     def self.compare_user_id
       self::RM.call(
         [Button.skip],

@@ -298,19 +298,19 @@ module Text
             end
         if $lg.present?
             text = ""
-            text << "#{data} \n" if user.nil?
-            text << "#{Text.user_info(user)} \n" if user.present?
-            text << "#{formatted_status} <a href='https://t.me/ripperlistbot'>@oralcelist</a>"
+            text << "#{data}" if user.nil?
+            text << "\n#{Text.user_info(user)}" if user.present?
+            text << "\n#{formatted_status} <a href='https://t.me/ripperlistbot'>@oralcelist</a>"
             return text
         elsif $lg.nil? && status == 'scamer' # когда в других группах в любых, где язык не опрделён
             complaint = Complaint.find_by(telegram_id:user.telegram_id)
             text = ""
-            text << "#{data} \n" if user.nil?
-            text << "#{Text.user_info(user)} \n" if user.present?
-            text << "ripper / кидала / 骗子 \n" if status == 'scamer'
-            text << "<a href='#{ENV['MAIN_BOT_LINK']}'>APPEAL  / ОБЖАЛОВАТЬ / 上诉 / APELACIÓN</a>"
-            text << "<a href='#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}'>report</a>\n\n" if complaint && complaint.mes_id_published_in_channel
-            text << "<a href='https://t.me/ripperlistbot'>@oralcelist</a>"
+            text << "#{data}" if user.nil?
+            text << "\n#{Text.user_info(user)}" if user.present?
+            text << "\nripper / кидала / 骗子" if status == 'scamer'
+            text << "\n<a href='#{ENV['MAIN_BOT_LINK']}'>APPEAL  / ОБЖАЛОВАТЬ / 上诉 / APELACIÓN</a>"
+            text << "\n<a href='#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}'>report</a>\n\n" if complaint && complaint.mes_id_published_in_channel
+            text << "\n<a href='https://t.me/ripperlistbot'>@oralcelist</a>"
             return text
         end
     end
@@ -320,7 +320,7 @@ module Text
         # return '' if $lg == En 
         # return '' if $lg == Es 
         # return '' if $lg == Cn
-        "#{data} #{status} <a href='https://t.me/ripperlistbot'>@oralcelist</a>"
+        "\n#{data} #{status} <a href='https://t.me/ripperlistbot'>@oralcelist</a>"
     end
     def self.support
         return 'Вы можете связаться с поддержкой Oracle для решения экстренных вопросов, подачи заявлений на верификацию, по вопросам сотрудничества и прочему. Пожалуйста, подавайте ваши репроты с помощью интерфейса бота, а не через службу поддержки.' if $lg == Ru 
@@ -358,7 +358,7 @@ module Text
         return '请提供您所掌握的有关此人的所有信息，包括支付数据、昵称、姓名、语音消息、IP地址、屏幕截图、他发送的圆圈等其他相关信息。' if $lg == Cn
     end
 
-    def self.publication_in_channel complaint, scammer
+    def self.publication_in_channel complaint, scammer, usernameOfChannelByUserbot
 "NEW REPORT #N#{complaint.id} 
 #{"@#{scammer.username} " if scammer.username.present?}ripper · 骗子 · scammer
     
@@ -370,7 +370,10 @@ module Text
     
 🛡 <a href='#{ENV['MAIN_BOT_LINK']}'>SUBMIT A REPORT OR AN APPEAL</a>
     
-<a href='#{ENV['ORACLE_LIST']}'>@oraclelist</a>"
+<a href='#{ENV['ORACLE_LIST']}'>@oraclelist</a>
+
+#{"@#{usernameOfChannelByUserbot}" if usernameOfChannelByUserbot.size > 0}
+"
     end
 
     def self.notify_already_has_requesting_complaint
@@ -380,6 +383,9 @@ module Text
         'Выбранный пользователь находится в списке скамеров. Новые жалобы можно будет отправлять, после того как будет доказано, что пользователь - не скамер.'
     end
 
+    def self.media_data_getted
+        'Данные приняты, можете отправить ещё или нажать кнопку "Готово"'
+    end
 
 
 
@@ -390,18 +396,29 @@ module Text
 
 
 
+
+
+
+
+
+
+################ option_details
 
     def self.moderator_complaint userFrom, userTo, complaint
-        %{\n
-            <b>Жалоба</b> #N#{complaint.id}
+        answer = %{
+<b>Жалоба</b> #N#{complaint.id}
 
 <b>ОТ</b>
 #{Text.user_info(userFrom)}\n
 <b>На</b>
 #{Text.user_info(userTo)}
-#{"Дополнительная информация:\n#{complaint.option_details}\n" if complaint.option_details.present?}
-<b>Ссылка</b> <a href='#{complaint.telegraph_link}'>telegraph_link</a>
 }
+    answer << "\nДополнительная информация" if  complaint.media_data['texts'].size > 0
+    complaint.media_data['texts'].each do |text|
+        answer << "\n\n #{text}"
+    end
+    answer << "\n<b>Ссылка</b> <a href='#{complaint.telegraph_link}'>telegraph_link</a>"
+    answer
     end
 
     def self.date_time_now date_time_now

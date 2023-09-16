@@ -83,7 +83,7 @@ def handle
 ###################### 
     elsif mes_text?('/reset_lg')
        $user.update(lg:nil)
-    elsif mes_text? || mes_data? || is_user_shared? || mes_photo?
+    elsif mes_text? || mes_data? || is_user_shared? || mes_photo? || mes_voice? || mes_video_note?
       
       if $lg.nil? # язык ещё не выбран
         $user.update(state_aasm: 'language')

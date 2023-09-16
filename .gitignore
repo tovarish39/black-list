@@ -41,3 +41,7 @@
 /userbot/goosebumps.session
 /userbot/goosebumps.session-journal
 /userbot/__pycache__/*
+
+/userbot-channels/sessions/*
+/userbot-channels/__pycache__/*
+/userbot-channels/config.py

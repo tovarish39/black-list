@@ -34,17 +34,18 @@ end
 
 
 
-
 def handle_proof
+    media_data_default = {"texts"=>[], "voice_file_ids"=>[], "video_note_file_ids"=>[]}
     complaint = Complaint.find_by(id:$user.cur_complaint_id)
-    complaint.update(is_proofed_by_forwarted_mes:true)
+    complaint.update(is_proofed_by_forwarted_mes:true, media_data:media_data_default)
     
-    Send.mes(Text.option_details)
+    Send.mes(Text.option_details, M::Reply.to_6_point)
 end
 
 def skip_proof
+    media_data_default = {"texts"=>[], "voice_file_ids"=>[], "video_note_file_ids"=>[]}
     complaint = Complaint.find_by(id:$user.cur_complaint_id)
-    complaint.update(photo_urls_remote_tmp:[]) # чтоб не добавлялись фото, при неудачной загрузке не телеграф
+    complaint.update(photo_urls_remote_tmp:[], media_data:media_data_default) # чтоб не добавлялись фото, при неудачной загрузке не телеграф
 
-    Send.mes(Text.option_details)
+    Send.mes(Text.option_details,M::Reply.to_6_point)
 end

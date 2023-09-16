@@ -6,14 +6,24 @@ class StateMachine
   
         event :option_details_action, from: :option_details do
             transitions if: -> { mes_text?(Button.cancel) }, after: :to_start       , to: :start
-            transitions if: -> { mes_text?(Button.skip) }  , after: :skip_details   , to: :start
+            transitions if: -> { mes_text?(Button.ready) }  , after: :details_ready   , to: :start
               
-            transitions if: -> { mes_text?() }             , after: :handle_details , to: :start
+            transitions if: -> { mes_text?() || mes_voice?() || mes_video_note?()}, after: :handle_details , to: :option_details
+            # transitions after: :test , to: :option_details
 
         end
       end
     end
 end
+
+# def test 
+#     puts 'test'
+# end
+
+def deep_clone(hash)
+    Marshal.load(Marshal.dump(hash))
+  end
+
 
 def create_or_update_potential_user_scamer complaint
     potential_scamer = User.find_by(telegram_id:complaint.telegram_id)
@@ -54,7 +64,7 @@ def already_requesting_complaint_6? complaint
     return false
   end
 
-def skip_details
+def details_ready
     complaint = Complaint.find_by(id:$user.cur_complaint_id)
     
     is_scamer = already_scammer_status_6?(complaint)
@@ -96,10 +106,29 @@ def handle_details
    end
 
 
-    complaint.update(option_details:$mes.text)
-    
-    
-    notice_request complaint
-    create_or_update_potential_user_scamer(complaint)
-    system("bundle exec ruby #{UPLOAD_ON_FREEIMAGE} #{complaint.id} #{$user.id}") 
+   media_data_clone = deep_clone(complaint.media_data)
+
+    if mes_voice?
+        media_data_clone['voice_file_ids'].push($mes.voice.file_id)
+        complaint.update(media_data:media_data_clone)
+    end
+
+    if mes_video_note?
+        media_data_clone['video_note_file_ids'].push($mes.video_note.file_id)
+        complaint.update(media_data:media_data_clone)
+    end
+    if mes_text?
+        media_data_clone['texts'].push($mes.text)
+        complaint.update(media_data:media_data_clone)
+    end
+
+    Send.mes(Text.media_data_getted)
+
+#   end
+
+
+    # complaint.update(option_details:$mes.text)
+    # notice_request complaint
+    # create_or_update_potential_user_scamer(complaint)
+    # system("bundle exec ruby #{UPLOAD_ON_FREEIMAGE} #{complaint.id} #{$user.id}") 
 end

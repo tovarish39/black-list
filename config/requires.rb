@@ -4,6 +4,7 @@ require 'aasm'
 require 'colorize'
 require 'logger'
 require 'dotenv'
+require 'socket'
 Dotenv.load
 
 params = {
