@@ -133,25 +133,19 @@ def getUsernameOfChannelByUserbot scammer_data
     # Create a TCP socket
     hostname = 'localhost'
     port = 3400
-  puts '1'  
+    
     socket = TCPSocket.open(hostname, port)
-  puts '2'  
     
     # Send a string to Python
     string_to_send = "/user_data/#{scammer_data}"
     socket.puts(string_to_send)
-  puts '3'  
     
     # Receive the response from Python
     socket.close_write # Without this line, the next line hangs
-  puts '4'  
-    
     result = socket.read
-  puts '5'  
     
     # Close the socket
     socket.close
-    puts result  
 
     result
 end
@@ -182,12 +176,8 @@ def handle_accept_complaint
         main_bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
 
         begin
-            puts '!!!!!!!!'
-            puts scammer_data
             usernameOfChannelByUserbot = getUsernameOfChannelByUserbot(scammer_data)
-            puts usernameOfChannelByUserbot
-            puts '1111111111'
-
+            
             voices = complaint.media_data["voice_file_ids"]
             videos = complaint.media_data["video_note_file_ids"]
             option_texts = complaint.media_data["texts"]
