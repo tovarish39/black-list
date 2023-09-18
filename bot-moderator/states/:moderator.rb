@@ -172,6 +172,7 @@ def handle_accept_complaint
 
         scammer = User.find_by(telegram_id:complaint.telegram_id)
         scammer_data = scammer.username
+        scammer_data = "@#{scammer_data}" if !scammer_data.nil?
         scammer_data ||= scammer.telegram_id
         main_bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
 
