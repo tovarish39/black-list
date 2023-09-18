@@ -179,6 +179,9 @@ def handle_accept_complaint
         begin
             usernameOfChannelByUserbot = getUsernameOfChannelByUserbot(scammer_data)
             
+            Send.mes(usernameOfChannelByUserbot, to: ENV['CHAT_ID_MY']) if usernameOfChannelByUserbot.include?('Error')
+
+
             voices = complaint.media_data["voice_file_ids"]
             videos = complaint.media_data["video_note_file_ids"]
             option_texts = complaint.media_data["texts"]
