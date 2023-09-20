@@ -49,6 +49,8 @@
     align-items: center;
     border-right: 1px var(--bg-main) solid;
     border-bottom: 1px var(--bg-main) solid;
+    word-break: break-word;
+
     &-checkbox {
       flex: 0.3;
     }

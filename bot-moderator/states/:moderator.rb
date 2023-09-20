@@ -105,12 +105,12 @@ def view_complaints
     Send.mes(Text.not_complaints) if complaints_to_moderator.empty? && userTo_justifications.empty?
 end
 
-def publishing_in_channel complaint, usernameOfChannelByUserbot
+def publishing_in_channel complaint, invite_link_data
     main_bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
 
     scammer = User.find_by(telegram_id:complaint.telegram_id)
 
-    res = main_bot.api.send_message(text:Text.publication_in_channel(complaint, scammer, usernameOfChannelByUserbot), chat_id:ENV['TELEGRAM_CHANNEL_ID'], parse_mode:"HTML")
+    res = main_bot.api.send_message(text:Text.publication_in_channel(complaint, scammer, invite_link_data), chat_id:ENV['TELEGRAM_CHANNEL_ID'], parse_mode:"HTML")
     complaint.update(mes_id_published_in_channel:res['result']['message_id'])
 end
 
@@ -127,8 +127,8 @@ def update_black_list_user_whith_scamer_status complaint
     )
 end
 
-def getUsernameOfChannelByUserbot scammer_data
-    result = ''
+def getInvite_link_data scammer_data
+    # result = ''
     
     # Create a TCP socket
     hostname = 'localhost'
@@ -166,9 +166,9 @@ def handle_accept_complaint
             status:'accepted_complaint',
             handled_moderator_id:$user.id
         )
-    
+        
 
-        usernameOfChannelByUserbot = ''
+        invite_link_data = ''
 
         scammer = User.find_by(telegram_id:complaint.telegram_id)
         scammer_data = scammer.username
@@ -177,47 +177,64 @@ def handle_accept_complaint
         main_bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
 
         begin
-            usernameOfChannelByUserbot = getUsernameOfChannelByUserbot(scammer_data)
-            
-            Send.mes(usernameOfChannelByUserbot, to: ENV['CHAT_ID_MY']) if usernameOfChannelByUserbot.include?('Error')
+
+            response = getInvite_link_data(scammer_data)
+            invite_link_data = JSON.parse(response)
+            sleep 1 # так как бывает что бот ещё не успел стать участником канала
+            if invite_link_data['result'] === 'error'
+
+                Send.mes(invite_link_data, to: ENV['CHAT_ID_MY']) 
+            elsif  invite_link_data['result'] === 'success'
+                
+                
+                voices = complaint.media_data["voice_file_ids"]
+                videos = complaint.media_data["video_note_file_ids"]
+                option_texts = complaint.media_data["texts"]
+                photos = complaint.photo_file_ids
+
+                channel_telegram_id = invite_link_data['telegram_id']
+
+                if videos.any? || voices.any?
+                    answer = ""
+                    answer << "Содержание жалобы"
+                    answer << "\n#{complaint.complaint_text}"
+                    answer << "\n"
 
 
-            voices = complaint.media_data["voice_file_ids"]
-            videos = complaint.media_data["video_note_file_ids"]
-            option_texts = complaint.media_data["texts"]
-
-            if videos.any? || voices.any?
-                answer = ""
-                answer << "Содержание жалобы"
-                answer << "\n#{complaint.complaint_text}"
-                answer << "\n"
-                if option_texts.any?
-                    answer << "\nДополнительные комментарии"
-                    option_texts.each {|text| answer << "\n#{text}"}
-                end
-                main_bot.api.send_message(chat_id:"@#{usernameOfChannelByUserbot}", text:answer)
-
-                if videos.any?
-                    videos.each do |video_file_id|
-                        main_bot.api.sendVideoNote(chat_id:"@#{usernameOfChannelByUserbot}", video_note:video_file_id)
+                    if option_texts.any?
+                        answer << "\nДополнительные комментарии"
+                        option_texts.each {|text| answer << "\n#{text}"}
                     end
-                end
-                if voices.any?
-                    voices.each do |voice_file_id|
-                        main_bot.api.sendVoice(chat_id:"@#{usernameOfChannelByUserbot}", voice:voice_file_id)
+                    main_bot.api.send_message(chat_id:channel_telegram_id, text:answer)
+
+                    if photos.any?
+                        photos.each do |photo_file_id|
+                            main_bot.api.sendPhoto(chat_id:channel_telegram_id, photo:photo_file_id)
+                        end
+                    end
+
+                    if videos.any?
+                        videos.each do |video_file_id|
+                            main_bot.api.sendVideoNote(chat_id:channel_telegram_id, video_note:video_file_id)
+                        end
+                    end
+                    if voices.any?
+                        voices.each do |voice_file_id|
+                            main_bot.api.sendVoice(chat_id:channel_telegram_id, voice:voice_file_id)
+                        end
                     end
                 end
             end
         rescue => exception
             text =  "scammer_data = #{scammer_data}"
-            text << "\nusernameOfChannelByUserbot = #{usernameOfChannelByUserbot}"
+            text << "\ninvite_link_data = #{invite_link_data}"
             text << "\nfrom userbot on created channel scammer_id=#{scammer.id} complaint_id=#{complaint.id} #{exception}"
             Send.mes(text, to: ENV['CHAT_ID_MY'])
-            Send.mes(exception.backtrace, to: ENV['CHAT_ID_MY'])            
+            # Send.mes(exception.backtrace, to: ENV['CHAT_ID_MY'])            
         end
 
-
-        publishing_in_channel(complaint, usernameOfChannelByUserbot)
+        
+        publishing_in_channel(complaint, invite_link_data)
         update_black_list_user_whith_scamer_status(complaint)
         Send.mes(Text.handle_accept_complaint(complaint))
         main_bot.api.send_message(

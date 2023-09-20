@@ -358,8 +358,8 @@ module Text
         return '请提供您所掌握的有关此人的所有信息，包括支付数据、昵称、姓名、语音消息、IP地址、屏幕截图、他发送的圆圈等其他相关信息。' if $lg == Cn
     end
 
-    def self.publication_in_channel complaint, scammer, usernameOfChannelByUserbot
-"NEW REPORT #N#{complaint.id} 
+    def self.publication_in_channel complaint, scammer, publication_in_channel
+%{NEW REPORT #N#{complaint.id} 
 #{"@#{scammer.username} " if scammer.username.present?}ripper · 骗子 · scammer
     
 <a href='#{complaint.telegraph_link}'>Link</a>
@@ -372,8 +372,8 @@ module Text
     
 <a href='#{ENV['ORACLE_LIST']}'>@oraclelist</a>
 
-#{"@#{usernameOfChannelByUserbot}" if usernameOfChannelByUserbot.size > 0}
-"
+#{"<a href='#{publication_in_channel['invite_link']}'>id_#{scammer.telegram_id}_reports</a>" if publication_in_channel['result'] === 'success'}
+    }
     end
 
     def self.notify_already_has_requesting_complaint

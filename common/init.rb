@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 def user_search_and_update_if_changed class_name
+
+  raise $mes.inspect if !$mes.from # хз что приходит
+
   model = class_name.find_by(telegram_id: $mes.from.id)
   return false if model.nil?
 

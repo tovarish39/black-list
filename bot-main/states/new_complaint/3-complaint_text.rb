@@ -26,11 +26,18 @@ def to_complaint_photos
     id: $user.cur_complaint_id,
     status: 'filling_by_user'
   )
-  complaint.update(complaint_text: $mes.text)
+  complaint.update(
+    complaint_text: $mes.text,
+    photo_file_ids:[]
+  )
+  
   dir_path = get_photo_dir_path(complaint)
   FileUtils.rm_rf(dir_path) if Dir.exist?(dir_path)
   
-  complaint.update(photos_amount:0)
+  complaint.update(
+    photos_amount:0,
+    photo_file_ids:[]
+  )
   # puts complaint.inspect
   Send.mes(Text.complaint_photos, M::Reply.complaint_photos)
 end

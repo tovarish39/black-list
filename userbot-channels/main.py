@@ -5,7 +5,8 @@ from telethon import TelegramClient
 from config import hostname, port, channel_description, bot_username, channel_image_path
 from os import listdir
 from telethon.tl.types import InputPeerChannel, ChatAdminRights
-from telethon.tl.functions.channels import CreateChannelRequest, CheckUsernameRequest, UpdateUsernameRequest, EditAdminRequest, EditPhotoRequest
+from telethon.tl.functions.channels import CreateChannelRequest, EditAdminRequest, EditPhotoRequest, \
+    GetFullChannelRequest
 from sys import exc_info
 
 MAX_RECV_BYTE = 1024  # Maximum bytes for receiving
@@ -24,56 +25,37 @@ client = None
 async def create_channel(username: str) -> str:
     # Format username
     if username[0] == '-' and username[1:].isdigit():
-        username = f'id{username[1:]}'
+        username = f'ID{username[1:]}'
     elif username[0] == '@':
         pass
     elif username.isdigit():
-        username = f'id{username}'
+        username = f'ID{username}'
     else:
-        return 'Error: username or Telegram ID format is incorrect.'
+        return '{result:"error", "error_message":"username or Telegram ID format is incorrect."}'
 
     try:
         # Create private channel
         private_channel = await client(CreateChannelRequest(
-            title=f'Жалобы на {username}',
-            about=channel_description,
+            title=f"{username} - ripper scam /// ORACLE'S LIST",
+            about=channel_description(username),
             megagroup=False,
             broadcast=True,
         ))
 
-        # Define variables for making channel public
+        # Define channel data
         new_channel_id = private_channel.__dict__["chats"][0].__dict__["id"]
         new_channel_access_hash = private_channel.__dict__["chats"][0].__dict__["access_hash"]
-        public_channel_username = f'{username}_reports' if username[0] != '@' else f'{username[1:]}_reports'
+        channel_entity = InputPeerChannel(channel_id=new_channel_id, access_hash=new_channel_access_hash)
 
         # Setting channel image
         await client(EditPhotoRequest(
-            channel=InputPeerChannel(channel_id=new_channel_id, access_hash=new_channel_access_hash),
+            channel=channel_entity,
             photo=await client.upload_file(channel_image_path)
         ))
 
-        # Check channel name
-        check_username = await client(CheckUsernameRequest(
-            channel=InputPeerChannel(channel_id=new_channel_id, access_hash=new_channel_access_hash),
-            username=public_channel_username,
-        ))
-
-        # Making channel public
-        while not check_username:
-            public_channel_username += str(random.randrange(10))
-            check_username = await client(CheckUsernameRequest(
-                channel=InputPeerChannel(channel_id=new_channel_id, access_hash=new_channel_access_hash),
-                username=public_channel_username,
-            ))
-        else:
-            await client(UpdateUsernameRequest(
-                channel=InputPeerChannel(channel_id=new_channel_id, access_hash=new_channel_access_hash),
-                username=public_channel_username,
-            ))
-
-        # Giving admin rights to the bot
+        # Adding bot and giving admin rights to bot
         await client(EditAdminRequest(
-            channel=public_channel_username,
+            channel=channel_entity,
             user_id=bot_username,
             admin_rights=ChatAdminRights(
                 change_info=True,
@@ -92,10 +74,27 @@ async def create_channel(username: str) -> str:
             rank='administrator'
         ))
 
-        return public_channel_username
+        # Get invite link
+        private_channel_id = None
+        channel_info = await client(GetFullChannelRequest(channel=channel_entity))
+        invite_link = channel_info.full_chat.exported_invite.link
+
+        # Get channel id
+        async for dialog in client.iter_dialogs(offset_peer=channel_entity):
+            if dialog.entity.id == new_channel_id:
+                private_channel_id = str(dialog.id)
+                break
+
+        # Result
+        if private_channel_id is not None:
+            result = '{"result":"success", "telegram_id":"'+private_channel_id+'", "invite_link":"'+invite_link+'"}'
+        else:
+            result = '{"result":"error", "error_message":"Channel id error."}'
+
+        return result
     except Exception:
         e = exc_info()
-        return f'Error: {e[1]}'
+        return '{"result":"error", "error_message":"'+str(e[1])+'"}'
 
 
 try:
@@ -104,11 +103,11 @@ try:
         client_socket, client_address = server_socket.accept()
 
         # Variables
-        response = 'Error'
+        response = '{"result":"error", "error_message":"unknown error."}'
 
         # Receive the string from Ruby
         received_string = client_socket.recv(MAX_RECV_BYTE).decode()
-        received_string = re.findall(r"(?<=\/user_data\/).*|$", received_string)
+        received_string = re.findall(r"(?<=/user_data/).*|$", received_string)
         if not received_string or received_string == '':
             client_socket.send(response.encode())
             client_socket.close()
@@ -122,15 +121,13 @@ try:
         if sessions is not []:
             session_name = re.findall(r'.*(?=\.session)|$', random.choice(sessions))[0]
             client = TelegramClient(f'sessions/{session_name}', api_id, api_hash)
-        else:
-            response = 'Error: no sessions'
 
         # Run main function
         if client is not None:
             with client:
                 response = client.loop.run_until_complete(create_channel(received_string[0]))
         else:
-            response = 'Error: client was not initialized'
+            response = "{result:'error', error_message:'client was not initialized.'}"
 
         # Send response and close the client socket
         client_socket.send(response.encode())
@@ -138,6 +135,3 @@ try:
 finally:
     # Close the server socket
     server_socket.close()
-
-
-

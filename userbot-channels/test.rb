@@ -1,4 +1,6 @@
 require 'socket'
+require 'json'
+
 
 # Create a TCP socket
 hostname = 'localhost'
@@ -7,13 +9,17 @@ port = 3400
 socket = TCPSocket.open(hostname, port)
 
 # Send a string to Python
-string_to_send = "/user_data/123123123"
+string_to_send = "/user_data/@kek"
 socket.puts(string_to_send)
 
 # Receive the response from Python
 socket.close_write # Without this line, the next line hangs
 response = socket.read
-puts response
+json = JSON.parse(response)
+puts json['result']
+puts json['telegram_id']
+puts json['invite_link']
+
 
 # Close the socket
 socket.close
