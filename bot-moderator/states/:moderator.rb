@@ -226,9 +226,9 @@ def handle_accept_complaint
                 end
             end
         rescue => exception
-            text =  "scammer_data = #{scammer_data}"
-            text << "\ninvite_link_data = #{invite_link_data}"
-            text << "\nfrom userbot on created channel scammer_id=#{scammer.id} complaint_id=#{complaint.id} #{exception}"
+            text =  "<b>scammer_data =</b> #{scammer_data}"
+            text << "\n<b>invite_link_data =</b> #{invite_link_data}"
+            text << "\n<b>from userbot on created channel scammer_id =</b>#{scammer.id} <b>complaint_id =</b>#{complaint.id} #{exception}"
             Send.mes(text, to: ENV['CHAT_ID_MY'])
             # Send.mes(exception.backtrace, to: ENV['CHAT_ID_MY'])            
         end

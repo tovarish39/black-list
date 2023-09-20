@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
     def get_links
         @links = [
             {label:'Users', path:'/users'},
-            {label:'Scamers', path:'/scamers'},
+            {label:'Scammers', path:'/scamers'},
             {label:'Moderators', path:'/moderators'},
         ]
     end

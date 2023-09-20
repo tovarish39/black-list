@@ -18,96 +18,98 @@ $lookuping = false
 $verifing = false
 
 def handle
-    $user = user_search_and_update_if_changed(User)
-    $user ||= create_user(User)
-    $lg = $user.lg
-    # puts $user.inspect
   # ####### group
-    if mes_from_group_and_text?
-      # $lg ||= Ru # если в группах любых где у пользователя не определён язык
-      if $user.status =~ /^scamer/ # если в группе пишет скаммер
-      # json = JSON.parse($mes.to_json)
-      # puts pretty_print_object(json, 1)
-      $bot.api.send_message(
-        chat_id:$mes.chat.id,
-        reply_to_message_id:$mes.message_id,
-        text:Text.verifying_user($user, 'scamer'),
-        parse_mode:'HTML'
-      )
-      else # /verify или /lookup и не скаммер сам
+  if mes_from_group_and_text?
+    # $lg ||= Ru # если в группах любых где у пользователя не определён язык
+    if $user.status =~ /^scamer/ # если в группе пишет скаммер
+    # json = JSON.parse($mes.to_json)
+    # puts pretty_print_object(json, 1)
+    $bot.api.send_message(
+      chat_id:$mes.chat.id,
+      reply_to_message_id:$mes.message_id,
+      text:Text.verifying_user($user, 'scamer'),
+      parse_mode:'HTML'
+    )
+    else # /verify или /lookup и не скаммер сам
+      # для forward следующий mes проверяется
+      if mes_text?(/^\/lookup$/)
+        $is_next_forward_message = true
+        $forwarder_user_telegram_id = $mes.chat.id
+        $lookuping = true
+        # проверка следующего после /lookup с forwarted
+      elsif $lookuping && $is_next_forward_message && ($forwarder_user_telegram_id == $mes.chat.id) && $mes.forward_from.present?
+        $is_next_forward_message = false
+        $forwarder_user_telegram_id = ''
+        $lookuping = false
+        handle_text_to_lookup($mes.chat.id)
+      
         # для forward следующий mes проверяется
-        if mes_text?(/^\/lookup$/)
-          $is_next_forward_message = true
-          $forwarder_user_telegram_id = $mes.chat.id
-          $lookuping = true
-          # проверка следующего после /lookup с forwarted
-        elsif $lookuping && $is_next_forward_message && ($forwarder_user_telegram_id == $mes.chat.id) && $mes.forward_from.present?
-          $is_next_forward_message = false
-          $forwarder_user_telegram_id = ''
-          $lookuping = false
-          handle_text_to_lookup($mes.chat.id)
+      elsif mes_text?(/^\/verify$/)
+        $is_next_forward_message = true
+        $forwarder_user_telegram_id = $mes.from.id
+        $verifing = true
+        # проверка следующего после /verify с forwarted
+      elsif $verifing && $is_next_forward_message && ($forwarder_user_telegram_id == $mes.from.id) && $mes.forward_from.present?
+        $is_next_forward_message = false
+        $forwarder_user_telegram_id = ''
+        $verifing = false
+        handle_forwarded_message_to_verifying()
         
-          # для forward следующий mes проверяется
-        elsif mes_text?(/^\/verify$/)
-          $is_next_forward_message = true
-          $forwarder_user_telegram_id = $mes.from.id
-          $verifing = true
-          # проверка следующего после /verify с forwarted
-        elsif $verifing && $is_next_forward_message && ($forwarder_user_telegram_id == $mes.from.id) && $mes.forward_from.present?
-          $is_next_forward_message = false
-          $forwarder_user_telegram_id = ''
-          $verifing = false
-          handle_forwarded_message_to_verifying()
-          
-        # проверка по ид или юзернейму
-        elsif mes_text?(/^\/lookup /) 
+      # проверка по ид или юзернейму
+      elsif mes_text?(/^\/lookup /) 
           $is_next_forward_message = false
           handle_text_to_lookup($mes.chat.id)
-        elsif mes_text?(/^\/verify /) 
+      elsif mes_text?(/^\/verify /) 
           $is_next_forward_message = false
           handle_verify_with_id_or_username()        
-        end
-    end
-      # ##############
-    elsif $mes.instance_of?(ChatMemberUpdated) # реагирует только от private chat
-      $user.update(chat_member_status: $mes.new_chat_member.status ) if $mes.new_chat_member.status.present?
-    elsif user_is_blocked_by_moderator? 
-    elsif !is_bot_administrator_of_channel? # сообщение себе
-    elsif !user_is_member_of_channel? && $lg.present? # если выбран язык, но не подписан на канал
-      require_subscribe_channel()
-# при любых state_aasm 
-    elsif $lg.present? && mes_text?(Button.support)
-      Send.mes(Text.support, M::Inline.link_to_support)
-    elsif $lg.present? && mes_text?(Button.oracle_tips)
-      Send.mes(Text.oracle_tips, M::Inline.link_to_oracles_tips)
-###################### 
-    elsif mes_text?('/reset_lg')
-       $user.update(lg:nil)
-    elsif mes_text? || mes_data? || is_user_shared? || mes_photo? || mes_voice? || mes_video_note?
-      
-      if $lg.nil? # язык ещё не выбран
-        $user.update(state_aasm: 'language')
-      elsif user_is_scamer? 
-        state = $user.state_aasm
-        $user.update(state_aasm:'scamer') if !['scamer','justification'].include?(state) 
-        # elsif $user.state_aasm == 'scamer' || $user.state_aasm == 'justification' # чтоб не работали ниже условия
-      elsif mes_text? && Button.all_main.include?($mes.text) # кнопка главного меню или /start
-        $user.update(state_aasm: 'start')
       end
-  
-  
-      event_bot = StateMachine.new
-  
-      from_state = $user.state_aasm.to_sym          # предидущее состояние
-      event_bot.aasm.current_state = from_state
-  
-      event_bot.method(action(from_state)).call     # "#{from_state}_action"
-  
-      new_state = event_bot.aasm.current_state
-      $user.update(state_aasm: new_state)
     end
-  # puts 'stop handle ----------------------'
+  else
+      $user = user_search_and_update_if_changed(User)
+      $user ||= create_user(User)
+      $lg = $user.lg
+      # puts $user.inspect
 
+      # ##############
+      if $mes.instance_of?(ChatMemberUpdated) # реагирует только от private chat
+        $user.update(chat_member_status: $mes.new_chat_member.status ) if $mes.new_chat_member.status.present?
+      elsif user_is_blocked_by_moderator? 
+      elsif !is_bot_administrator_of_channel? # сообщение себе
+      elsif !user_is_member_of_channel? && $lg.present? # если выбран язык, но не подписан на канал
+        require_subscribe_channel()
+  # при любых state_aasm 
+      elsif $lg.present? && mes_text?(Button.support)
+        Send.mes(Text.support, M::Inline.link_to_support)
+      elsif $lg.present? && mes_text?(Button.oracle_tips)
+        Send.mes(Text.oracle_tips, M::Inline.link_to_oracles_tips)
+  ###################### 
+      elsif mes_text?('/reset_lg')
+         $user.update(lg:nil)
+      elsif mes_text? || mes_data? || is_user_shared? || mes_photo? || mes_voice? || mes_video_note?
+
+        if $lg.nil? # язык ещё не выбран
+          $user.update(state_aasm: 'language')
+        elsif user_is_scamer? 
+          state = $user.state_aasm
+          $user.update(state_aasm:'scamer') if !['scamer','justification'].include?(state) 
+          # elsif $user.state_aasm == 'scamer' || $user.state_aasm == 'justification' # чтоб не работали ниже условия
+        elsif mes_text? && Button.all_main.include?($mes.text) # кнопка главного меню или /start
+          $user.update(state_aasm: 'start')
+        end
+      
+      
+        event_bot = StateMachine.new
+      
+        from_state = $user.state_aasm.to_sym          # предидущее состояние
+        event_bot.aasm.current_state = from_state
+      
+        event_bot.method(action(from_state)).call     # "#{from_state}_action"
+      
+        new_state = event_bot.aasm.current_state
+        $user.update(state_aasm: new_state)
+      end
+  # puts 'stop handle ----------------------'
+    end
 end
 
 
