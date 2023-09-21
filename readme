@@ -17,3 +17,6 @@ end
 
 rails c
 Counter.create
+
+command to main bot for change video in private channel for scammers
+=>  /config channel-video

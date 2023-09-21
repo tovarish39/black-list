@@ -73,6 +73,8 @@ def handle
       # ##############
       if $mes.instance_of?(ChatMemberUpdated) # реагирует только от private chat
         $user.update(chat_member_status: $mes.new_chat_member.status ) if $mes.new_chat_member.status.present?
+      elsif new_private_channel_video?()
+        write_video()
       elsif user_is_blocked_by_moderator? 
       elsif !is_bot_administrator_of_channel? # сообщение себе
       elsif !user_is_member_of_channel? && $lg.present? # если выбран язык, но не подписан на канал
@@ -112,6 +114,17 @@ def handle
     end
 end
 
+def new_private_channel_video?
+  $mes.caption && ($mes.caption === '/config channel-video') && $mes.video && $mes.video.file_id
+end
+
+def write_video
+  config = Config.first
+  config ||= Config.create
+  videos = config.for_private_channel_video_file_ids
+  videos << $mes.video.file_id
+  config.update(for_private_channel_video_file_ids:videos)
+end
 
 def result_of_verifying user, data
 #   puts user

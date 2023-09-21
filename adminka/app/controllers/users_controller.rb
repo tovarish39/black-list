@@ -20,7 +20,9 @@ require 'telegram/bot'
       @complaints_per_week  << complaint if complaint.created_at > 1.week.ago
       @complaints_per_month << complaint if complaint.created_at > 1.month.ago
     end
-    @lookup_counter = Counter.first.lookup_requests_from_bots
+    counter = Counter.first
+    counter ||= Counter.create
+    @lookup_counter = counter.lookup_requests_from_bots
   end
 
   def update

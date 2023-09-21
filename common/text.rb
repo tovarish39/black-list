@@ -358,7 +358,7 @@ module Text
         return '请提供您所掌握的有关此人的所有信息，包括支付数据、昵称、姓名、语音消息、IP地址、屏幕截图、他发送的圆圈等其他相关信息。' if $lg == Cn
     end
 
-    def self.publication_in_channel complaint, scammer, publication_in_channel
+    def self.publication_in_channel complaint, scammer, invite_link_data
 %{NEW REPORT #N#{complaint.id} 
 #{"@#{scammer.username} " if scammer.username.present?}ripper · 骗子 · scammer
     
@@ -372,7 +372,7 @@ module Text
     
 <a href='#{ENV['ORACLE_LIST']}'>@oraclelist</a>
 
-#{"<a href='#{publication_in_channel['invite_link']}'>id_#{scammer.telegram_id}_reports</a>" if publication_in_channel['result'] === 'success'}
+#{"<a href='#{invite_link_data['invite_link']}'>additional information</a>" if invite_link_data['result'] === 'success'}
     }
     end
 
@@ -389,8 +389,35 @@ module Text
 
 
 
+    def self.private_channel_post_text
+        "If you possess additional information regarding this individual, please promptly contact the moderator at <a href='#{ENV['ORACLE_LIST']}'>@oraclelist</a>. We would greatly appreciate your assistance in sharing any details about this person. \n\nLet's make Telegram free of brokes. \n\n<a href='#{ENV['ORACLE_LIST']}'>@oraclelist</a>"
+    end
+
+    def self.private_channel_post_video_caption
+        %{Are you tired of hams around? Have you been ripped twice during last week?
+    
+Even the most popular ripper walls are scamming now...
+
+Follow our brand new Rippers Wall  -  <a href='#{ENV['ORACLE_LIST']}'>ORACLE BLACK LIST</a>
+
+Learn how to avoid rippers and doing your business in a safe way with <a href='#{ENV['ORACLES_TIPS_PATH']}'>ORACLE'S TIPS</a>   
+
+Check trusted and verifed <a href='#{ENV['SELLERS_WHITELIST']}'>SELLERS' WHITELIST</a> 
+
+DONT LET LOW LIFE SCAMMERS FOOL YOU
+
+<a href='#{ENV['SELLERS_WHITELIST']}'>SUBMIT AN APPLICATION</a>
+
+<a href='#{ENV['SUPPORT_PATH']}'>CONTACT SUPPORT</a>
+
+<a href='#{ENV['ORACLE_LIST']}'>BLACK LIST</a>
 
 
+<u><i><a href='#{ENV['ORACLE_LIST']}'>O  R  A  C  L  E        L  I  S  T</a></i></u>
+    }
+    end
+    
+    
 
 
 

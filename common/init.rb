@@ -2,7 +2,7 @@
 
 def user_search_and_update_if_changed class_name
 
-  raise $mes.inspect if !$mes.from # хз что приходит
+  return if !$mes.from # хз что приходит, после того как опубилковали в новый канал данные о скамере
 
   model = class_name.find_by(telegram_id: $mes.from.id)
   return false if model.nil?
@@ -27,6 +27,8 @@ def user_search_and_update_if_changed class_name
 end
 
 def create_user class_name
+  return if !$mes.from # хз что приходит, после того как опубилковали в новый канал данные о скамере
+
   class_name.create!(
     telegram_id: $mes.from.id,
     username:    $mes.from.username   || '-',

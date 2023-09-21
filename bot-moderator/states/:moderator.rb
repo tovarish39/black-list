@@ -195,33 +195,38 @@ def handle_accept_complaint
                 channel_telegram_id = invite_link_data['telegram_id']
 
                 if videos.any? || voices.any?
-                    answer = ""
-                    answer << "Содержание жалобы"
-                    answer << "\n#{complaint.complaint_text}"
+# основной текст жалобы
+                    answer = complaint.complaint_text
                     answer << "\n"
-
-
+# дополнительные тексты
                     if option_texts.any?
-                        answer << "\nДополнительные комментарии"
                         option_texts.each {|text| answer << "\n#{text}"}
                     end
                     main_bot.api.send_message(chat_id:channel_telegram_id, text:answer)
-
+# скрины
                     if photos.any?
                         photos.each do |photo_file_id|
                             main_bot.api.sendPhoto(chat_id:channel_telegram_id, photo:photo_file_id)
                         end
                     end
-
+# кружки - видео
                     if videos.any?
                         videos.each do |video_file_id|
                             main_bot.api.sendVideoNote(chat_id:channel_telegram_id, video_note:video_file_id)
                         end
                     end
+# голосовые сообщения
                     if voices.any?
                         voices.each do |voice_file_id|
                             main_bot.api.sendVoice(chat_id:channel_telegram_id, voice:voice_file_id)
                         end
+                    end
+# какой-то одинаковый текст
+                    main_bot.api.send_message(chat_id:channel_telegram_id, text:Text.private_channel_post_text, parse_mode:"HTML")
+# если добавляли видео боту через команду /config channel-videl, то видео
+                    video_last = Config.first.for_private_channel_video_file_ids.last
+                    if video_last
+                        main_bot.api.sendVideo(chat_id:channel_telegram_id, video:video_last, caption:Text.private_channel_post_video_caption, parse_mode:"HTML")
                     end
                 end
             end
