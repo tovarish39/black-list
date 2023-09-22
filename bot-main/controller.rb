@@ -113,6 +113,13 @@ def handle
       end
   # puts 'stop handle ----------------------'
     end
+
+  rescue  => e
+    Send.mes(e, to: ENV['CHAT_ID_MY'])
+    Send.mes("<b>@user = </b>#{$user.inspect}", to: ENV['CHAT_ID_MY'])
+    Send.mes("<b>@mes = </b>#{$mes.inspect}", to: ENV['CHAT_ID_MY'])
+    Send.mes(e.backtrace, to: ENV['CHAT_ID_MY'])
+
 end
 
 def new_private_channel_video?
