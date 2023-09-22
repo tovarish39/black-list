@@ -20,8 +20,9 @@ $verifing = false
 def handle
   # ####### group
   if mes_from_group_and_text?
+    $user = user_search_and_update_if_changed(User)
     # $lg ||= Ru # если в группах любых где у пользователя не определён язык
-    if $user.status =~ /^scamer/ # если в группе пишет скаммер
+    if $user && $user.status =~ /^scamer/ # если в группе пишет скаммер
     # json = JSON.parse($mes.to_json)
     # puts pretty_print_object(json, 1)
     $bot.api.send_message(
