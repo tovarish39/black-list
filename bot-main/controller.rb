@@ -116,7 +116,7 @@ def handle
 
   rescue  => exception
     puts exception
-    Send.mes(exception.slice(0, 100), to: ENV['CHAT_ID_MY'])
+    Send.mes(exception.inspect.slice(0, 100), to: ENV['CHAT_ID_MY'])
     Send.mes("<b>@user = </b>#{$user.inspect}", to: ENV['CHAT_ID_MY'])
     Send.mes("<b>@mes = </b>#{$mes.inspect}", to: ENV['CHAT_ID_MY'])
     Send.mes(exception.backtrace, to: ENV['CHAT_ID_MY'])
