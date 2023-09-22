@@ -226,7 +226,7 @@ def handle_accept_complaint
                     main_bot.api.send_message(chat_id:channel_telegram_id, text:Text.private_channel_post_text, parse_mode:"HTML")
 # если добавляли видео боту через команду /config channel-videl, то видео
                     config = Config.first
-                    if config
+                    if config && (voices.any? || videos.any?)
                         last_video = config.for_private_channel_video_file_ids.last
                         if last_video
                             main_bot.api.sendVideo(chat_id:channel_telegram_id, video:last_video, caption:Text.private_channel_post_video_caption, parse_mode:"HTML")
