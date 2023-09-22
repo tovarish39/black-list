@@ -402,11 +402,11 @@ Follow our brand new Rippers Wall  -  <a href='#{ENV['ORACLE_LIST']}'>ORACLE BLA
 
 Learn how to avoid rippers and doing your business in a safe way with <a href='#{ENV['ORACLES_TIPS_PATH']}'>ORACLE'S TIPS</a>   
 
-Check trusted and verifed <a href='#{ENV['ORACLE_LIST']}'>SELLERS' WHITELIST</a> 
+Check trusted and verifed <a href='#{ENV['SELLERS_WHITELIST']}'>SELLERS' WHITELIST</a> 
 
 DONT LET LOW LIFE SCAMMERS FOOL YOU
 
-<a href='#{ENV['SELLERS_WHITELIST']}'>SUBMIT AN APPLICATION</a>
+<a href='#{ENV['SUBMIT_AN_APPLICATION']}'>SUBMIT AN APPLICATION</a>
 
 <a href='#{ENV['SUPPORT_PATH']}'>CONTACT SUPPORT</a>
 
@@ -417,6 +417,19 @@ DONT LET LOW LIFE SCAMMERS FOOL YOU
     }
     end
     
+
+
+"Are you tired of hams around? Have you been ripped twice during last week?
+
+🔒  SUBMIT AN APPLICATION (https://t.me/ripperlistbot)🔒
+
+🪙  (https://t.me/oraclesupport) CONTACT SUPPORT (https://t.me/oraclesupport)  🪙
+
+🪙  BLACK LIST (http://t.me/ORACLELIST) 🪙
+
+
+O  R  A  C  L  E        L  I  S  T (http://t.me/oraclelist)"
+
     
 
 
