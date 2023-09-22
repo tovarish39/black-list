@@ -73,7 +73,7 @@ def handle
       # ##############
       if $mes.instance_of?(ChatMemberUpdated) # реагирует только от private chat
         $user.update(chat_member_status: $mes.new_chat_member.status ) if $mes.new_chat_member.status.present?
-      elsif new_private_channel_video?()
+      elsif new_private_channel_video?() 
         write_video()
       elsif !$mes.from; # заглушка   
       elsif !is_bot_administrator_of_channel? # сообщение себе
@@ -114,16 +114,17 @@ def handle
   # puts 'stop handle ----------------------'
     end
 
-  rescue  => e
-    Send.mes(e, to: ENV['CHAT_ID_MY'])
+  rescue  => exception
+    puts exception
+    Send.mes(exception.slice(0, 100), to: ENV['CHAT_ID_MY'])
     Send.mes("<b>@user = </b>#{$user.inspect}", to: ENV['CHAT_ID_MY'])
     Send.mes("<b>@mes = </b>#{$mes.inspect}", to: ENV['CHAT_ID_MY'])
-    Send.mes(e.backtrace, to: ENV['CHAT_ID_MY'])
+    Send.mes(exception.backtrace, to: ENV['CHAT_ID_MY'])
 
 end
 
 def new_private_channel_video?
-  $mes.caption && ($mes.caption === '/config channel-video') && $mes.video && $mes.video.file_id
+  !mes_data?() && $mes.caption && ($mes.caption === '/config channel-video') && $mes.video && $mes.video.file_id
 end
 
 def write_video
