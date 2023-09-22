@@ -75,8 +75,9 @@ def handle
         $user.update(chat_member_status: $mes.new_chat_member.status ) if $mes.new_chat_member.status.present?
       elsif new_private_channel_video?()
         write_video()
-      elsif user_is_blocked_by_moderator? 
+      elsif !@lg # заглушка   
       elsif !is_bot_administrator_of_channel? # сообщение себе
+      elsif user_is_blocked_by_moderator? 
       elsif !user_is_member_of_channel? && $lg.present? # если выбран язык, но не подписан на канал
         require_subscribe_channel()
   # при любых state_aasm 
