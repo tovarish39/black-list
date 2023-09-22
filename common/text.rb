@@ -402,7 +402,7 @@ Follow our brand new Rippers Wall  -  <a href='#{ENV['ORACLE_LIST']}'>ORACLE BLA
 
 Learn how to avoid rippers and doing your business in a safe way with <a href='#{ENV['ORACLES_TIPS_PATH']}'>ORACLE'S TIPS</a>   
 
-Check trusted and verifed <a href='#{ENV['SELLERS_WHITELIST']}'>SELLERS' WHITELIST</a> 
+Check trusted and verifed <a href='#{ENV['ORACLE_LIST']}'>SELLERS' WHITELIST</a> 
 
 DONT LET LOW LIFE SCAMMERS FOOL YOU
 

@@ -210,6 +210,7 @@ def handle_accept_complaint
                         end
                     end
 # кружки - видео
+# sleep 2 # 
                     if videos.any?
                         videos.each do |video_file_id|
                             main_bot.api.sendVideoNote(chat_id:channel_telegram_id, video_note:video_file_id)
