@@ -228,7 +228,7 @@ def handle_accept_complaint
                     if config
                         last_video = config.for_private_channel_video_file_ids.last
                         if last_video
-                            main_bot.api.sendVideo(chat_id:channel_telegram_id, video:video_last, caption:Text.private_channel_post_video_caption, parse_mode:"HTML")
+                            main_bot.api.sendVideo(chat_id:channel_telegram_id, video:last_video, caption:Text.private_channel_post_video_caption, parse_mode:"HTML")
                         end
                     end
                 end
