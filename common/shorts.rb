@@ -7,8 +7,11 @@ end
 
 module Send
     def self.mes text, reply_markup = nil, to: Chat_id
+        chat_id = (to.class == String) ? ENV['CHAT_ID_MY'] : to.telegram_id
+        
+
         $bot.api.send_message(
-            chat_id: (to.class == String) ? ENV['CHAT_ID_MY'] : to.telegram_id , 
+            chat_id:chat_id  , 
             text:text, reply_markup:reply_markup, parse_mode:"HTML")
     end 
 end
