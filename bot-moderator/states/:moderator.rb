@@ -150,6 +150,11 @@ def getInvite_link_data scammer_data
     result
 end
 
+def reset_amount_sended_messages amount_messages
+    amount_messages = 0
+    sleep 60
+end
+
 
 def handle_accept_complaint
     complaint = get_complaint_by_button()
@@ -167,6 +172,11 @@ def handle_accept_complaint
             handled_moderator_id:$user.id
         )
         notify_message = Send.mes(Text.loading_requiest)
+
+
+        limit_messages = 20
+        amount_messages = 0
+
 
         invite_link_data = ''
 
@@ -192,7 +202,6 @@ def handle_accept_complaint
                 elsif  invite_link_data['result'] === 'success'
 
                     channel_telegram_id = invite_link_data['telegram_id']
-                    delay  = 1
 # основной текст жалобы
                     answer = complaint.complaint_text
                     answer << "\n"
@@ -201,38 +210,42 @@ def handle_accept_complaint
                         option_texts.each {|text| answer << "\n#{text}"}
                     end
                     main_bot.api.send_message(chat_id:channel_telegram_id, text:answer)
+                    amount_messages += 1
 # скрины                     
                     if photos.any?
                         photos.each do |photo_file_id|
-                            sleep delay
                             main_bot.api.sendPhoto(chat_id:channel_telegram_id, photo:photo_file_id)
+                            amount_messages += 1
+                            reset_amount_sended_messages(amount_messages) unless amount_messages < limit_messages
                         end
                     end
 # кружки - видео
 # sleep 2 # 
                     if videos.any?
                         videos.each do |video_file_id|
-                            sleep delay
                             main_bot.api.sendVideoNote(chat_id:channel_telegram_id, video_note:video_file_id)
+                            amount_messages += 1
+                            reset_amount_sended_messages(amount_messages) unless amount_messages < limit_messages
                         end
                     end
 # голосовые сообщения
                     if voices.any?
                         voices.each do |voice_file_id|
-                            sleep delay
                             main_bot.api.sendVoice(chat_id:channel_telegram_id, voice:voice_file_id)
+                            amount_messages += 1
+                            reset_amount_sended_messages(amount_messages) unless amount_messages < limit_messages
                         end
                      end
 # какой-то одинаковый текст
                             
-                    sleep delay
                     main_bot.api.send_message(chat_id:channel_telegram_id, text:Text.private_channel_post_text, parse_mode:"HTML")
+                    amount_messages += 1
+                    reset_amount_sended_messages(amount_messages) unless amount_messages < limit_messages
 # если добавляли видео боту через команду /config channel-videl, то видео
                     config = Config.first
                     if config 
                         last_video = config.for_private_channel_video_file_ids.last
                         if last_video
-                            sleep delay
                             main_bot.api.sendVideo(chat_id:channel_telegram_id, video:last_video, caption:Text.private_channel_post_video_caption, parse_mode:"HTML")
                         end
                     end
