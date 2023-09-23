@@ -150,8 +150,8 @@ def getInvite_link_data scammer_data
     result
 end
 
-def reset_amount_sended_messages amount_messages
-    amount_messages = 0
+def reset_amount_sended_messages
+    $amount_messages = 0
     sleep 60
 end
 
@@ -210,13 +210,13 @@ def handle_accept_complaint
                         option_texts.each {|text| answer << "\n#{text}"}
                     end
                     main_bot.api.send_message(chat_id:channel_telegram_id, text:answer)
-                    amount_messages += 1
+                    $amount_messages += 1
 # скрины                     
                     if photos.any?
                         photos.each do |photo_file_id|
                             main_bot.api.sendPhoto(chat_id:channel_telegram_id, photo:photo_file_id)
-                            amount_messages += 1
-                            reset_amount_sended_messages(amount_messages) unless amount_messages < limit_messages
+                            $amount_messages += 1
+                            reset_amount_sended_messages() unless $amount_messages < limit_messages
                         end
                     end
 # кружки - видео
@@ -224,23 +224,23 @@ def handle_accept_complaint
                     if videos.any?
                         videos.each do |video_file_id|
                             main_bot.api.sendVideoNote(chat_id:channel_telegram_id, video_note:video_file_id)
-                            amount_messages += 1
-                            reset_amount_sended_messages(amount_messages) unless amount_messages < limit_messages
+                            $amount_messages += 1
+                            reset_amount_sended_messages() unless $amount_messages < limit_messages
                         end
                     end
 # голосовые сообщения
                     if voices.any?
                         voices.each do |voice_file_id|
                             main_bot.api.sendVoice(chat_id:channel_telegram_id, voice:voice_file_id)
-                            amount_messages += 1
-                            reset_amount_sended_messages(amount_messages) unless amount_messages < limit_messages
+                            $amount_messages += 1
+                            reset_amount_sended_messages() unless $amount_messages < limit_messages
                         end
                      end
 # какой-то одинаковый текст
                             
                     main_bot.api.send_message(chat_id:channel_telegram_id, text:Text.private_channel_post_text, parse_mode:"HTML")
-                    amount_messages += 1
-                    reset_amount_sended_messages(amount_messages) unless amount_messages < limit_messages
+                    $amount_messages += 1
+                    reset_amount_sended_messages() unless $amount_messages < limit_messages
 # если добавляли видео боту через команду /config channel-videl, то видео
                     config = Config.first
                     if config 
