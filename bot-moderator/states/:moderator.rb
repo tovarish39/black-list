@@ -188,51 +188,52 @@ def handle_accept_complaint
                 invite_link_data = JSON.parse(response)
                 sleep 1 # так как бывает что бот ещё не успел стать участником канала
                 if invite_link_data['result'] === 'error'
-
                     Send.mes(invite_link_data, to: ENV['CHAT_ID_MY']) 
                 elsif  invite_link_data['result'] === 'success'
 
-
-
                     channel_telegram_id = invite_link_data['telegram_id']
-
-                    if videos.any? || voices.any?
+                    delay  = 0.5
 # основной текст жалобы
-                        answer = complaint.complaint_text
-                        answer << "\n"
+                    answer = complaint.complaint_text
+                    answer << "\n"
 # дополнительные тексты
-                        if option_texts.any?
-                            option_texts.each {|text| answer << "\n#{text}"}
+                    if option_texts.any?
+                        option_texts.each {|text| answer << "\n#{text}"}
+                    end
+                    main_bot.api.send_message(chat_id:channel_telegram_id, text:answer)
+# скрины                     
+                    if photos.any?
+                        photos.each do |photo_file_id|
+                            sleep delay
+                            main_bot.api.sendPhoto(chat_id:channel_telegram_id, photo:photo_file_id)
                         end
-                        main_bot.api.send_message(chat_id:channel_telegram_id, text:answer)
-# скрины    
-                        if photos.any?
-                            photos.each do |photo_file_id|
-                                main_bot.api.sendPhoto(chat_id:channel_telegram_id, photo:photo_file_id)
-                            end
-                        end
+                    end
 # кружки - видео
 # sleep 2 # 
-                        if videos.any?
-                            videos.each do |video_file_id|
-                                main_bot.api.sendVideoNote(chat_id:channel_telegram_id, video_note:video_file_id)
-                            end
+                    if videos.any?
+                        videos.each do |video_file_id|
+                            sleep delay
+                            main_bot.api.sendVideoNote(chat_id:channel_telegram_id, video_note:video_file_id)
                         end
+                    end
 # голосовые сообщения
-                        if voices.any?
-                            voices.each do |voice_file_id|
-                                main_bot.api.sendVoice(chat_id:channel_telegram_id, voice:voice_file_id)
-                            end
-                         end
+                    if voices.any?
+                        voices.each do |voice_file_id|
+                            sleep delay
+                            main_bot.api.sendVoice(chat_id:channel_telegram_id, voice:voice_file_id)
+                        end
+                     end
 # какой-то одинаковый текст
-                        main_bot.api.send_message(chat_id:channel_telegram_id, text:Text.private_channel_post_text, parse_mode:"HTML")
+                            
+                    sleep delay
+                    main_bot.api.send_message(chat_id:channel_telegram_id, text:Text.private_channel_post_text, parse_mode:"HTML")
 # если добавляли видео боту через команду /config channel-videl, то видео
-                        config = Config.first
-                        if config 
-                            last_video = config.for_private_channel_video_file_ids.last
-                            if last_video
-                                main_bot.api.sendVideo(chat_id:channel_telegram_id, video:last_video, caption:Text.private_channel_post_video_caption, parse_mode:"HTML")
-                            end
+                    config = Config.first
+                    if config 
+                        last_video = config.for_private_channel_video_file_ids.last
+                        if last_video
+                            sleep delay
+                            main_bot.api.sendVideo(chat_id:channel_telegram_id, video:last_video, caption:Text.private_channel_post_video_caption, parse_mode:"HTML")
                         end
                     end
                 end
