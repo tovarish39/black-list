@@ -175,7 +175,7 @@ def handle_accept_complaint
 
 
         limit_messages = 20
-        amount_messages = 0
+        $amount_messages = 0
 
 
         invite_link_data = ''
