@@ -166,7 +166,7 @@ def handle_accept_complaint
             status:'accepted_complaint',
             handled_moderator_id:$user.id
         )
-        
+        notify_message = Send.mes(Text.loading_requiest)
 
         invite_link_data = ''
 
@@ -192,7 +192,7 @@ def handle_accept_complaint
                 elsif  invite_link_data['result'] === 'success'
 
                     channel_telegram_id = invite_link_data['telegram_id']
-                    delay  = 0.5
+                    delay  = 1
 # основной текст жалобы
                     answer = complaint.complaint_text
                     answer << "\n"
@@ -255,6 +255,7 @@ def handle_accept_complaint
             chat_id:complaint.user.telegram_id,
             parse_mode:"HTML"
         )
+        $bot.api.delete_message(chat_id:$mes.message.chat.id, message_id:notify_message['result']['message_id'])
     else
         Send.mes(Text.was_handled)
     end

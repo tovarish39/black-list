@@ -17,8 +17,8 @@ module Send
 end
 
 module Delete
-    def self.text
-        $bot.api.delete_message(chat_id:Chat_id, message_id:$mes.message_id)
+    def self.text message_id = $mes.message_id
+        $bot.api.delete_message(chat_id:Chat_id, message_id:message_id)
     end
     def self.pushed message_id = $mes.message.message_id
         $bot.api.delete_message(chat_id:Chat_id, message_id:message_id)

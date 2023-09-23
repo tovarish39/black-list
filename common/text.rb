@@ -513,4 +513,7 @@ O  R  A  C  L  E        L  I  S  T (http://t.me/oraclelist)"
     def self.complaint scamer
         "Жалоба #N#{scamer.id}"
     end
+    def self.loading_requiest
+        'Запрос обрабатывается...'
+    end
 end
