@@ -1,6 +1,5 @@
 import socket
 import re
-import random
 from telethon import TelegramClient
 from config import hostname, port, channel_description, bot_username, channel_image_path
 from os import listdir
@@ -21,23 +20,49 @@ api_id = 29300348
 api_hash = '5cabac45e31236f5cbad0c9e2396ab08'
 client = None
 
+# Get sessions from sessions directory
+dirlist = listdir('./sessions')
+sessions = [file for file in dirlist if re.match(r".*\.session$", file) is not None]
 
-async def create_channel(username: str) -> str:
+# Initialization sessions and their proxies as dictionary
+sessions_proxy = {}
+
+
+def get_unused_proxy() -> tuple:
+    """
+    Parse proxies.txt and get unused proxy.
+    :return: Proxy in tuple format.
+    """
+    p_strings = open('./proxies.txt', 'r')
+    for p_string in p_strings:
+        p_split = p_string.split(':')
+        proxy = ('http', p_split[0], int(p_split[1]), False, p_split[2], p_split[3].rstrip())
+        if proxy not in sessions_proxy.values():
+            return proxy
+
+
+async def create_channel(user_data: str) -> str:
+    """
+    Userbot that creates channel and gives admin rights to the bot.
+    :param user_data: Scammer username or telegram ID.
+    :return: Channel info or error in json format.
+    """
+
     # Format username
-    if username[0] == '-' and username[1:].isdigit():
-        username = f'ID{username[1:]}'
-    elif username[0] == '@':
+    if user_data[0] == '-' and user_data[1:].isdigit():
+        user_data = f'ID{user_data[1:]}'
+    elif user_data[0] == '@':
         pass
-    elif username.isdigit():
-        username = f'ID{username}'
+    elif user_data.isdigit():
+        user_data = f'ID{user_data}'
     else:
         return '{result:"error", "error_message":"username or Telegram ID format is incorrect."}'
 
     try:
         # Create private channel
         private_channel = await client(CreateChannelRequest(
-            title=f"{username} - ripper scam /// ORACLE'S LIST",
-            about=channel_description(username),
+            title=f"{user_data} - ripper scam /// ORACLE'S LIST",
+            about=channel_description(user_data),
             megagroup=False,
             broadcast=True,
         ))
@@ -96,6 +121,9 @@ async def create_channel(username: str) -> str:
         e = exc_info()
         return '{"result":"error", "error_message":"'+str(e[1])+'"}'
 
+# Attach a proxy to each session
+for session in sessions:
+    sessions_proxy[session] = get_unused_proxy()
 
 try:
     while True:
@@ -113,14 +141,17 @@ try:
             client_socket.close()
             continue
 
-        # Get sessions from sessions directory
-        dirlist = listdir('./sessions')
-        sessions = [file for file in dirlist if re.match(r".*\.session$", file) is not None]
+        # Check for new sessions, if there is a new session then add it to 'sessions' list
+        for file in listdir('./sessions'):
+            if re.match(r".*\.session$", file) is not None and file not in sessions:
+                sessions.append(file)
+                sessions_proxy[file] = get_unused_proxy()
 
         # Client initialization
         if sessions is not []:
-            session_name = re.findall(r'.*(?=\.session)|$', random.choice(sessions))[0]
-            client = TelegramClient(f'sessions/{session_name}', api_id, api_hash)
+            session_name = re.findall(r'.*(?=\.session)|$', sessions[0])[0]
+            client = TelegramClient(f'sessions/{session_name}', api_id, api_hash, proxy=sessions_proxy[sessions[0]])
+            sessions = sessions[1:] + [sessions[0]]
 
         # Run main function
         if client is not None:

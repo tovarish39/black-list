@@ -18,7 +18,7 @@ def clear_account
 end
 
 def to_userbot
-  Send.mes(Text.to_userbot)
+  Send.mes(Text.to_userbot, M::Reply.search_user)
 end
 
 def notify_account

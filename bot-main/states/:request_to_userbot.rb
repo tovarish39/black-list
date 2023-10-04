@@ -4,17 +4,20 @@ class StateMachine
       state :request_to_userbot
       event :request_to_userbot_action, from: :request_to_userbot do
 
-        transitions if: -> { mes_text?}, after: :handle_text_to_lookup,  to: :start
+        transitions if: -> { mes_text?(Button.cancel) }, after: :to_start, to: :start
+        
+        transitions if: -> { mes_text? || is_user_shared? }, after: :handle_text_to_lookup, to: :request_to_userbot
+
       end
     end
 end
 
 
-
-
 def handle_text_to_lookup group_chat_id = nil
     # из кнопки главного бота и из группы
-    data =  if $mes.forward_from
+    data =  if is_user_shared?
+                $mes.user_shared[:user_id].to_s
+            elsif $mes.forward_from
                 $mes.forward_from.id
             else
                 $mes.text =~ /\/lookup/ ? $mes.text.split(' ')[1] : $mes.text
