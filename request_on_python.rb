@@ -177,15 +177,20 @@ def format_res res
     formatted_lines = formatting_lines(new_lines)
     formatted_lines.join("\n")
 end
+
 result_message = (response.present? && response == 'Error') || format_res(response).include?('Запрос принят, ожидайте') ?  
     Text.not_availible : 
     format_res(response)
 
-# puts 'response',response
-# puts  'format_res(response)', format_res(response)
+answer = if result_message.include?('_')
+            result_message.gsub(/_/, '\\\\_')
+         else 
+            result_message
+         end
+
 
 bot.api.delete_message(chat_id: group_chat_id|| $user.telegram_id,  message_id:message_id)
-bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,  text:result_message, parse_mode:'Markdown')
+bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,  text:answer, parse_mode:'Markdown')
 def notify_scammer
     return 'Ваш контрагент обнаружен в списке кидков!' if $lg == Ru
     return 'Your counterparty has been found on the scam list!' if $lg == En
