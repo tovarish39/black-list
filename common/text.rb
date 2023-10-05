@@ -236,7 +236,7 @@ module Text
             if    $lg == Ru && status == 'scamer';     '🚫 Кидок.'
             elsif $lg == Ru && status == 'not_scamer'; '✅ Мужик (не кидок).'
             elsif $lg == Ru && status == 'verified';   '⚜️ Верифицированный.'
-            elsif $lg == Ru && status == 'trusted';    '🔱 trusted.'
+            elsif $lg == Ru && status == 'trusted';    '🔱 Доверенный.'
             elsif $lg == Ru && status == 'dwc';        '☢️ Проявите осторожность! .'
 
             elsif $lg == En && status == 'scamer';     '🚫 Ripper.'
@@ -254,7 +254,7 @@ module Text
             elsif $lg == Cn && status == 'scamer';     '🚫 骗子.'
             elsif $lg == Cn && status == 'not_scamer'; '✅ 不是骗局.'
             elsif $lg == Cn && status == 'verified';   '⚜️ 已验证.'
-            elsif $lg == Cn && status == 'trusted';    '🔱 trusted.'
+            elsif $lg == Cn && status == 'trusted';    '🔱 可信任的.'
             elsif $lg == Cn && status == 'dwc';        '☢️ 谨慎处理.'
             end
         if $lg.present?

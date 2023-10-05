@@ -2,7 +2,7 @@
   def handle
     $user = user_search_and_update_if_changed(Moderator)
     # $user ||= create_user(Moderator)
-    
+    # puts $user.inspect
     if $mes.instance_of?(ChatMemberUpdated)
       $user.update(chat_member_status: $mes.new_chat_member.status ) if $mes.new_chat_member.status.present?
     elsif (!$user)
