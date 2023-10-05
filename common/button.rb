@@ -103,10 +103,10 @@ module Button
     end
     #!
     def self.oracle_tips_inline
-        return "<b>Ознакомиться прямо сейчас!</b>" if $lg == Ru 
-        return "<b>Check it out right now!</b>" if $lg == En 
-        return "<b>¡Revíselo ahora mismo!</b>" if $lg == Es 
-        return "<b>现在就来看看！</b>" if $lg == Cn
+        return "Ознакомиться прямо сейчас!" if $lg == Ru 
+        return "Check it out right now!" if $lg == En 
+        return "¡Revíselo ahora mismo!" if $lg == Es 
+        return "现在就来看看！" if $lg == Cn
     end
 
 
