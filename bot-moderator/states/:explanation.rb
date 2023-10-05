@@ -22,10 +22,10 @@ class StateMachine
         explanation_by_moderator:explanation_text,
         # status:'rejected_complaint' 
     )
-    Send.mes(Text.handle_explanation(complaint, potincial_scamer))
+    Send.mes(Text.handle_explanation_self(complaint, potincial_scamer))
     black_list_bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
     black_list_bot.api.send_message(
-        text:Text.handle_explanation(complaint, potincial_scamer),
+        text:Text.handle_explanation_to_user(complaint, potincial_scamer),
         chat_id:complaint.user.telegram_id,
         parse_mode:'HTML'
     )
