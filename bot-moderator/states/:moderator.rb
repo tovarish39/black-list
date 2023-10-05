@@ -283,7 +283,7 @@ end
 
 def handle_reject_complaint
     complaint = get_complaint_by_button()
-    return if complaint.nil?
+    # return if complaint.nil?
 
     if  actual_complaint?(complaint)
         $user.reject_amount = $user.reject_amount + 1
