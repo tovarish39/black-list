@@ -192,10 +192,10 @@ answer = if result_message.include?('_')
 bot.api.delete_message(chat_id: group_chat_id|| $user.telegram_id,  message_id:message_id)
 bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,  text:answer, parse_mode:'Markdown')
 def notify_scammer
-    return 'Ваш контрагент обнаружен в списке кидков!' if $lg == Ru
-    return 'Your counterparty has been found on the scam list!' if $lg == En
-    return '¡Su contratante ha sido encontrado en la lista de estafadores!' if $lg == Es
-    return '您的交易对手被发现在骗子名单上！' if $lg == Cn
+    return '🚩 Ваш контрагент обнаружен в списке кидков!' if $lg == Ru
+    return '🚩 Your counterparty has been found on the scam list!' if $lg == En
+    return '🚩 ¡Su contratante ha sido encontrado en la lista de estafadores!' if $lg == Es
+    return '🚩 您的交易对手被发现在骗子名单上！' if $lg == Cn
 end
 def notify_complaint complaint
     return "Жалоба #N#{complaint.id} от #{complaint.created_at.strftime('%d.%m.%Y')}:\nСсылка <a href='#{complaint.telegraph_link}'>telegraph_link</a>" if $lg == Ru
