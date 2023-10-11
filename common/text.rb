@@ -522,12 +522,12 @@ DONT LET LOW LIFE SCAMMERS FOOL YOU
 <b>На</b>
 #{Text.user_info(userTo)}
 }
-    answer << "\nДополнительная информация" if  complaint.media_data['texts'].size > 0
-    complaint.media_data['texts'].each do |text|
-        answer << "\n\n #{text}"
-    end
-    answer << "\n<b>Ссылка</b> <a href='#{complaint.telegraph_link}'>telegraph_link</a>"
-    answer
+        answer << "\nДополнительная информация" if  complaint.media_data['texts'].size > 0
+        complaint.media_data['texts'].each do |text|
+            answer << "\n\n #{text}"
+        end
+        answer << "\n<b>Ссылка</b> <a href='#{complaint.telegraph_link}'>telegraph_link</a>"
+        answer
     end
 
     def self.date_time_now date_time_now

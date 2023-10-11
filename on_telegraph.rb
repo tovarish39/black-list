@@ -11,7 +11,13 @@ user_id   =  ARGV[1]
 
 complaint = Complaint.find(complaint_id)
 user = User.find(user_id) # userFrom
-userTo = User.find_by(telegram_id:complaint.telegram_id)   
+userTo = if complaint.telegram_id.present?
+            User.find_by(telegram_id:complaint.telegram_id)    
+         else
+            User.find_by(username:complaint.username)    
+         end
+
+
 
 
 
