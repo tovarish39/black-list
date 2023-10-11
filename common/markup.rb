@@ -68,6 +68,14 @@ module M
                                       ])
     end
 
+    def self.input_username
+      self::RM.call(
+        [Button.ready],
+        [Button.skip],
+        [Button.cancel]
+      )
+    end
+
     def self.user_info
       self::RM.call(
         [Button.verify_potential_scamer],

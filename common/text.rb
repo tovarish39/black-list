@@ -332,7 +332,7 @@ module Text
     
 <a href='#{complaint.telegraph_link}'>Link</a>
     
-<b>ID:</b> <code>#{scammer.id}</code>
+#{"#{"<b>ID:</b> <code>#{scammer.telegram_id}</code>" if scammer.telegram_id}"}
 
 ✅ APPROVED · 已确认 · SE CONFIRMA · CONFIRMÉ
     
@@ -397,16 +397,20 @@ DONT LET LOW LIFE SCAMMERS FOOL YOU
 <u><i><a href='#{ENV['ORACLE_LIST']}'>O  R  A  C  L  E        L  I  S  T</a></i></u>
     }
     end
-#!    
-    def self.user_info user
-        return "User info: \nID: #{user.telegram_id} \n#{"First Name: #{user.first_name}\n" if user.first_name.present?}#{"Username: @#{user.username}\n" if user.username.present?}" if $lg == Ru 
-        return "User info: \nID: #{user.telegram_id} \n#{"First Name: #{user.first_name}\n" if user.first_name.present?}#{"Username: @#{user.username}\n" if user.username.present?}" if $lg == En 
-        return "Información del usuario: \nID: #{user.telegram_id} \n#{"Nombre: #{user.first_name}\n" if user.first_name.present?}#{"Nombre de usuario: @#{user.username}\n" if user.username.present?}" if $lg == Es 
-        return "用户信息: \nID: #{user.telegram_id} \n#{"名字: #{user.first_name}\n" if user.first_name.present?}#{"用户名: @#{user.username}\n" if user.username.present?}" if $lg == Cn
-        "User info: \nID: #{user.telegram_id} \n#{"First Name: #{user.first_name}\n" if user.first_name.present?}#{"Username: @#{user.username}\n" if user.username.present?}"
+#!  
+
+    def self.user_info_word
+        return "User info:" if $lg == Ru
+        return "User info:" if $lg == En
+        return "Información del usuario:" if $lg == Es
+        return "用户信息:" if $lg == Cn
+        "User info:"
     end
 
-
+    def self.user_info user
+        return "#{Text.user_info_word} #{"\n#{Text.id} #{user.telegram_id}" if user.telegram_id.present?}#{"\n#{Text.first_name} #{user.first_name}" if user.first_name.present?}#{"\n#{Text.username} @#{user.username}\n" if user.username.present?}"
+        "User info: #{"\nID: #{user.telegram_id}" if user.telegram_id.present?}#{"\nFirst Name: #{user.first_name}" if user.first_name.present?}#{"\nUsername: @#{user.username}" if user.username.present?}\n"
+    end
 
 # от юзера
     def self.complaint_status complaint
@@ -433,15 +437,33 @@ DONT LET LOW LIFE SCAMMERS FOOL YOU
 
 
 
+    def self.id 
+        return "ID:" if $lg == Ru
+        return "ID:" if $lg == En
+        return "ID:" if $lg == Es
+        return "ID:" if $lg == Cn
+        "ID:"
+    end
 
+    def self.first_name
+        return "First Name:" if $lg == Ru
+        return "First Name:" if $lg == En
+        return "Nombre:" if $lg == Es
+        return "名字:" if $lg == Cn
+        "First Name:"
+    end
 
+    def self.username
+        return "Username:" if $lg == Ru
+        return "Username:" if $lg == En
+        return "Nombre de usuario:" if $lg == Es
+        return "用户名:" if $lg == Cn
+        "Username:"
+    end
 
     def self.user_info_without_prefix user
-        return "ID: #{user.telegram_id} \n#{"First Name: #{user.first_name}\n" if user.first_name.present?}#{"Username: @#{user.username}\n" if user.username.present?}" if $lg == Ru 
-        return "ID: #{user.telegram_id} \n#{"First Name: #{user.first_name}\n" if user.first_name.present?}#{"Username: @#{user.username}\n" if user.username.present?}" if $lg == En 
-        return "ID: #{user.telegram_id} \n#{"Nombre: #{user.first_name}\n" if user.first_name.present?}#{"Nombre de usuario: @#{user.username}\n" if user.username.present?}" if $lg == Es 
-        return "ID: #{user.telegram_id} \n#{"名字: #{user.first_name}\n" if user.first_name.present?}#{"用户名: @#{user.username}\n" if user.username.present?}" if $lg == Cn
-        "User info: \nID: #{user.telegram_id} \n#{"First Name: #{user.first_name}\n" if user.first_name.present?}#{"Username: @#{user.username}\n" if user.username.present?}"
+        return "#{"\n#{Text.id} #{user.telegram_id}" if user.telegram_id.present?}#{"\n#{Text.first_name} #{user.first_name}" if user.first_name.present?}#{"\n#{Text.username} @#{user.username}\n" if user.username.present?}"
+        "User info: #{"\nID: #{user.telegram_id}" if user.telegram_id.present?}#{"\nFirst Name: #{user.first_name}" if user.first_name.present?}#{"\nUsername: @#{user.username}" if user.username.present?}\n"
     end
     
 
@@ -471,7 +493,13 @@ DONT LET LOW LIFE SCAMMERS FOOL YOU
         return '链接' if $lg == Cn
     end
 
+    def self.handle_username username
+        "⚠️ Принят юзернейм @#{username}"
+    end
 
+    def self.input_username
+        "⚠️ Отправьте последний известный вам юзернем" 
+    end
 
 
 
@@ -549,7 +577,7 @@ DONT LET LOW LIFE SCAMMERS FOOL YOU
         "Юзер заблокирован"
     end
     def self.not_complaints
-        "Заявки не зарегистрированы"
+        "⚠️ Заявки не зарегистрированы"
     end
     def self.complaint scamer
         "Жалоба #N#{scamer.id}"

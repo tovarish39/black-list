@@ -6,7 +6,8 @@ class StateMachine
   
         event :option_details_action, from: :option_details do
             transitions if: -> { mes_text?(Button.cancel) }, after: :to_start       , to: :start
-            transitions if: -> { mes_text?(Button.ready) }  , after: :details_ready   , to: :start
+            transitions if: -> { mes_text?(Button.ready) &&  complaint_username_present? }  , after: :details_ready     , to: :start
+            transitions if: -> { mes_text?(Button.ready) && !complaint_username_present? }  , after: :to_input_username , to: :input_username
               
             transitions if: -> { mes_text?() || mes_voice?() || mes_video_note?()}, after: :handle_details , to: :option_details
             # transitions after: :test , to: :option_details
@@ -16,13 +17,18 @@ class StateMachine
     end
 end
 
-# def test 
-#     puts 'test'
-# end
+def complaint_username_present?
+    complaint = Complaint.find_by(id:$user.cur_complaint_id)
+    complaint.username.present?
+end
 
 def deep_clone(hash)
     Marshal.load(Marshal.dump(hash))
   end
+
+def to_input_username
+    Send.mes(Text.input_username, M::Reply.input_username)    
+end
 
 
 def create_or_update_potential_user_scamer complaint
@@ -58,7 +64,20 @@ def already_requesting_complaint_6? complaint
   end
   
   def already_scammer_status_6? complaint
-    userTo = User.find_by(telegram_id:complaint.telegram_id)
+    userTo = User.find_by(telegram_id:complaint.telegram_id) && complaint.telegram_id.present?
+    userTo ||= User.find_by(username:complaint.username)
+    # is_username_input = mes_text? && !($mes.text =~ /^-?\d+$/)
+  
+  
+  
+    # userTo = if  is_username_input
+    #           User.find_by(username:$mes.text.sub('@',''))
+    #          else 
+    #           userTo_telegram_id = get_userTo_telegram_id()
+    #           User.find_by(telegram_id:userTo_telegram_id)
+            #  end
+
+
     return false if userTo.nil?
     return true if  userTo.status =~ /^scamer/
     return false
@@ -79,7 +98,7 @@ def details_ready
         Send.mes(Text.notify_already_has_requesting_complaint)
         Send.mes(Text.greet, M::Reply.start)
         return
-   end
+    end
 
 
 
