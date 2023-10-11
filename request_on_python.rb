@@ -241,7 +241,7 @@ def result_of_verifying_local user, group_chat_id, data, bot
   end
 end
 def handle_verify_with_id_or_username data, group_chat_id, bot
-  user = if data =~ /^\d+$/ # telegram_id
+  user = if data =~ /^-?\d+$/ # telegram_id
            User.find_by(telegram_id:data)
          else # username
            User.find_by(username:data.sub('@', ''))
