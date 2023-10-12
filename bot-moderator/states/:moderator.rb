@@ -208,7 +208,13 @@ def handle_accept_complaint
 
         invite_link_data = ''
 
-        scammer = User.find_by(telegram_id:complaint.telegram_id)
+        scammer = if  complaint.telegram_id.present?
+            User.find_by(telegram_id:complaint.telegram_id)
+        else
+            User.find_by(username:complaint.username)
+        end
+        
+        
         scammer_data = scammer.username
         scammer_data = "@#{scammer_data}" if !scammer_data.nil?
         scammer_data ||= scammer.telegram_id
@@ -221,6 +227,8 @@ def handle_accept_complaint
             photos = complaint.photo_file_ids
 
             if voices.any? || voices.any?
+
+
 
                 response = getInvite_link_data(scammer_data)
                 invite_link_data = JSON.parse(response)
