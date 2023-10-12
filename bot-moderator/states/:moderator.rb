@@ -66,7 +66,17 @@ def actual_complaint? complaint
     actual_complaint_status = complaint.status == 'request_to_moderator' 
     return false if !actual_complaint_status
 
-    actual_user_statuses = ['not_scamer:default','not_scamer:managed_by_admin','not_scamer:managed_by_moderator','verified:managed_by_admin']
+    # actual_user_statuses = ['not_scamer:default','not_scamer:managed_by_admin','not_scamer:managed_by_moderator','verified:managed_by_admin']
+
+    actual_user_statuses = [
+        'not_scamer:default',
+        'not_scamer:managed_by_admin',
+        'not_scamer:managed_by_moderator',
+        'verified:managed_by_admin',
+        'trusted:managed_by_admin', 
+        'dwc:managed_by_admin', 
+    ]
+
 
     userTo = if complaint.telegram_id.present?
         User.find_by(telegram_id:complaint.telegram_id)
