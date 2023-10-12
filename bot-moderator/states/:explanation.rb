@@ -17,7 +17,14 @@ class StateMachine
   def handle_explanation
     complaint = Complaint.find($user.cur_complaint_id)
     explanation_text = $mes.text
-    potincial_scamer = User.find_by(telegram_id:complaint.telegram_id) 
+    potincial_scamer = if complaint.telegram_id.present?
+      User.find_by(telegram_id:complaint.telegram_id) 
+    else
+      User.find_by(username:complaint.username) 
+    end
+     
+    
+    
     complaint.update!(
         explanation_by_moderator:explanation_text,
         # status:'rejected_complaint' 
