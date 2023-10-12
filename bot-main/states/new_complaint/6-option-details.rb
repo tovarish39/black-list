@@ -64,7 +64,7 @@ def already_requesting_complaint_6? complaint
   end
   
   def already_scammer_status_6? complaint
-    userTo = User.find_by(telegram_id:complaint.telegram_id) && complaint.telegram_id.present?
+    userTo = User.find_by(telegram_id:complaint.telegram_id) if complaint.telegram_id.present?
     userTo ||= User.find_by(username:complaint.username) if complaint.username.present?
     # is_username_input = mes_text? && !($mes.text =~ /^-?\d+$/)
   

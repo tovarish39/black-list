@@ -70,7 +70,6 @@ module M
 
     def self.input_username
       self::RM.call(
-        [Button.ready],
         [Button.skip],
         [Button.cancel]
       )
