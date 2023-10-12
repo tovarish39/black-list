@@ -59,9 +59,9 @@ end
 
 def already_requesting_complaint_6? complaint
     complaints = if complaint.telegram_id.present?
-        Complaint.where(telegram_id:get_userTo_telegram_id())
+        Complaint.where(telegram_id:complaint.telegram_id)
     else
-        Complaint.where(username:$mes.text.sub('@',''))
+        Complaint.where(username:complaint.username.sub('@',''))
     end
 
     
@@ -69,7 +69,7 @@ def already_requesting_complaint_6? complaint
     has_requesting_complain = complaints.where(status:'request_to_moderator')
     return true if has_requesting_complain.any?
     false
-  end
+end
   
   def already_scammer_status_6? complaint
     userTo = User.find_by(telegram_id:complaint.telegram_id) if complaint.telegram_id.present?
