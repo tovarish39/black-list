@@ -32,14 +32,15 @@ end
 
 
 def create_or_update_potential_user_scamer complaint
-
+puts complaint.inspect
     potential_scamer = if complaint.telegram_id.present?
         User.find_by(telegram_id:complaint.telegram_id)
     else # username
         User.find_by(username:complaint.username)
     end
-
+puts potential_scamer.inspect
     if potential_scamer.nil?
+        puts '1'
         User.create(
             telegram_id:complaint.telegram_id,
             username:   complaint.username,
@@ -47,6 +48,7 @@ def create_or_update_potential_user_scamer complaint
             last_name:  complaint.last_name
         ) 
     else
+        puts '2'
         potential_scamer.username   = complaint.username   if complaint.username.present?
         potential_scamer.first_name = complaint.first_name if complaint.first_name.present?
         potential_scamer.last_name  = complaint.last_name  if complaint.last_name.present?

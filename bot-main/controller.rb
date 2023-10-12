@@ -112,9 +112,7 @@ def handle
         new_state = event_bot.aasm.current_state
         $user.update(state_aasm: new_state)
       end
-  # puts 'stop handle ----------------------'
     end
-    # raise 'asdf'
   rescue  => exception
 
 

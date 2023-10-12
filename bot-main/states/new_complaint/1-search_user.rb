@@ -111,7 +111,7 @@ def to_verify_user_info
                      end
 
 
-   puts filling_complait.inspect
+  #  puts filling_complait.inspect
 
   complaint = if filling_complait.present?
                   filling_complait
@@ -129,7 +129,7 @@ def to_verify_user_info
                 ) 
               end
   $user.update(cur_complaint_id: complaint.id)
-puts complaint.inspect
+# puts complaint.inspect
   if userTo_telegram_id
     begin
       data = GetChat.info(userTo_telegram_id)['result']
