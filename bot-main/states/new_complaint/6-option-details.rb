@@ -32,7 +32,12 @@ end
 
 
 def create_or_update_potential_user_scamer complaint
-    potential_scamer = User.find_by(telegram_id:complaint.telegram_id)
+
+    potential_scamer = if complaint.telegram_id.present?
+        User.find_by(telegram_id:complaint.telegram_id)
+    else # username
+        User.find_by(username:complaint.username)
+    end
 
     if potential_scamer.nil?
         User.create(
@@ -93,7 +98,7 @@ end
 def details_ready
     complaint = Complaint.find_by(id:$user.cur_complaint_id)
     is_scamer = already_scammer_status_6?(complaint)
-    puts is_scamer
+    # puts is_scamer
     if is_scamer
          Send.mes(Text.notify_already_scammer_status)
          Send.mes(Text.greet, M::Reply.start)
@@ -101,7 +106,7 @@ def details_ready
     end
 
     has_complaints = already_requesting_complaint_6?(complaint)
-    puts has_complaints
+    # puts has_complaints
 
     if has_complaints
         Send.mes(Text.notify_already_has_requesting_complaint)

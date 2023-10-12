@@ -53,6 +53,10 @@ def actual_user_status_and_complaint_status?
     else
         User.find_by(username:complaint.username)
     end
+
+    # puts complaint.inspect
+    # puts complaint.telegram_id.present?
+    # puts userTo.inspect
     is_actual_user_status = actual_user_statuses.include?(userTo.status)
     return false if !is_actual_user_status
 
