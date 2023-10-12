@@ -123,7 +123,14 @@ end
 def publishing_in_channel complaint, invite_link_data
     main_bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
 
-    scammer = User.find_by(telegram_id:complaint.telegram_id)
+    scammer = if complaint.telegram_id.present?
+        User.find_by(telegram_id:complaint.telegram_id)
+    else
+        User.find_by(username:complaint.username)
+
+    end
+
+    
 
     res = main_bot.api.send_message(text:Text.publication_in_channel(complaint, scammer, invite_link_data), chat_id:ENV['TELEGRAM_CHANNEL_ID'], parse_mode:"HTML")
     complaint.update(mes_id_published_in_channel:res['result']['message_id'])
@@ -135,7 +142,13 @@ def get_complaint_by_button
 end
 
 def update_black_list_user_whith_scamer_status complaint
-    user = User.find_by(telegram_id:complaint.telegram_id)
+    user = if complaint.telegram_id.present?
+        User.find_by(telegram_id:complaint.telegram_id)
+    else
+        User.find_by(username:complaint.username)
+    end
+    
+    
     user.update!(
         status:'scamer:managed_by_moderator',
         date_when_became_a_scamer:DateTime.now
