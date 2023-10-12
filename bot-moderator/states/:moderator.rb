@@ -47,7 +47,13 @@ def actual_user_status_and_complaint_status?
         'trusted:managed_by_admin', 
         'dwc:managed_by_admin', 
     ]
-    is_actual_user_status = actual_user_statuses.include?(User.find_by(telegram_id:complaint.telegram_id).status)
+
+    userTo = if complaint.telegram_id.present?
+        User.find_by(telegram_id:complaint.telegram_id)
+    else
+        User.find_by(username:complaint.username)
+    end
+    is_actual_user_status = actual_user_statuses.include?(userTo.status)
     return false if !is_actual_user_status
 
     true
