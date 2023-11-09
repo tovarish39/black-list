@@ -122,12 +122,17 @@ def view_complaints
         Send.mes(text, markup)
     end
     userTo_justifications.each do |userTo|
-        accepted_complaints = Complaint.where(telegram_id:userTo.telegram_id).filter {|complaint| complaint.status == 'accepted_complaint'}
+        
+##################  пока обработка толь ко телеграм ид
+        complaints__by_telegram_id = Complaint.where(telegram_id:userTo.telegram_id).filter {|complaint| complaint.status == 'accepted_complaint'}
+        complaints__by_username    = Complaint.where(username:userTo.username).filter {|complaint| complaint.status == 'accepted_complaint'}
+        accepted_complaints = complaints__by_username + complaints__by_telegram_id
         
         Send.mes(
             Text.justification_request_to_moderator(accepted_complaints, userTo),
             M::Inline.justification_request_to_moderator(userTo)
         )
+
     end
 
     Send.mes(Text.not_complaints) if complaints_to_moderator.empty? && userTo_justifications.empty?
