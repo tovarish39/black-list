@@ -5,7 +5,7 @@ from config import hostname, port, channel_description, bot_username, channel_im
 from os import listdir
 from telethon.tl.types import InputPeerChannel, ChatAdminRights
 from telethon.tl.functions.channels import CreateChannelRequest, EditAdminRequest, EditPhotoRequest, \
-    GetFullChannelRequest, InviteToChannelRequest
+    GetFullChannelRequest
 from sys import exc_info
 
 MAX_RECV_BYTE = 1024  # Maximum bytes for receiving
@@ -15,7 +15,7 @@ server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.bind((hostname, port))
 server_socket.listen(1)  # Listen maximum 1 connection, others goes to queue
 
-# Define API ID, API hash, client
+# Define API ID, API hash,
 api_id = 29300348
 api_hash = '5cabac45e31236f5cbad0c9e2396ab08'
 client = None
@@ -41,83 +41,10 @@ def get_unused_proxy() -> tuple:
             return proxy
 
 
-async def get_tg_id(username: str) -> str:
-    """
-    Userbot that gets Telegram ID by username.
-    :param username: Username.
-    :return: Success or error in json format.
-    """
-    try:
-        # Get user info
-        user_info = await client.get_entity(username)
-
-        # Get user id
-        user_id = user_info.id
-
-        return '{"result":"success", "telegram_id":"'+str(user_id)+'"}'
-    except Exception:
-        e = exc_info()
-        return '{"result":"error", "error_message":"'+str(e[1])+'"}'
-
-
-async def add_admin(user_id: str, channel_id: str) -> str:
-    """
-    Userbot that adds user and gives him admin rights.
-    :param user_id: Telegram user ID.
-    :param channel_id: Telegram channel ID.
-    :return: Success or error in json format.
-    """
-
-    # Format username
-    if user_id[0] == '-' and user_id[1:].isdigit():
-        user_id = int(user_id)
-    elif user_id[0] == '@':
-        pass
-    elif user_id.isdigit():
-        user_id = int(user_id)
-    else:
-        return '{result:"error", "error_message":"username or Telegram ID format is incorrect."}'
-
-    try:
-
-        # Adding user to channel
-        await client(InviteToChannelRequest(
-            channel=int(channel_id),
-            users=[user_id]
-        ))
-
-        # Giving admin rights to user
-        await client(EditAdminRequest(
-            channel=int(channel_id),
-            user_id=user_id,
-            admin_rights=ChatAdminRights(
-                change_info=True,
-                post_messages=True,
-                edit_messages=True,
-                delete_messages=True,
-                ban_users=True,
-                invite_users=True,
-                pin_messages=True,
-                add_admins=True,
-                anonymous=True,
-                manage_call=True,
-                other=True,
-                manage_topics=True
-            ),
-            rank='administrator'
-        ))
-
-        return '{"result":"success"}'
-    except Exception:
-        e = exc_info()
-        return '{"result":"error", "error_message":"'+str(e[1])+'"}'
-
-
-async def create_channel(user_data: str, userbot: str) -> str:
+async def create_channel(user_data: str) -> str:
     """
     Userbot that creates channel and gives admin rights to the bot.
     :param user_data: Scammer username or telegram ID.
-    :param userbot: Session name.
     :return: Channel info or error in json format.
     """
 
@@ -185,7 +112,7 @@ async def create_channel(user_data: str, userbot: str) -> str:
 
         # Result
         if private_channel_id is not None:
-            result = '{"result":"success", "telegram_id":"'+private_channel_id+'", "invite_link":"'+invite_link+'", "session":"'+userbot+'"}'
+            result = '{"result":"success", "telegram_id":"'+private_channel_id+'", "invite_link":"'+invite_link+'"}'
         else:
             result = '{"result":"error", "error_message":"Channel id error."}'
 
@@ -205,24 +132,14 @@ try:
 
         # Variables
         response = '{"result":"error", "error_message":"unknown error."}'
-        response_type = ''
-        session_name = ''
 
         # Receive the string from Ruby
         received_string = client_socket.recv(MAX_RECV_BYTE).decode()
-        if re.match(r"/add_admin_status_to_channel/.*/user/.*", received_string) is not None:
-            response_type = 'add_admin_status_to_channel'
-            received_string = received_string.split('/')
-        elif re.match(r"/try_get_telegram_id_by_username/.*", received_string) is not None:
-            response_type = 'try_get_telegram_id_by_username'
-            received_string = received_string.split('/')
-        else:
-            response_type = 'create_channel'
-            received_string = re.findall(r"(?<=/user_data/).*|$", received_string)
-            if not received_string or received_string == '':
-                client_socket.send(response.encode())
-                client_socket.close()
-                continue
+        received_string = re.findall(r"(?<=/user_data/).*|$", received_string)
+        if not received_string or received_string == '':
+            client_socket.send(response.encode())
+            client_socket.close()
+            continue
 
         # Check for new sessions, if there is a new session then add it to 'sessions' list
         for file in listdir('./sessions'):
@@ -232,24 +149,14 @@ try:
 
         # Client initialization
         if sessions is not []:
-            if response_type == 'add_admin_status_to_channel':
-                session_name = received_string[6].strip()
-            else:
-                session_name = re.findall(r'.*(?=\.session)|$', sessions[0])[0]
+            session_name = re.findall(r'.*(?=\.session)|$', sessions[0])[0]
             client = TelegramClient(f'sessions/{session_name}', api_id, api_hash, proxy=sessions_proxy[sessions[0]])
             sessions = sessions[1:] + [sessions[0]]
 
         # Run main function
         if client is not None:
             with client:
-                if response_type == 'add_admin_status_to_channel':
-                    response = client.loop.run_until_complete(add_admin(received_string[4], received_string[2]))
-                elif response_type == 'try_get_telegram_id_by_username':
-                    response = client.loop.run_until_complete(get_tg_id(received_string[2].strip()))
-                elif response_type == 'create_channel':
-                    response = client.loop.run_until_complete(create_channel(received_string[0], session_name))
-                else:
-                    response = "{result:'error', error_message:'Invalid response.'}"
+                response = client.loop.run_until_complete(create_channel(received_string[0]))
         else:
             response = "{result:'error', error_message:'client was not initialized.'}"
 

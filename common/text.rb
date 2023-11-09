@@ -570,8 +570,15 @@ DONT LET LOW LIFE SCAMMERS FOOL YOU
     def self.greeting_mod
         'Че по чем?'
     end
-    def self.accessing_justification
-        "Обработано"
+    def self.accessing_justification post_links
+        text = "Обработано!"
+        if post_links.any?
+            text << "\n Не забудьте изменить пост жалобы"
+            post_links.each do |link|
+                text << "\n<a href='#{link}'>Ссылка на пост</a>"
+            end
+        end
+        text
     end
     def self.blocking_user
         "Юзер заблокирован"

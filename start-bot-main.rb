@@ -1,6 +1,7 @@
 require './config/requires.rb'
 require_all './bot-main'
 
+
 log_path = "#{$root_path}/log/bot-main.log"
 $logger = Logger.new(log_path, 'weekly')
 $logger.formatter = proc do |severity, datetime, _progname, msg|

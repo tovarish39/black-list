@@ -79,10 +79,10 @@ def actual_complaint? complaint
 
 
     userTo = if complaint.telegram_id.present?
-        User.find_by(telegram_id:complaint.telegram_id)
-    else
-        User.find_by(username:complaint.username)
-    end
+                 User.find_by(telegram_id:complaint.telegram_id)
+             else
+                 User.find_by(username:complaint.username)
+             end
 
     actual_user_status = actual_user_statuses.include?(userTo.status)
     return false if !actual_user_status
@@ -103,6 +103,7 @@ end
 
 def view_complaints
     complaints_to_moderator = actual_complaints() # request_to_moderator     not_scamer или verified
+    
     userTo_justifications = users_whith_actual_justifications()
 
     date_time_now = DateTime.now.strftime('%d.%m.%Y %H:%M')
@@ -112,11 +113,13 @@ def view_complaints
     complaints_to_moderator.each do |complaint|
         userFrom = complaint.user
         userTo = User.find_by(telegram_id:complaint.telegram_id)
+        userTo ||= User.find_by(username:complaint.username)
         # puts userFrom, userTo
-        Send.mes(
-            Text.moderator_complaint(userFrom, userTo, complaint), 
-            M::Inline.moderator_complaint(complaint),
-        )
+
+        text = Text.moderator_complaint(userFrom, userTo, complaint) 
+
+        markup = M::Inline.moderator_complaint(complaint)
+        Send.mes(text, markup)
     end
     userTo_justifications.each do |userTo|
         accepted_complaints = Complaint.where(telegram_id:userTo.telegram_id).filter {|complaint| complaint.status == 'accepted_complaint'}
@@ -165,28 +168,7 @@ def update_black_list_user_whith_scamer_status complaint
     )
 end
 
-def getInvite_link_data scammer_data
-    # result = ''
-    
-    # Create a TCP socket
-    hostname = 'localhost'
-    port = 3400
-    
-    socket = TCPSocket.open(hostname, port)
-    
-    # Send a string to Python
-    string_to_send = "/user_data/#{scammer_data}"
-    socket.puts(string_to_send)
-    
-    # Receive the response from Python
-    socket.close_write # Without this line, the next line hangs
-    result = socket.read
-    
-    # Close the socket
-    socket.close
 
-    result
-end
 
 def reset_amount_sended_messages
     $amount_messages = 0
@@ -236,12 +218,15 @@ def handle_accept_complaint
             option_texts = complaint.media_data["texts"]
             photos = complaint.photo_file_ids
 
-            if voices.any? || voices.any?
+            # if voices.any? || voices.any?
+            if voices.any? || videos.any?
 
 
-
-                response = getInvite_link_data(scammer_data)
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                response = create_private_channel_by_userbot(scammer_data)
                 invite_link_data = JSON.parse(response)
+                complaint.update(userbot_session:invite_link_data['session'])
+
                 sleep 1 # так как бывает что бот ещё не успел стать участником канала
                 if invite_link_data['result'] === 'error'
                     Send.mes(invite_link_data, to: ENV['CHAT_ID_MY']) 
@@ -297,12 +282,27 @@ def handle_accept_complaint
                     end
                 end
             end
-        rescue => exception
+        rescue => error
+            is_proxies_expired = error.message.include?("unexpected token at ''")
+            is_connection_refused = error.message.include?('Connection refused')
+
+            if is_proxies_expired | is_connection_refused 
+              bot_moderator = Telegram::Bot::Client.new(ENV['TOKEN_MODERATOR']) 
+              message = 'Аренда прокси закончена, юзерботы отключены, свяжитесь с разработчиком'
+              Moderator.all.each do |moderator|
+                begin
+                  bot_moderator.api.send_message(chat_id:moderator.telegram_id, text:message)
+                rescue 
+                end
+              end
+            end
+
+
             text =  "<b>scammer_data =</b> #{scammer_data}"
             text << "\n<b>invite_link_data =</b> #{invite_link_data}"
-            text << "\n<b>from userbot on created channel scammer_id =</b>#{scammer.id} <b>complaint_id =</b>#{complaint.id} #{exception}"
+            text << "\n<b>from userbot on created channel scammer_id =</b>#{scammer.id} <b>complaint_id =</b>#{complaint.id} #{error}"
             Send.mes(text, to: ENV['CHAT_ID_MY'])
-            # Send.mes(exception.backtrace, to: ENV['CHAT_ID_MY'])            
+            # Send.mes(error.backtrace, to: ENV['CHAT_ID_MY'])            
         end
 
         
@@ -371,30 +371,62 @@ end
 def accessing_justification
     scamer = get_scamer_by_button()
 
-    if actual_scamer?(scamer)
+    if !actual_scamer?(scamer)
+        already_handled
+    else
 
         $user.access_amount = $user.access_amount + 1
         $user.decisions_per_day_amount = $user.decisions_per_day_amount + 1
         $user.save
 
-        accessed_complaints = Complaint.where(telegram_id:scamer.telegram_id).where(status:'accepted_complaint')
-
+        complaints__by_telegram_id = Complaint.where(telegram_id:scamer.telegram_id).where(status:'accepted_complaint')
+        complaints__by_username    = Complaint.where(username:scamer.username).where(status:'accepted_complaint')
+        accessed_complaints = complaints__by_telegram_id + complaints__by_username
+        mes = Send.mes(Text.loading_requiest)
+#####################
+        post_links = []
         if (accessed_complaints.any?) # есть жалобы # нет жалоб. изменено администратором
-            accessed_complaints.update_all(status:"rejected_complaint")
+            accessed_complaints.each do |complaint|
+                begin
+                    channel_telegram_id = ENV['TELEGRAM_CHANNEL_ID']
+                    user_telegram_id = $user.telegram_id
+                    session = complaint.userbot_session
+                    result = add_admin_status_to_channel(channel_telegram_id, user_telegram_id, session)
+                rescue => error
+                    is_proxies_expired = error.message.include?("unexpected token at ''")
+                    is_connection_refused = error.message.include?('Connection refused')
+  
+                    if is_proxies_expired | is_connection_refused 
+                      bot_moderator = Telegram::Bot::Client.new(ENV['TOKEN_MODERATOR']) 
+                      message = 'Аренда прокси закончена, юзерботы отключены, свяжитесь с разработчиком'
+                      Moderator.all.each do |moderator|
+                        begin
+                          bot_moderator.api.send_message(chat_id:moderator.telegram_id, text:message)
+                        rescue 
+                        end
+                      end
+                    end
+                end
+                complaint.update(status:"rejected_complaint")
+                post_links << "#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}"
+            end
         end
+####################
+        message_id = mes['result']['message_id']
+        $bot.api.delete_message(chat_id:$mes.message.chat.id, message_id:message_id)
 
-            scamer.update!(
-                status:'not_scamer:managed_by_moderator',
-                state_aasm:'start',
-                justification:nil
-            )
+        scamer.update!(
+            status:'not_scamer:managed_by_moderator',
+            state_aasm:'start',
+            justification:nil
+        )
+        clear_user = scamer
+        text = Text.accessing_justification(post_links)
+        Send.mes(text)
 
-            clear_user = scamer
-            Send.mes(Text.accessing_justification)
-            send_notify_to(clear_user, Text.you_not_scamer(scamer))
 
-    else
-        already_handled
+
+        send_notify_to(clear_user, Text.you_not_scamer(scamer))
     end
 end
 

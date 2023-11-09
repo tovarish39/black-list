@@ -17,10 +17,95 @@ $forwarder_user_telegram_id = ''
 $lookuping = false
 $verifing = false
 
+
+# ищем юзера по телеграм ид
+# ищем юзера по юзернейму
+# если только один в бд, то ок, если 2-а, то делаем слияние юзеров
+
+
+def search_user_by_telegram_id mes
+  User.find_by(telegram_id: $mes.from.id)
+end
+
+def search_user_by_username mes
+  User.find_by(username: $mes.from.username)
+end
+
+
+
+
+def update_user_by_telegram_id user, mes
+  user.update(
+    username:mes.from.username,
+    first_name:mes.from.first_name,
+    last_name:mes.from.last_name
+  )
+end
+
+def update_user_by_telegram_id user, mes
+  user.update(
+    telegram_id:mes.from.id,
+    first_name:mes.from.first_name,
+    last_name:mes.from.last_name
+  )
+end
+
+def merge_users user_by_telegram_id, user_by_username, mes
+  # оставляем user_by_telegram_id, 
+  # обновляем поле username из user_by_username, 
+  user_by_telegram_id.username = user_by_username.username
+  # обновляем поле статус. если у кого-то был статус - скамер, то пишем скамер
+  user_by_telegram_id.username.status = (user_by_telegram_id.status =~ /^scamer/) ? user_by_telegram_id.status : user_by_username.status
+  # обновляем поля  last_name и first_name из mes
+  user_by_telegram_id.first_name = mes.from.first_name
+  user_by_telegram_id.last_name = mes.from.last_name
+  user_by_telegram_id.save
+  # переписываем все жалобы поданые на юзернейм на нового юзера с телеграм ид
+  complaints_to_username = Complaint.where(username:user_by_username.username)
+  if complaints_to_username.any?
+    complaints_to_username.each do |complaint|
+      complaint.update(
+        telegram_id:user_by_telegram_id.telegram_id,
+        # username:,
+        first_name:user_by_telegram_id.first_name,
+        last_name:user_by_telegram_id.last_name,
+      )
+    end
+  end
+  # переписываем все жалобы созданные юзернеймом на нового юзера с телеграм ид
+  complaints_from_username = user_by_username.complaints
+  if complaints_from_username.any?
+    complaints_from_username.update(
+      user_id:user_by_telegram_id.id
+    )
+  end
+  # удаляем юзера с юзернеймом
+  user_by_username.destroy
+  return user_by_telegram_id
+end
+
+
+
 def handle
   # ####### group
   if mes_from_group_and_text?
-    $user = user_search_and_update_if_changed(User)
+    return if !$mes.from # заглушка
+
+    # если юзер есть в бд!
+    # когда кто-то пишет в группе нужно проверить скамер он или нет
+    # нужно делать слияние юзеров в бд когда пишет юзер с телеграм ид и юзернеймом, которые каждый есть в бд
+    user_by_telegram_id = search_user_by_telegram_id($mes)
+    user_by_username = search_user_by_username($mes)
+    
+    $user = if (user_by_telegram_id && user_by_username) 
+              merge_users(user_by_telegram_id, user_by_username, $mes)
+            elsif user_by_telegram_id
+              update_user_by_telegram_id(user_by_telegram_id, $mes)
+            elsif user_by_username
+              update_user_by_username(user_by_username, $mes)
+            else
+              nil
+            end
     # $lg ||= Ru # если в группах любых где у пользователя не определён язык
     if $user && $user.status =~ /^scamer/ # если в группе пишет скаммер
     # json = JSON.parse($mes.to_json)
@@ -65,6 +150,8 @@ def handle
           handle_verify_with_id_or_username()        
       end
     end
+
+
   else
       $user = user_search_and_update_if_changed(User)
       $user ||= create_user(User)

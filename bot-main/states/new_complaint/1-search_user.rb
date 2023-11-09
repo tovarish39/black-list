@@ -9,6 +9,10 @@ class StateMachine
       event :search_user_action, from: :search_user do
         transitions if: -> { mes_text?(Button.cancel) }, after: :to_start, to: :start
 
+
+        
+
+
         transitions if: -> { (is_user_shared? || mes_text?) && already_scammer_status? },       after: :notify_already_scammer_status, to: :search_user
         transitions if: -> { (is_user_shared? || mes_text?) && already_requesting_complaint? }, after: :notify_already_has_requesting_complaint, to: :search_user
         transitions if: -> { is_user_shared? || mes_text? }, after: :to_verify_user_info, to: :verify_user_info
@@ -49,6 +53,7 @@ def already_scammer_status?
   userTo = if  is_username_input
             User.find_by(username:$mes.text.sub('@',''))
            else 
+            # shared
             userTo_telegram_id = get_userTo_telegram_id()
             User.find_by(telegram_id:userTo_telegram_id)
            end
@@ -122,8 +127,42 @@ def to_verify_user_info
                 status: 'filling_by_user'
               )
               else # username
+                # попытка достать telegram_id по username от userbot
+                username = $mes.text.sub('@','')
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# получение телеграм ид от юзербота
+# если прокси закончился, то сообщение всем модераторам
+                begin
+                  try_get_telegram_id_by_username(username)
+# данные пока не вставляются
+# не известен положительный ответ от юзербота                  
+                  telegram_id = nil
+                  
+                rescue => error
+                  not_found = error.message.include?('Cannot find any entity corresponding to')
+                  is_proxies_expired = error.message.include?("unexpected token at ''")
+                  is_connection_refused = error.message.include?('Connection refused')
+
+                  if is_proxies_expired | is_connection_refused 
+                    bot_moderator = Telegram::Bot::Client.new(ENV['TOKEN_MODERATOR']) 
+                    message = 'Аренда прокси закончена, юзерботы отключены, свяжитесь с разработчиком'
+                    Moderator.all.each do |moderator|
+                      begin
+                        bot_moderator.api.send_message(chat_id:moderator.telegram_id, text:message)
+                      rescue 
+                      end
+                    end
+                  end
+
+                  telegram_id = nil 
+                end
+                
+
+
+
                 Complaint.create(
-                  username: $mes.text.sub('@',''),
+                  telegram_id:telegram_id,
+                  username: username,
                   user_id: $user.id,
                   status: 'filling_by_user'
                 ) 

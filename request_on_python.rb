@@ -64,7 +64,7 @@ begin
     # Close the socket
     socket.close
 rescue => exception
-    puts exception
+    # puts exception
 end
 
 def delete_text_after_char str, char

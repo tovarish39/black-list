@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_21_115421) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_09_090537) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -34,6 +34,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_21_115421) do
     t.string "handled_moderator_id"
     t.json "media_data", default: {"texts"=>[], "voice_file_ids"=>[], "video_note_file_ids"=>[]}
     t.string "photo_file_ids", array: true
+    t.string "userbot_session"
     t.index ["user_id"], name: "index_complaints_on_user_id"
   end
 
