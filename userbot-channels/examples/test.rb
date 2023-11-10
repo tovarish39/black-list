@@ -21,25 +21,20 @@ port = 3400
 socket = TCPSocket.open(hostname, port)
 
 # Send a string to Python
-string_to_send = "/user_data/@proverka123"
+string_to_send = "/user_data/@gorrus39"
 socket.puts(string_to_send)
 
 # Receive the response from Python
 socket.close_write # Without this line, the next line hangs
 response = socket.read
 
-begin
-  json_success = JSON.parse(response)
-  puts json_success
-  # puts json['result']
-  # puts json['telegram_id']
-  # puts json['invite_link']
-  # puts json['session']
-  # puts json['error_message']
-rescue 
-  json_error = {result:"failed", message:"Аренда прокси закончена, юзерботы отключены, свяжитесь с разработчиком"}
-  puts json_error
-end
+json_success = JSON.parse(response)
+puts json_success
+# puts json['result']
+# puts json['telegram_id']
+# puts json['invite_link']
+# puts json['session']
+# puts json['error_message']
 
 
 

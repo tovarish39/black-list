@@ -24,18 +24,18 @@ $verifing = false
 
 
 def search_user_by_telegram_id mes
-  User.find_by(telegram_id: $mes.from.id)
+  User.find_by(telegram_id: $mes.from.id, username:nil)
 end
 
 def search_user_by_username mes
-  User.find_by(username: $mes.from.username)
+  User.find_by(telegram_id:nil, username: $mes.from.username)
 end
 
 
 
 
-def update_user_by_telegram_id user, mes
-  user.update(
+def update_user_by_username users, mes
+  users.update_all(
     username:mes.from.username,
     first_name:mes.from.first_name,
     last_name:mes.from.last_name
@@ -50,29 +50,31 @@ def update_user_by_telegram_id user, mes
   )
 end
 
+
+
 def merge_users user_by_telegram_id, user_by_username, mes
   # оставляем user_by_telegram_id, 
-  # обновляем поле username из user_by_username, 
+  # обновляем поле username из users_by_username, 
   user_by_telegram_id.username = user_by_username.username
   # обновляем поле статус. если у кого-то был статус - скамер, то пишем скамер
-  user_by_telegram_id.username.status = (user_by_telegram_id.status =~ /^scamer/) ? user_by_telegram_id.status : user_by_username.status
+  (user_by_telegram_id.status =~ /^scamer/) ? user_by_telegram_id.status : user_by_username.status
   # обновляем поля  last_name и first_name из mes
   user_by_telegram_id.first_name = mes.from.first_name
   user_by_telegram_id.last_name = mes.from.last_name
   user_by_telegram_id.save
-  # переписываем все жалобы поданые на юзернейм на нового юзера с телеграм ид
+  # переписываем все жалобы поданые на юзернейм на юзера с телеграм ид
   complaints_to_username = Complaint.where(username:user_by_username.username)
   if complaints_to_username.any?
     complaints_to_username.each do |complaint|
       complaint.update(
         telegram_id:user_by_telegram_id.telegram_id,
-        # username:,
         first_name:user_by_telegram_id.first_name,
         last_name:user_by_telegram_id.last_name,
       )
     end
   end
-  # переписываем все жалобы созданные юзернеймом на нового юзера с телеграм ид
+  # переписываем все жалобы созданные юзернеймом на юзера с телеграм ид
+  # complaints_from_username = Complaint.where()
   complaints_from_username = user_by_username.complaints
   if complaints_from_username.any?
     complaints_from_username.update(
@@ -85,27 +87,33 @@ def merge_users user_by_telegram_id, user_by_username, mes
 end
 
 
+def get_user mes
+  user_by_telegram_id = search_user_by_telegram_id(mes)
+  user_by_username = search_user_by_username(mes)
+
+  user = if (user_by_telegram_id && user_by_username) 
+           merge_users(user_by_telegram_id, user_by_username, mes)
+         elsif user_by_telegram_id
+           update_user_by_telegram_id(user_by_telegram_id, mes)
+         elsif user_by_username
+           update_user_by_username(user_by_username, mes)
+         else
+           nil
+         end
+  user
+end
 
 def handle
+  return if !$mes.from # заглушка
+  $user = get_user($mes)
+  
+  
   # ####### group
   if mes_from_group_and_text?
-    return if !$mes.from # заглушка
 
     # если юзер есть в бд!
     # когда кто-то пишет в группе нужно проверить скамер он или нет
     # нужно делать слияние юзеров в бд когда пишет юзер с телеграм ид и юзернеймом, которые каждый есть в бд
-    user_by_telegram_id = search_user_by_telegram_id($mes)
-    user_by_username = search_user_by_username($mes)
-    
-    $user = if (user_by_telegram_id && user_by_username) 
-              merge_users(user_by_telegram_id, user_by_username, $mes)
-            elsif user_by_telegram_id
-              update_user_by_telegram_id(user_by_telegram_id, $mes)
-            elsif user_by_username
-              update_user_by_username(user_by_username, $mes)
-            else
-              nil
-            end
     # $lg ||= Ru # если в группах любых где у пользователя не определён язык
     if $user && $user.status =~ /^scamer/ # если в группе пишет скаммер
     # json = JSON.parse($mes.to_json)
@@ -154,6 +162,10 @@ def handle
 
   else
       $user = user_search_and_update_if_changed(User)
+
+
+
+
       $user ||= create_user(User)
       $lg = $user.lg if $user
       # puts $user.inspect
