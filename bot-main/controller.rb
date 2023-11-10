@@ -17,32 +17,15 @@ $forwarder_user_telegram_id = ''
 $lookuping = false
 $verifing = false
 
-
-# ищем юзера по телеграм ид
-# ищем юзера по юзернейму
-# если только один в бд, то ок, если 2-а, то делаем слияние юзеров
-
-
-def search_user_by_telegram_id mes
-  User.find_by(telegram_id: $mes.from.id, username:nil)
-end
-
-def search_user_by_username mes
-  User.find_by(telegram_id:nil, username: $mes.from.username)
-end
-
-
-
-
-def update_user_by_username users, mes
-  users.update_all(
+def update_user_by_telegram_id user, mes
+  user.update(
     username:mes.from.username,
     first_name:mes.from.first_name,
     last_name:mes.from.last_name
   )
 end
 
-def update_user_by_telegram_id user, mes
+def update_user_by_username user, mes
   user.update(
     telegram_id:mes.from.id,
     first_name:mes.from.first_name,
@@ -57,7 +40,8 @@ def merge_users user_by_telegram_id, user_by_username, mes
   # обновляем поле username из users_by_username, 
   user_by_telegram_id.username = user_by_username.username
   # обновляем поле статус. если у кого-то был статус - скамер, то пишем скамер
-  (user_by_telegram_id.status =~ /^scamer/) ? user_by_telegram_id.status : user_by_username.status
+  status = (user_by_telegram_id.status =~ /^scamer/) ? user_by_telegram_id.status : user_by_username.status
+  user_by_telegram_id.status = status
   # обновляем поля  last_name и first_name из mes
   user_by_telegram_id.first_name = mes.from.first_name
   user_by_telegram_id.last_name = mes.from.last_name
@@ -88,26 +72,65 @@ end
 
 
 def get_user mes
-  user_by_telegram_id = search_user_by_telegram_id(mes)
-  user_by_username = search_user_by_username(mes)
+  # варианты записей юзера в бд
 
-  user = if (user_by_telegram_id && user_by_username) 
+  # при сообщении боту # при подаче жалобы
+  # - telegram_id: string
+  # - username:    nil
+
+  # при сообщении боту # при подаче жалобы
+  # - telegram_id: string
+  # - username:    string
+
+  # при подаче жалобы
+  # - telegram_id: nil
+  # - username:    string
+
+  # при подаче 2-х жалоб отдельно на username и отдельно на telegram_id
+  # - telegram_id: string    &     telegram_id: nil     
+  # - username:    nil       &     username:    string  
+
+ # алгоритм поиска
+ # ищем по telegram_id 
+ # ищем по username если mes.from.id.present?
+ 
+ # комбинации 
+ # есть telegram_id нету по username + - => 1-н user       => создавался или через жалобу или на прямую => update_user()               
+ # есть telegram_id есть по username + + => 2-а юзера в бд => создавались через жалобу                  => merge_users() => update_user()                 
+ # нету telegram_id есть по username - + => 1-н user       => создавался через жалобу                   => update_user()
+ # нету telegram_id нету по username - - => 0              => нету юзера                                => create_user()
+
+
+  user_by_telegram_id = User.find_by(telegram_id:mes.from.id)
+  user_by_username    = User.find_by(username:mes.from.username) if mes.from.username.present?
+
+  # проверка что user_by_telegram_id и user_by_username не один и тот же user
+  is_two_accounts = (user_by_telegram_id && user_by_username) && (user_by_telegram_id.id != user_by_username.id)
+  user = if is_two_accounts
            merge_users(user_by_telegram_id, user_by_username, mes)
          elsif user_by_telegram_id
            update_user_by_telegram_id(user_by_telegram_id, mes)
          elsif user_by_username
            update_user_by_username(user_by_username, mes)
          else
-           nil
+          User.create(
+            telegram_id: $mes.from.id,
+            username:    $mes.from.username,
+            first_name:  $mes.from.first_name,
+            last_name:   $mes.from.last_name  
+          ) 
          end
   user
 end
 
 def handle
   return if !$mes.from # заглушка
+  # бот получая любое сообщение от юзера (через группу или через прямое общение)
+  # ищет в бд по телеграм ид и юзернейму (возможно 2-а аккаунта, так как жалоба может подаваться или на юзернейм без телеграм ид или на телеграм ид без юзернейма)
+  # если находится один аккаунт, то обновляются данные юзера
+  # если находятся 2-а аккаунта, то происходит их слияние
+  # если нету аккаунтов, то создаётся новый юзер
   $user = get_user($mes)
-  
-  
   # ####### group
   if mes_from_group_and_text?
 
@@ -161,11 +184,6 @@ def handle
 
 
   else
-      $user = user_search_and_update_if_changed(User)
-
-
-
-
       $user ||= create_user(User)
       $lg = $user.lg if $user
       # puts $user.inspect
@@ -175,7 +193,6 @@ def handle
         $user.update(chat_member_status: $mes.new_chat_member.status ) if $mes.new_chat_member.status.present?
       elsif new_private_channel_video?() 
         write_video()
-      elsif !$mes.from; # заглушка   
       elsif !is_bot_administrator_of_channel? # сообщение себе
       elsif user_is_blocked_by_moderator? 
       elsif !user_is_member_of_channel? && $lg.present? # если выбран язык, но не подписан на канал

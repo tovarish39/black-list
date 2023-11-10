@@ -12,7 +12,7 @@
       "name": "Debug",
       "request": "launch",
       "program": "bundle exec ruby start-bot-main.rb"
-      // "program": "bundle exec ruby start-bot-moderator.rb"
+      // "program": "bundle exe ruby start-bot-moderator.rb"
     },
     {
       "type": "ruby_lsp",

@@ -8,11 +8,6 @@ class StateMachine
 
       event :search_user_action, from: :search_user do
         transitions if: -> { mes_text?(Button.cancel) }, after: :to_start, to: :start
-
-
-        
-
-
         transitions if: -> { (is_user_shared? || mes_text?) && already_scammer_status? },       after: :notify_already_scammer_status, to: :search_user
         transitions if: -> { (is_user_shared? || mes_text?) && already_requesting_complaint? }, after: :notify_already_has_requesting_complaint, to: :search_user
         transitions if: -> { is_user_shared? || mes_text? }, after: :to_verify_user_info, to: :verify_user_info
@@ -46,14 +41,11 @@ def already_requesting_complaint?
 end
 
 def already_scammer_status?
-  is_username_input = mes_text? && !($mes.text =~ /^-?\d+$/)
-  
-  
-  
-  userTo = if  is_username_input
-            User.find_by(username:$mes.text.sub('@',''))
-           else 
-            # shared
+  userTo = if  is_telegram_id_text?($mes)
+             User.find_by(telegram_id:$mes.text)
+           elsif is_username_text?($mes) 
+             User.find_by(username:$mes.text.sub('@',''))
+           else  # shared
             userTo_telegram_id = get_userTo_telegram_id()
             User.find_by(telegram_id:userTo_telegram_id)
            end

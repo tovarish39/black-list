@@ -37,3 +37,11 @@ def create_user class_name
 
   ) 
 end
+
+def is_telegram_id_text? mes
+  mes_text? && (mes.text =~ /^-?\d+$/)
+end
+
+def is_username_text? mes
+  mes_text? && !(mes.text =~ /^-?\d+$/)
+end

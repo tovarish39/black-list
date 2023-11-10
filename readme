@@ -1,22 +1,30 @@
-.env
-adminka/.env
-in adminka -> bundle exec whenever --update-crontab
+# .env
+# adminka/.env
+# in adminka -> bundle exec whenever --update-crontab
 
-database.yml
+# database.yml
 
-in telegram-bot-ruby 
-module Telegram
-  module Bot
-    module Types
-      class ChatMember < Base
-        attribute :status, Types::String
-      end
-    end
-  end
-end
+# in telegram-bot-ruby 
+# module Telegram
+#   module Bot
+#     module Types
+#       class ChatMember < Base
+#         attribute :status, Types::String
+#       end
+#     end
+#   end
+# end
 
-rails c
-Counter.create
+# rails c
+# Counter.create
 
-command to main bot for change video in private channel for scammers
-=>  /config channel-video
+# command to main bot for change video in private channel for scammers
+# =>  /config channel-video
+
+
+юзер создаётся 
+- или через отправки боту сообщения напрямую или в группе, где бот - администратор
+- или через подачу на юзера жалобу
+
+при подаче жалобы пытаемся достать telegram_id, так как только он не меняется в телеграм, в отличии от юзернейма
+если пользователь создаёт жалобу только на юзернейм, пытаемся достать telegram_id через юзербота
