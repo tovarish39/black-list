@@ -29,13 +29,14 @@ end
 def create_user class_name
   return if !$mes.from # хз что приходит, после того как опубилковали в новый канал данные о скамере
 
-  class_name.create!(
+  user = class_name.create!(
     telegram_id: $mes.from.id,
     username:    $mes.from.username   || '-',
     first_name:  $mes.from.first_name || '-',
     last_name:   $mes.from.last_name  || '-'
 
   ) 
+  user
 end
 
 def is_telegram_id_text? mes

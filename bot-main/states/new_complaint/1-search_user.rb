@@ -19,10 +19,10 @@ end
 
 def get_userTo_by_mes mes
   data = parse_data_userTo(mes)
-  userTo = if  data.type == 'telegram_id'
-             User.find_by(telegram_id:data.value)
-           elsif data.type == 'username' 
-             User.find_by(username:data.value)
+  userTo = if  data[:type] == 'telegram_id'
+             User.find_by(telegram_id:data[:value])
+           elsif data[:type] == 'username' 
+             User.find_by(username:data[:value])
            end
   userTo
 end
@@ -108,22 +108,22 @@ end
 def to_verify_user_info
   # usetTo = get_userTo_by_mes($mes)
   data = parse_data_userTo($mes) # {type:'username'|'telegram_id', value:value}
-  filling_complait = if data.type == 'telegram_id'
+  filling_complait = if data[:type] == 'telegram_id'
                         $user.complaints.find_by(
                           status: 'filling_by_user',
-                          telegram_id: data.value
+                          telegram_id: data[:value]
                         )
-                     elsif data.type == 'username'
+                     elsif data[:type] == 'username'
                         $user.complaints.find_by(
                           status: 'filling_by_user',
-                          username: data.value
+                          username: data[:value]
                         )
                      end
 
   if filling_complait.present?
     complaint = filling_complait
-  elsif data.type == 'telegram_id'
-    userTo = User.find_by(telegram_id:data.value)
+  elsif data[:type] == 'telegram_id'
+    userTo = User.find_by(telegram_id:data[:value])
     if userTo.present?
       complaint =   $user.complaints.create(
         telegram_id: userTo.telegram_id,
@@ -133,18 +133,18 @@ def to_verify_user_info
         last_name:userTo.last_name
         )
     else
-      complaint = $user.complaints.create(telegram_id:data.value,status: 'filling_by_user' )
+      complaint = $user.complaints.create(telegram_id:data[:value],status: 'filling_by_user' )
     end
-  elsif data.type == 'username'
+  elsif data[:type] == 'username'
 # попытка достать telegram_id по username от userbot
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # получение телеграм ид от юзербота
 # если прокси закончился, то сообщение всем модераторам
     begin
-      res = try_get_telegram_id_by_username(data.value)
+      res = try_get_telegram_id_by_username(data[:value])
 # данные пока не вставляются
 # не известен положительный ответ от юзербота                  
-      telegram_id = nil
+      telegram_id = res['telegram_id'] if res['result'] == 'success'
     rescue => error
       not_found = error.message.include?('Cannot find any entity corresponding to')
       is_proxies_expired = error.message.include?("unexpected token at ''")
@@ -162,9 +162,9 @@ def to_verify_user_info
       telegram_id = nil 
     end
                 
-    complaint = $user.complaints.create(
+    complaint = Complaint.create(
                   telegram_id:telegram_id,
-                  username: data.value,
+                  username: data[:value],
                   user_id: $user.id,
                   status: 'filling_by_user'
                 ) 

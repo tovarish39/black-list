@@ -1,4 +1,4 @@
-require './config/requires.rb'
+require './config/requires'
 require_all './bot-moderator'
 
 log_path = "#{$root_path}/log/bot-moderator.log"

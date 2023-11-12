@@ -5,13 +5,14 @@ class StateMachine
         state :option_details
   
         event :option_details_action, from: :option_details do
+# кнопка отмена
             transitions if: -> { mes_text?(Button.cancel) }, after: :to_start       , to: :start
+# кнопка "Готово", когда в complaint есть username - завершение complaint
             transitions if: -> { mes_text?(Button.ready) &&  complaint_username_present? }  , after: :details_ready     , to: :start
+# кнопка "Готово", когда в complaint нету username
             transitions if: -> { mes_text?(Button.ready) && !complaint_username_present? }  , after: :to_input_username , to: :input_username
-              
+# текст, голос, кружочек
             transitions if: -> { mes_text?() || mes_voice?() || mes_video_note?()}, after: :handle_details , to: :option_details
-            # transitions after: :test , to: :option_details
-
         end
       end
     end
@@ -34,10 +35,10 @@ end
 def create_or_update_potential_user_scamer complaint
 # puts complaint.inspect
     potential_scamer = if complaint.telegram_id.present?
-        User.find_by(telegram_id:complaint.telegram_id)
-    else # username
-        User.find_by(username:complaint.username)
-    end
+                           User.find_by(telegram_id:complaint.telegram_id)
+                       else # username
+                           User.find_by(username:complaint.username)
+                       end
 # puts potential_scamer.inspect
     if potential_scamer.nil?
         # puts '1'
@@ -47,6 +48,8 @@ def create_or_update_potential_user_scamer complaint
             first_name: complaint.first_name,
             last_name:  complaint.last_name
         ) 
+
+    # непонятно для чего обновлять существующего юзера
     else
         # puts '2'
         potential_scamer.username   = complaint.username   if complaint.username.present?
@@ -68,14 +71,11 @@ def already_requesting_complaint_6? complaint
     complaints = if complaint.telegram_id.present?
         Complaint.where(telegram_id:complaint.telegram_id)
     else
-        Complaint.where(username:complaint.username.sub('@',''))
-    end
-
-    
+        Complaint.where(username:complaint.username)
+    end    
     # has_requesting_complain = Complaint.where(telegram_id:complaint.telegram_id).where(status:'request_to_moderator')
     has_requesting_complain = complaints.where(status:'request_to_moderator')
-    return true if has_requesting_complain.any?
-    false
+    has_requesting_complain.any?
 end
   
   def already_scammer_status_6? complaint
@@ -93,30 +93,31 @@ end
             #  end
 
     return false if userTo.nil?
-    return true if  userTo.status =~ /^scamer/
-    return false
+    userTo.status =~ /^scamer/
   end
 
-def details_ready
-    complaint = Complaint.find_by(id:$user.cur_complaint_id)
+
+def is_actual_complaint? complaint
     is_scamer = already_scammer_status_6?(complaint)
-    # puts is_scamer
     if is_scamer
          Send.mes(Text.notify_already_scammer_status)
          Send.mes(Text.greet, M::Reply.start)
-         return
+         return false
     end
 
     has_complaints = already_requesting_complaint_6?(complaint)
-    # puts has_complaints
-
     if has_complaints
         Send.mes(Text.notify_already_has_requesting_complaint)
         Send.mes(Text.greet, M::Reply.start)
-        return
-    end
+        return false
+   end
+   true
+end
 
+def details_ready
+    complaint = Complaint.find_by(id:$user.cur_complaint_id)
 
+    return if !is_actual_complaint?(complaint)
 
     notice_request complaint
     create_or_update_potential_user_scamer(complaint)
@@ -126,22 +127,10 @@ end
 def handle_details
     complaint = Complaint.find_by(id:$user.cur_complaint_id)
 
-    is_scamer = already_scammer_status_6?(complaint)
-    if is_scamer
-         Send.mes(Text.notify_already_scammer_status)
-         Send.mes(Text.greet, M::Reply.start)
-         return
-    end
-
-    has_complaints = already_requesting_complaint_6?(complaint)
-    if has_complaints
-        Send.mes(Text.notify_already_has_requesting_complaint)
-        Send.mes(Text.greet, M::Reply.start)
-        return
-   end
+    return if !is_actual_complaint?(complaint)
 
 
-   media_data_clone = deep_clone(complaint.media_data)
+    media_data_clone = deep_clone(complaint.media_data)
 
     if mes_voice?
         media_data_clone['voice_file_ids'].push($mes.voice.file_id)

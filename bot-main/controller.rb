@@ -23,6 +23,7 @@ def update_user_by_telegram_id user, mes
     first_name:mes.from.first_name,
     last_name:mes.from.last_name
   )
+  user
 end
 
 def update_user_by_username user, mes
@@ -31,6 +32,7 @@ def update_user_by_username user, mes
     first_name:mes.from.first_name,
     last_name:mes.from.last_name
   )
+  user
 end
 
 
@@ -185,7 +187,7 @@ def handle
 
   else
       $user ||= create_user(User)
-      $lg = $user.lg if $user
+      $lg = $user.lg #if $user
       # puts $user.inspect
 
       # ##############
@@ -229,14 +231,11 @@ def handle
         $user.update(state_aasm: new_state)
       end
     end
-  rescue  => exception
-
-
-
-    Send.mes(exception.message, to: ENV['CHAT_ID_MY'])
+  # rescue  => exception
+  #   Send.mes(exception.message, to: ENV['CHAT_ID_MY'])
     # Send.mes("<b>@user = </b>#{$user.inspect}", to: ENV['CHAT_ID_MY'])
     # Send.mes("<b>@mes = </b>#{$mes.inspect}", to: ENV['CHAT_ID_MY'])
-    Send.mes(exception.backtrace, to: ENV['CHAT_ID_MY'])
+    # Send.mes(exception.backtrace, to: ENV['CHAT_ID_MY'])
 
 end
 
