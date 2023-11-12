@@ -101,6 +101,36 @@ def is_telegram_id text
 end
 
 
+def get_telegram_id_local data
+  # попытка достать telegram_id по username от userbot
+  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  # получение телеграм ид от юзербота
+  # если прокси закончился, то сообщение всем модераторам
+  begin
+    res = try_get_telegram_id_by_username(data[:value])
+  # данные пока не вставляются
+  # не известен положительный ответ от юзербота                  
+    telegram_id = res['telegram_id'] if res['result'] == 'success'
+  rescue => error
+    not_found = error.message.include?('Cannot find any entity corresponding to')
+    is_proxies_expired = error.message.include?("unexpected token at ''")
+    is_connection_refused = error.message.include?('Connection refused')
+    if is_proxies_expired | is_connection_refused 
+      bot_moderator = Telegram::Bot::Client.new(ENV['TOKEN_MODERATOR']) 
+      message = 'Аренда прокси закончена, юзерботы отключены, свяжитесь с разработчиком'
+      Moderator.all.each do |moderator|
+        begin
+          bot_moderator.api.send_message(chat_id:moderator.telegram_id, text:message)
+        rescue 
+        end
+      end
+    end
+    telegram_id = nil 
+  end
+  telegram_id
+end
+
+
 # если на введённые данные telegram_id или username
 # уже есть начатая жалоба, то заполняем её
 # иначе создаём новую на введённые данные
@@ -121,6 +151,11 @@ def to_verify_user_info
                      end
 
   if filling_complait.present?
+    telegram_id = get_telegram_id_local(data) if !filling_complait.telegram_id.present?
+    if telegram_id
+      filling_complait.telegram_id = telegram_id
+      filling_complait.save
+    end
     complaint = filling_complait
   elsif data[:type] == 'telegram_id'
     userTo = User.find_by(telegram_id:data[:value])
@@ -136,31 +171,7 @@ def to_verify_user_info
       complaint = $user.complaints.create(telegram_id:data[:value],status: 'filling_by_user' )
     end
   elsif data[:type] == 'username'
-# попытка достать telegram_id по username от userbot
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-# получение телеграм ид от юзербота
-# если прокси закончился, то сообщение всем модераторам
-    begin
-      res = try_get_telegram_id_by_username(data[:value])
-# данные пока не вставляются
-# не известен положительный ответ от юзербота                  
-      telegram_id = res['telegram_id'] if res['result'] == 'success'
-    rescue => error
-      not_found = error.message.include?('Cannot find any entity corresponding to')
-      is_proxies_expired = error.message.include?("unexpected token at ''")
-      is_connection_refused = error.message.include?('Connection refused')
-      if is_proxies_expired | is_connection_refused 
-        bot_moderator = Telegram::Bot::Client.new(ENV['TOKEN_MODERATOR']) 
-        message = 'Аренда прокси закончена, юзерботы отключены, свяжитесь с разработчиком'
-        Moderator.all.each do |moderator|
-          begin
-            bot_moderator.api.send_message(chat_id:moderator.telegram_id, text:message)
-          rescue 
-          end
-        end
-      end
-      telegram_id = nil 
-    end
+    telegram_id = get_telegram_id_local(data)
                 
     complaint = Complaint.create(
                   telegram_id:telegram_id,
