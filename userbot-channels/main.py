@@ -28,15 +28,6 @@ sessions = [file for file in dirlist if re.match(r".*\.session$", file) is not N
 # Initialization sessions and their proxies as dictionary
 sessions_proxy = {}
 
-def logging(text: str) -> None:
-    """
-    Log all events to logs.txt.
-    :param text: Text to log.
-    :return: None.
-    """
-    with open('logs.txt', 'a') as f:
-        f.write(text + '\n')
-
 def get_unused_proxy() -> tuple:
     """
     Parse proxies.txt and get unused proxy.
@@ -221,8 +212,8 @@ try:
         received_string = client_socket.recv(MAX_RECV_BYTE).decode()
 
         # Logging date and received string
-        logging(f'\nDate: {datetime.now()}')
-        logging(f'Received string: {received_string.strip()}')
+        print(f'\nDate: {datetime.now()}')
+        print(f'Received string: {received_string.strip()}')
 
         if re.match(r"/add_admin_status_to_channel/.*/user/.*", received_string) is not None:
             response_type = 'add_admin_status_to_channel'
@@ -254,7 +245,7 @@ try:
             sessions = sessions[1:] + [sessions[0]]
 
         # Logging session name
-        logging(f'Using session: {session_name}')
+        print(f'Using session: {session_name}')
 
         # Run main function
         if client is not None:
@@ -273,6 +264,9 @@ try:
         # Send response and close the client socket
         client_socket.send(response.encode())
         client_socket.close()
+
+        # Logging response
+        print(f'Response: {response.strip()}')
 finally:
     # Close the server socket
     server_socket.close()
