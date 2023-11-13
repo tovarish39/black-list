@@ -222,8 +222,11 @@ def handle_accept_complaint
         photos = complaint.photo_file_ids
         if voices.any? || videos.any?
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            puts 'create_private_channel_by_userbot(scammer_data)'
+            puts  'scammer_data', scammer_data.inspect
             response = create_private_channel_by_userbot(scammer_data)
             invite_link_data = JSON.parse(response)
+            puts  'invite_link_data', invite_link_data.inspect
             
             
             sleep 1 # так как бывает что бот ещё не успел стать участником канала
@@ -392,7 +395,13 @@ def accessing_justification
                 channel_telegram_id = complaint.private_channel_telegram_id # ENV['TELEGRAM_CHANNEL_ID']
                 user_telegram_id = $user.telegram_id
                 session = complaint.userbot_session
+
+                puts 'add_admin_status_to_channel(channel_telegram_id, user_telegram_id, session)'
+                puts 'channel_telegram_id', channel_telegram_id
+                puts 'user_telegram_id', user_telegram_id
+                puts 'session', session
                 result = add_admin_status_to_channel(channel_telegram_id, user_telegram_id, session)
+                puts 'result',result
             rescue => error
                 is_proxies_expired = error.message.include?("unexpected token at ''")
                 is_connection_refused = error.message.include?('Connection refused')

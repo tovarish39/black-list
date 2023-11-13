@@ -107,7 +107,10 @@ def get_telegram_id_local data
   # получение телеграм ид от юзербота
   # если прокси закончился, то сообщение всем модераторам
   begin
+    puts '1-search_user.rb'
+    puts 'data[:value]', data[:value]
     res = try_get_telegram_id_by_username(data[:value])
+    puts 'res', res
   # данные пока не вставляются
   # не известен положительный ответ от юзербота                  
     telegram_id = res['telegram_id'] if res['result'] == 'success'

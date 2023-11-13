@@ -1,5 +1,6 @@
 import socket
 import re
+from datetime import datetime
 from telethon import TelegramClient
 from config import hostname, port, channel_description, bot_username, channel_image_path
 from os import listdir
@@ -27,6 +28,14 @@ sessions = [file for file in dirlist if re.match(r".*\.session$", file) is not N
 # Initialization sessions and their proxies as dictionary
 sessions_proxy = {}
 
+def logging(text: str) -> None:
+    """
+    Log all events to logs.txt.
+    :param text: Text to log.
+    :return: None.
+    """
+    with open('logs.txt', 'a') as f:
+        f.write(text + '\n')
 
 def get_unused_proxy() -> tuple:
     """
@@ -210,6 +219,11 @@ try:
 
         # Receive the string from Ruby
         received_string = client_socket.recv(MAX_RECV_BYTE).decode()
+
+        # Logging date and received string
+        logging(f'\nDate: {datetime.now()}')
+        logging(f'Received string: {received_string.strip()}')
+
         if re.match(r"/add_admin_status_to_channel/.*/user/.*", received_string) is not None:
             response_type = 'add_admin_status_to_channel'
             received_string = received_string.split('/')
@@ -238,6 +252,9 @@ try:
                 session_name = re.findall(r'.*(?=\.session)|$', sessions[0])[0]
             client = TelegramClient(f'sessions/{session_name}', api_id, api_hash, proxy=sessions_proxy[sessions[0]])
             sessions = sessions[1:] + [sessions[0]]
+
+        # Logging session name
+        logging(f'Using session: {session_name}')
 
         # Run main function
         if client is not None:
