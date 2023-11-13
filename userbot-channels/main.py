@@ -28,6 +28,18 @@ sessions = [file for file in dirlist if re.match(r".*\.session$", file) is not N
 # Initialization sessions and their proxies as dictionary
 sessions_proxy = {}
 
+# Initialization sessions and their IDs as dictionary
+sessions_id = {}
+
+async def get_session_id() -> int:
+    """
+    Get session ID.
+    :return: Session ID.
+    """
+    info = await client.get_me()
+
+    return info.id
+
 def get_unused_proxy() -> tuple:
     """
     Parse proxies.txt and get unused proxy.
@@ -132,6 +144,10 @@ async def create_channel(user_data: str, userbot: str) -> str:
         return '{result:"error", "error_message":"username or Telegram ID format is incorrect."}'
 
     try:
+        # Get session info
+        session_info = await client.get_me()
+        session_id = session_info.id
+
         # Create private channel
         private_channel = await client(CreateChannelRequest(
             title=f"{user_data} - ripper scam /// ORACLE'S LIST",
@@ -183,6 +199,14 @@ async def create_channel(user_data: str, userbot: str) -> str:
                 private_channel_id = str(dialog.id)
                 break
 
+        # Add sessions as admins
+        try:
+            for id in sessions_id.values():
+                if session_id != id:
+                    await add_admin(str(id), private_channel_id)
+        except Exception:
+            pass
+
         # Result
         if private_channel_id is not None:
             result = '{"result":"success", "telegram_id":"'+private_channel_id+'", "invite_link":"'+invite_link+'", "session":"'+userbot+'"}'
@@ -198,6 +222,13 @@ async def create_channel(user_data: str, userbot: str) -> str:
 for session in sessions:
     sessions_proxy[session] = get_unused_proxy()
 
+# Get sessions Telegram IDs
+for session in sessions:
+    session_name = re.findall(r'.*(?=\.session)|$', session)[0]
+    client = TelegramClient(f'sessions/{session_name}', api_id, api_hash, proxy=sessions_proxy[sessions[0]])
+    with client:
+        sessions_id[session] = client.loop.run_until_complete(get_session_id())
+
 try:
     while True:
         # Wait for connection
@@ -210,10 +241,6 @@ try:
 
         # Receive the string from Ruby
         received_string = client_socket.recv(MAX_RECV_BYTE).decode()
-
-        # Logging date and received string
-        print(f'\nDate: {datetime.now()}')
-        print(f'Received string: {received_string.strip()}')
 
         if re.match(r"/add_admin_status_to_channel/.*/user/.*", received_string) is not None:
             response_type = 'add_admin_status_to_channel'
@@ -237,21 +264,24 @@ try:
 
         # Client initialization
         if sessions is not []:
-            if response_type == 'add_admin_status_to_channel':
-                session_name = received_string[6].strip()
-            else:
+            if response_type != 'add_admin_status_to_channel':
                 session_name = re.findall(r'.*(?=\.session)|$', sessions[0])[0]
-            client = TelegramClient(f'sessions/{session_name}', api_id, api_hash, proxy=sessions_proxy[sessions[0]])
-            sessions = sessions[1:] + [sessions[0]]
-
-        # Logging session name
-        print(f'Using session: {session_name}')
+                client = TelegramClient(f'sessions/{session_name}', api_id, api_hash, proxy=sessions_proxy[sessions[0]])
+                sessions = sessions[1:] + [sessions[0]]
+            else:
+                for session in sessions:
+                    session_name = re.findall(r'.*(?=\.session)|$', session)[0]
+                    client = TelegramClient(f'sessions/{session_name}', api_id, api_hash, proxy=sessions_proxy[session])
+                    with client:
+                        response = client.loop.run_until_complete(add_admin(received_string[4].strip(), received_string[2]))
+                        if response == '{"result":"success"}':
+                            break
 
         # Run main function
         if client is not None:
             with client:
                 if response_type == 'add_admin_status_to_channel':
-                    response = client.loop.run_until_complete(add_admin(received_string[4], received_string[2]))
+                    pass
                 elif response_type == 'try_get_telegram_id_by_username':
                     response = client.loop.run_until_complete(get_tg_id(received_string[2].strip()))
                 elif response_type == 'create_channel':
@@ -264,9 +294,6 @@ try:
         # Send response and close the client socket
         client_socket.send(response.encode())
         client_socket.close()
-
-        # Logging response
-        print(f'Response: {response.strip()}')
 finally:
     # Close the server socket
     server_socket.close()
