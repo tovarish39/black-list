@@ -27,6 +27,7 @@ def handle_text_to_lookup group_chat_id = nil
 
     lookup_requests = counter.lookup_requests_from_bots
     counter.update(lookup_requests_from_bots: lookup_requests + 1 )
-
-    spawn("bundle exec ruby #{$root_path}/request_on_python.rb #{data} #{$user.telegram_id} #{group_chat_id}")
+    request = "bundle exec ruby #{$root_path}/request_on_python.rb #{data} #{$user.telegram_id} #{group_chat_id}"
+    puts request
+    spawn(request)
 end

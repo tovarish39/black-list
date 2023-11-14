@@ -321,7 +321,7 @@ module Text
         return '♾ 正在检查...' if $lg == Cn
     end
     def self.not_availible
-        'Сервис временно не доступен'
+        'Сервис временно недоступен'
     end
 
 

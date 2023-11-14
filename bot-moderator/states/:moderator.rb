@@ -396,12 +396,8 @@ def accessing_justification
                 user_telegram_id = $user.telegram_id
                 session = complaint.userbot_session
 
-                puts 'add_admin_status_to_channel(channel_telegram_id, user_telegram_id, session)'
-                puts 'channel_telegram_id', channel_telegram_id
-                puts 'user_telegram_id', user_telegram_id
-                puts 'session', session
                 result = add_admin_status_to_channel(channel_telegram_id, user_telegram_id, session)
-                puts 'result',result
+
             rescue => error
                 is_proxies_expired = error.message.include?("unexpected token at ''")
                 is_connection_refused = error.message.include?('Connection refused')
@@ -418,7 +414,9 @@ def accessing_justification
                 end
             end
             complaint.update(status:"rejected_complaint")
-            post_links << "#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}"
+            has_voices = complaint.media_data['voice_file_ids'].any?
+            has_videos = complaint.media_data['video_note_file_ids'].any?
+            post_links << "#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}" if has_voices || has_videos
         end
     end
 ####################

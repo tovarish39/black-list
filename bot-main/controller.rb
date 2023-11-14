@@ -286,6 +286,8 @@ def handle_verify_with_id_or_username
   result_of_verifying(user, data)
 end
 
+
+
   def user_is_blocked_by_moderator?
      $user.status === 'scamer:blocked_by_moderator'
   end
