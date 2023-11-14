@@ -261,7 +261,9 @@ module Text
             text = ""
             text << "#{data}" if user.nil?
             text << "\n#{Text.user_info(user)}" if user.present?
-            text << "\n#{formatted_status} <a href='https://t.me/ripperlistbot'>@oralcelist</a>"
+            text << "\n#{formatted_status} <a href='#{ENV['ORACLE_LIST']}'>@oraclelist</a>"
+            # text << "\n#{formatted_status} <a href='https://t.me/ripperlistbot'>@oraclelist</a>"
+            
             return text
         elsif $lg.nil? && status == 'scamer' # когда в других группах в любых, где язык не опрделён
             complaint = Complaint.find_by(telegram_id:user.telegram_id)
@@ -271,8 +273,8 @@ module Text
             text << "\nripper / кидала / 骗子" if status == 'scamer'
             text << "\n<a href='#{ENV['MAIN_BOT_LINK']}'>APPEAL  / ОБЖАЛОВАТЬ / 上诉 / APELACIÓN</a>"
             text << "\n<a href='#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}'>report</a>\n\n" if complaint && complaint.mes_id_published_in_channel
-            text << "\n<a href='#{ENV['ORACLE_LIST']}'>@oralcelist</a>"
-            # text << "\n<a href='https://t.me/ripperlistbot'>@oralcelist</a>"
+            text << "\n<a href='#{ENV['ORACLE_LIST']}'>@oraclelist</a>"
+            # text << "\n<a href='https://t.me/ripperlistbot'>@oraclelist</a>"
             
             return text
         end
@@ -283,7 +285,9 @@ module Text
         # return '' if $lg == En 
         # return '' if $lg == Es 
         # return '' if $lg == Cn
-        "\n#{data} #{status} <a href='https://t.me/ripperlistbot'>@oralcelist</a>"
+        "\n#{data} #{status} <a href='#{ENV['ORACLE_LIST']}'>@oraclelist</a>"
+        # "\n#{data} #{status} <a href='https://t.me/ripperlistbot'>@oraclelist</a>"
+        
     end
 #!
     def self.support
