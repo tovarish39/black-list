@@ -22,7 +22,13 @@ def get_userTo_by_mes mes
   userTo = if  data[:type] == 'telegram_id'
              User.find_by(telegram_id:data[:value])
            elsif data[:type] == 'username' 
-             User.find_by(username:data[:value])
+            # проверка есть ли по найденному телеграм ид от юзербота юзер
+             username = data[:value]
+             telegram_id = get_telegram_id_local(username)
+             if telegram_id
+              user = User.find_by(telegram_id:telegram_id)
+             end
+             user ||= User.find_by(username:username)
            end
   userTo
 end
@@ -101,16 +107,13 @@ def is_telegram_id text
 end
 
 
-def get_telegram_id_local data
+def get_telegram_id_local username
   # попытка достать telegram_id по username от userbot
   # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   # получение телеграм ид от юзербота
   # если прокси закончился, то сообщение всем модераторам
   begin
-    puts '1-search_user.rb'
-    puts 'data[:value]', data[:value]
-    res = try_get_telegram_id_by_username(data[:value])
-    puts 'res', res
+    res = try_get_telegram_id_by_username(username)
   # данные пока не вставляются
   # не известен положительный ответ от юзербота                  
     telegram_id = res['telegram_id'] if res['result'] == 'success'
@@ -139,8 +142,23 @@ end
 # иначе создаём новую на введённые данные
 # если введён username пытаемся достать telegram_id через бота
 def to_verify_user_info
+  # если введён юзернейм, по этому юзернейму не найдена complaint.status == 'filling_by_user'
+  # но уже есть поданная жалоба на этот телеграм ид, то нужно не создавать новую жалобу
+
+  # получение данных юзернейм или телеграм ид
+  # поиск юзера по данным для получения остальных данных
+  # если нету телеграм ид , поиск телеграм ид через юзербота
+  # если есть телеграм ид от юзербота, проверка на налич
+
   # usetTo = get_userTo_by_mes($mes)
   data = parse_data_userTo($mes) # {type:'username'|'telegram_id', value:value}
+
+
+
+
+
+
+
   filling_complait = if data[:type] == 'telegram_id'
                         $user.complaints.find_by(
                           status: 'filling_by_user',
@@ -171,11 +189,24 @@ def to_verify_user_info
         last_name:userTo.last_name
         )
     else
-      complaint = $user.complaints.create(telegram_id:data[:value],status: 'filling_by_user' )
+      complaint = Complaint.create(
+        telegram_id:data[:value],
+        status: 'filling_by_user',
+        user_id: $user.id,
+        )
     end
   elsif data[:type] == 'username'
     telegram_id = get_telegram_id_local(data)
-                
+    # если после получения телеграм ид стал находиться скамер или жалобы == request_to_moderator
+    # то пишем что уже скамер или отправлена жалоба
+    # нужно ли делать изменение userTo - не нужно!
+    # if telegram_id
+    #   userTo = User.find_by(telegram_id:telegram_id)
+    #   if userTo && userTo =~ /^scamer/
+
+    #   end
+    # end
+
     complaint = Complaint.create(
                   telegram_id:telegram_id,
                   username: data[:value],
