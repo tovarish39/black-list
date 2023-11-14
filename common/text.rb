@@ -271,7 +271,9 @@ module Text
             text << "\nripper / кидала / 骗子" if status == 'scamer'
             text << "\n<a href='#{ENV['MAIN_BOT_LINK']}'>APPEAL  / ОБЖАЛОВАТЬ / 上诉 / APELACIÓN</a>"
             text << "\n<a href='#{ENV['TELEGRAM_CHANNEL_USERNAME']}/#{complaint.mes_id_published_in_channel}'>report</a>\n\n" if complaint && complaint.mes_id_published_in_channel
-            text << "\n<a href='https://t.me/ripperlistbot'>@oralcelist</a>"
+            text << "\n<a href='#{ENV['ORACLE_LIST']}'>@oralcelist</a>"
+            # text << "\n<a href='https://t.me/ripperlistbot'>@oralcelist</a>"
+            
             return text
         end
     end
