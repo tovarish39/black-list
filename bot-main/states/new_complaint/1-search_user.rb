@@ -23,12 +23,11 @@ def get_userTo_by_mes mes
              User.find_by(telegram_id:data[:value])
            elsif data[:type] == 'username' 
             # проверка есть ли по найденному телеграм ид от юзербота юзер
-             username = data[:value]
-             telegram_id = get_telegram_id_local(username)
+             telegram_id = get_telegram_id_local(data)
              if telegram_id
               user = User.find_by(telegram_id:telegram_id)
              end
-             user ||= User.find_by(username:username)
+             user ||= User.find_by(username:data[:value])
            end
   userTo
 end
@@ -107,13 +106,13 @@ def is_telegram_id text
 end
 
 
-def get_telegram_id_local username
+def get_telegram_id_local data
   # попытка достать telegram_id по username от userbot
   # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   # получение телеграм ид от юзербота
   # если прокси закончился, то сообщение всем модераторам
   begin
-    res = try_get_telegram_id_by_username(username)
+    res = try_get_telegram_id_by_username(data[:value])
   # данные пока не вставляются
   # не известен положительный ответ от юзербота                  
     telegram_id = res['telegram_id'] if res['result'] == 'success'
