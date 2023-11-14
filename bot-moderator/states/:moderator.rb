@@ -222,11 +222,11 @@ def handle_accept_complaint
         photos = complaint.photo_file_ids
         if voices.any? || videos.any?
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            puts 'create_private_channel_by_userbot(scammer_data)'
-            puts  'scammer_data', scammer_data.inspect
+            # puts 'create_private_channel_by_userbot(scammer_data)'
+            # puts  'scammer_data', scammer_data.inspect
             response = create_private_channel_by_userbot(scammer_data)
             invite_link_data = JSON.parse(response)
-            puts  'invite_link_data', invite_link_data.inspect
+            # puts  'invite_link_data', invite_link_data.inspect
             
             
             sleep 1 # так как бывает что бот ещё не успел стать участником канала
