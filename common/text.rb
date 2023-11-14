@@ -498,7 +498,7 @@ DONT LET LOW LIFE SCAMMERS FOOL YOU
     end
 
     def self.input_username
-        "⚠️ Отправьте последний известный вам юзернем" 
+        "⚠️ Отправьте последний известный вам юзернейм" 
     end
 
 
