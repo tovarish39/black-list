@@ -334,21 +334,41 @@ module Text
 
     def self.publication_in_channel complaint, scammer, invite_link_data
 %{NEW REPORT #N#{complaint.id} 
-#{"@#{scammer.username} " if scammer.username.present?}ripper · 骗子 · scammer
+#{"@#{scammer.username} " if scammer.username.present?}suspect · 嫌疑人 · sospechoso · подозреваемый
     
-<a href='#{complaint.telegraph_link}'>Link</a>
+<a href='#{complaint.telegraph_link}'>#{complaint.telegraph_link}</a>
     
 #{"#{"<b>ID:</b> <code>#{scammer.telegram_id}</code>" if scammer.telegram_id}"}
 
-✅ APPROVED · 已确认 · SE CONFIRMA · CONFIRMÉ
+⚠️ IN REVIEW · 审核中 · EN REVISIÓN · EN COURS D'EXAMEN · НА РАССМОТРЕНИИ
     
-🛡 <a href='#{ENV['MAIN_BOT_LINK']}'>SUBMIT A REPORT OR AN APPEAL</a>
+🛡 <a href='#{ENV['TO_SUBMIT_AN_APPEAL_CONTACT_US']}'>TO SUBMIT AN APPEAL, CONTACT US</a>
     
 <a href='#{ENV['ORACLE_LIST']}'>@oraclelist</a>
 
 #{"<a href='#{invite_link_data['invite_link']}'>additional information</a>" if invite_link_data['result'] === 'success'}
     }
     end
+
+# old
+    # def self.publication_in_channel complaint, scammer, invite_link_data
+    #     %{NEW REPORT #N#{complaint.id} 
+    #     #{"@#{scammer.username} " if scammer.username.present?}ripper · 骗子 · scammer
+            
+    #     <a href='#{complaint.telegraph_link}'>Link</a>
+            
+    #     #{"#{"<b>ID:</b> <code>#{scammer.telegram_id}</code>" if scammer.telegram_id}"}
+        
+    #     ✅ APPROVED · 已确认 · SE CONFIRMA · CONFIRMÉ
+            
+    #     🛡 <a href='#{ENV['MAIN_BOT_LINK']}'>SUBMIT A REPORT OR AN APPEAL</a>
+            
+    #     <a href='#{ENV['ORACLE_LIST']}'>@oraclelist</a>
+        
+    #     #{"<a href='#{invite_link_data['invite_link']}'>additional information</a>" if invite_link_data['result'] === 'success'}
+    #         }
+    #         end
+
 #!
     def self.notify_already_has_requesting_complaint
         return "🥴 На выбранного пользователя уже была отправлена жалоба.\n\nВ данный момент она на рассмотрении. В случае её отклонения модератором, появится возможность отправлять новую жалобу." if $lg == Ru
