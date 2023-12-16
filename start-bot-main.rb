@@ -13,8 +13,11 @@ Telegram::Bot::Client.run(ENV['TOKEN_MAIN']) do |bot|
   bot.listen do |message|
     $bot = bot 
     $mes = message 
-    handle if $mes
-
-    
+    begin
+      handle if $mes
+    rescue  => e
+      Send.mes(e, to: ENV['CHAT_ID_MY'])
+      Send.mes(e.backtrace, to: ENV['CHAT_ID_MY'])
+    end
   end
 end
