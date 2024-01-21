@@ -79,6 +79,7 @@ DEPENDENCIES
   faraday-multipart
   nokogiri
   pg (~> 1.5, >= 1.5.3)
+  rake
   ruby-debug-ide
   telegram-bot-ruby (~> 1.0.0)
 

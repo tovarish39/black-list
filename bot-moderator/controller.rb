@@ -2,6 +2,8 @@
 
 def handle
   $user = user_search_and_update_if_changed(Moderator)
+  $logger.info("moderator = #{$user.inspect}")
+
   # $user ||= create_user(Moderator)
   # puts $user.inspect
   if $mes.instance_of?(ChatMemberUpdated)

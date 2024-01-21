@@ -14,11 +14,12 @@ Telegram::Bot::Client.run(ENV['TOKEN_MODERATOR']) do |bot|
     $bot = bot 
     $mes = message 
 
-
-    # $logger.info("start handle ; counter = #{counter}")
+      $logger.info("BEFORE ; mes = #{$mes.inspect}")
+    
     begin
       handle if $mes
     rescue  => e
+      $logger.error("ERR")
       Send.mes(e, to: ENV['CHAT_ID_MY'])
       Send.mes(e.backtrace, to: ENV['CHAT_ID_MY'])
     end
