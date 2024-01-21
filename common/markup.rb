@@ -10,43 +10,45 @@ module M
                       [IB.es, IB.cn]
                     ])
     end
-    def self.moderator_complaint complaint
+
+    def self.moderator_complaint(complaint)
       self::IM.call([
-        [IB.accept_complaint(complaint)],
-        [IB.reject_complaint(complaint)]
-      ])
-      
+                      [IB.accept_complaint(complaint)],
+                      [IB.reject_complaint(complaint)]
+                    ])
     end
+
     def self.view_complaints
       self::IM.call([
-        [IB.justification]
-      ])
+                      [IB.justification]
+                    ])
     end
-    def self.justification_request_to_moderator user
+
+    def self.justification_request_to_moderator(user)
       self::IM.call([
-        [IB.access_justification(user)],
-        [IB.block_user(user)]
-      ])
+                      [IB.access_justification(user)],
+                      [IB.block_user(user)]
+                    ])
     end
+
     def self.link_to_oracles_tips
       self::IM.call([
-        [IB.link_to_oracles_tips],
-      ])
+                      [IB.link_to_oracles_tips]
+                    ])
     end
+
     def self.link_to_support
       self::IM.call([
-        [IB.link_to_support],
-      ])
+                      [IB.link_to_support]
+                    ])
     end
-    
-
   end
 
   module Reply
-    RM = -> (*buttons){ 
+    RM = lambda { |*buttons|
       Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: make_objects(buttons), resize_keyboard: true)
     }
-    RM_with_user_request = -> (buttons){ 
+    RM_with_user_request = lambda { |buttons|
       Telegram::Bot::Types::ReplyKeyboardMarkup.new(keyboard: buttons, resize_keyboard: true)
     }
 
@@ -108,6 +110,7 @@ module M
         [Button.cancel]
       )
     end
+
     def self.greeting_mod
       self::RM.call(
         [Button.active_complaints]

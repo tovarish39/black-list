@@ -24,6 +24,7 @@ def to_justification
   Send.mes(Text.explain_justification)
 end
 
+# когда отправил оправдание модераторам
 def justification_already_used
   accepted_complaints = Complaint.where(telegram_id:$user.telegram_id).filter {|complaint| complaint.status == 'accepted_complaint'}
   telegraph_links = accepted_complaints.map(&:telegraph_link)

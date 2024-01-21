@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_12_095451) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_21_155335) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -85,6 +85,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_12_095451) do
     t.datetime "updated_at", null: false
     t.datetime "date_when_became_a_scamer"
     t.string "chat_member_status"
+  end
+
+  create_table "videos", force: :cascade do |t|
+    t.json "oracles_tips"
+    t.json "lookup_the_counterparty"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.json "compare_user_id"
+    t.json "option_details"
+    t.json "search_user"
+    t.json "complaint_text"
+    t.json "input_username"
+    t.json "complaint_photos"
   end
 
   add_foreign_key "complaints", "users"

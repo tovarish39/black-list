@@ -7,10 +7,14 @@ class StateMachine
       state :complaint_text
 
       event :complaint_text_action, from: :complaint_text do
-        transitions if: -> { mes_text?(Button.cancel) }              , after: :to_start, to: :start
+        transitions if: -> { mes_text?(Button.cancel) }, after: :to_start, to: :start
 
-        transitions if: -> { mes_text? && invalid_complaint_length? }, after: :notify_complaint_length, to: :complaint_text
-        transitions if: -> { mes_text?                              }, after: :to_complaint_photos    , to: :complaint_photos
+        transitions if: lambda {
+                          mes_text? && invalid_complaint_length?
+                        }, after: :notify_complaint_length, to: :complaint_text
+        transitions if: lambda {
+                          mes_text?
+                        }, after: :to_complaint_photos, to: :complaint_photos
       end
     end
   end
@@ -28,18 +32,27 @@ def to_complaint_photos
   )
   complaint.update(
     complaint_text: $mes.text,
-    photo_file_ids:[]
+    photo_file_ids: []
   )
-  
+
   dir_path = get_photo_dir_path(complaint)
   FileUtils.rm_rf(dir_path) if Dir.exist?(dir_path)
-  
+
   complaint.update(
-    photos_amount:0,
-    photo_file_ids:[]
+    photos_amount: 0,
+    photo_file_ids: []
   )
+
   # puts complaint.inspect
-  Send.mes(Text.complaint_photos, M::Reply.complaint_photos)
+
+  complaint_photos = Video.last.complaint_photos
+  if complaint_photos.present?
+    type = complaint_photos['type']
+    file_id = complaint_photos['file_id']
+    BotMain.send("send_#{type}", caption: Text.complaint_photos, reply_markup: M::Reply.complaint_photos, file_id:)
+  else
+    Send.mes(Text.complaint_photos, M::Reply.complaint_photos)
+  end
 end
 
 def more_then_max_length?

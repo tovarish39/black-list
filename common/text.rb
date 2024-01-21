@@ -137,11 +137,16 @@ module Text
     end
 #!
     def self.view_complaints telegraph_links
-        text_body = telegraph_links.map {|link| "\n#{Text.link}: <a href='#{link}'>telegraph_link</a>"}
-        return "⚠️ Вы обнаружены в списке скамеров! \n\n#{text_body.join('')}" if $lg == Ru 
-        return "⚠️ You have been found on the scammers' list! \n\n#{text_body.join('')}" if $lg == En 
-        return "⚠️ ¡Has sido encontrado en la lista de rippers! \n\n#{text_body.join('')}" if $lg == Es 
-        return "⚠️ 您被发现在骗子名单上！ \n\n#{text_body.join('')}" if $lg == Cn
+        text_body = telegraph_links.map {|link| "\n#{Text.link}: <a href='#{link}'>telegraph_link</a>\n"}
+        return "⛔️ We have found the ongoing claim against you! If you believe this to be false, please let us know and file an appeal against this report. \n\n#{text_body.join('')}" if $lg == Ru 
+        return "⛔️ We have found the ongoing claim against you! If you believe this to be false, please let us know and file an appeal against this report. \n\n#{text_body.join('')}" if $lg == En 
+        return "⛔️ We have found the ongoing claim against you! If you believe this to be false, please let us know and file an appeal against this report. \n\n#{text_body.join('')}" if $lg == Es 
+        return "⛔️ We have found the ongoing claim against you! If you believe this to be false, please let us know and file an appeal against this report. \n\n#{text_body.join('')}" if $lg == Cn
+        # text_body = telegraph_links.map {|link| "\n#{Text.link}: <a href='#{link}'>telegraph_link</a>\n"}
+        # return "⚠️ Вы обнаружены в списке скамеров! \n\n#{text_body.join('')}" if $lg == Ru 
+        # return "⚠️ You have been found on the scammers' list! \n\n#{text_body.join('')}" if $lg == En 
+        # return "⚠️ ¡Has sido encontrado en la lista de rippers! \n\n#{text_body.join('')}" if $lg == Es 
+        # return "⚠️ 您被发现在骗子名单上！ \n\n#{text_body.join('')}" if $lg == Cn
     end
 #!
     def self.explain_justification

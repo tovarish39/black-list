@@ -1,6 +1,9 @@
 require './config/requires'
 require_all './bot-moderator'
 
+BOT_MOD_INIT = Telegram::Bot::Client.new(ENV['TOKEN_MODERATOR'])
+BOT_MAIN_INIT = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
+
 log_path = "#{$root_path}/log/bot-moderator.log"
 $logger = Logger.new(log_path, 'weekly')
 $logger.formatter = proc do |severity, datetime, _progname, msg|
@@ -11,15 +14,15 @@ end
 # counter = 0
 Telegram::Bot::Client.run(ENV['TOKEN_MODERATOR']) do |bot|
   bot.listen do |message|
-    $bot = bot 
-    $mes = message 
+    $bot = bot
+    $mes = message
 
-      $logger.info("BEFORE ; mes = #{$mes.inspect}")
-    
+    $logger.info("BEFORE ; mes = #{$mes.inspect}")
+
     begin
       handle if $mes
-    rescue  => e
-      $logger.error("ERR")
+    rescue StandardError => e
+      $logger.error('ERR')
       Send.mes(e, to: ENV['CHAT_ID_MY'])
       Send.mes(e.backtrace, to: ENV['CHAT_ID_MY'])
     end
