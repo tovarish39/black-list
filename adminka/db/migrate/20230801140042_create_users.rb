@@ -9,7 +9,7 @@ class CreateUsers < ActiveRecord::Migration[7.0]
       t.string :state_aasm
       t.string :cur_complaint_id
       t.string :cur_message_id
-      t.string :status,           default:'not_scamer:default'
+      t.string :status, default: 'not_scamer:default'
       t.string :complaint_id
       t.text :justification
 

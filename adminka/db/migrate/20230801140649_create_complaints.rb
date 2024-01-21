@@ -13,9 +13,8 @@ class CreateComplaints < ActiveRecord::Migration[7.0]
       t.boolean :is_proofed_by_forwarted_mes
       t.string :telegraph_link
       t.text :explanation_by_moderator
-      t.string :photo_urls_remote_tmp, array:true
+      t.string :photo_urls_remote_tmp, array: true
       t.string :mes_id_published_in_channel
-
 
       t.timestamps
     end

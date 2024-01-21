@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_21_155335) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_21_195741) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -98,6 +98,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_21_155335) do
     t.json "complaint_text"
     t.json "input_username"
     t.json "complaint_photos"
+    t.json "start"
   end
 
   add_foreign_key "complaints", "users"

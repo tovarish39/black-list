@@ -2,3 +2,4 @@ AllCops:
   TargetRubyVersion: 3.2
   Exclude:
     - bot-main/controller.rb
+    - common/text.rb

@@ -92,12 +92,5 @@ def notice_min_photos_size
 end
 
 def to_compare_user_id
-  compare_user_id = Video.last.compare_user_id
-  if compare_user_id.present?
-    type = compare_user_id['type']
-    file_id = compare_user_id['file_id']
-    BotMain.send("send_#{type}", caption: Text.compare_user_id, reply_markup: M::Reply.compare_user_id, file_id:)
-  else
-    Send.mes(Text.compare_user_id, M::Reply.compare_user_id)
-  end
+  View.compare_user_id
 end

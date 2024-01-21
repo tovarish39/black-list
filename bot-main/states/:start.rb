@@ -33,14 +33,7 @@ def notify_account
 end
 
 def to_search_user
-  search_user = Video.last.search_user
-  if search_user.present?
-    type = search_user['type']
-    file_id = search_user['file_id']
-    BotMain.send("send_#{type}", caption: Text.search_user, reply_markup: M::Reply.search_user, file_id:)
-  else
-    Send.mes(Text.search_user, M::Reply.search_user)
-  end
+  View.search_user
 end
 
 def get_footer(complaint)

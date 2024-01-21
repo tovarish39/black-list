@@ -34,14 +34,7 @@ def deep_clone(hash)
 end
 
 def to_input_username
-  input_username = Video.last.input_username
-  if input_username.present?
-    type = input_username['type']
-    file_id = input_username['file_id']
-    BotMain.send("send_#{type}", caption: Text.input_username, reply_markup: M::Reply.input_username, file_id:)
-  else
-    Send.mes(Text.input_username, M::Reply.input_username)
-  end
+  View.input_username
 end
 
 def create_or_update_potential_user_scamer(complaint)
@@ -111,14 +104,14 @@ def is_actual_complaint?(complaint)
   is_scamer = already_scammer_status_6?(complaint)
   if is_scamer
     Send.mes(Text.notify_already_scammer_status)
-    Send.mes(Text.greet, M::Reply.start)
+    View.start
     return false
   end
 
   has_complaints = already_requesting_complaint_6?(complaint)
   if has_complaints
     Send.mes(Text.notify_already_has_requesting_complaint)
-    Send.mes(Text.greet, M::Reply.start)
+    View.start
     return false
   end
   true

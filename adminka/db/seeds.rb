@@ -6,8 +6,7 @@
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
 
-Video.create
-
+Video.create unless Video.last.present?
 
 # data = [
 #     {telegram_id:'65788123412342143', username:"sadfsadf", first_name:'asdfsdf', last_name:'xcvbvcb', lg:'ru', status:'not_scamer:default'},
@@ -22,15 +21,13 @@ Video.create
 #     {telegram_id:'123412342143', username:"sadfsadf", first_name:'asdfsdf', last_name:'xcvbvcb', lg:'en', status:'not_scamer:default'},
 # ]
 
-
-
 # data.each do |obj|
 #     User.create(
-#         telegram_id:obj[:telegram_id], 
-#         username:obj[:username], 
-#         first_name:obj[:first_name], 
-#         last_name:obj[:last_name], 
-#         lg:obj[:lg], 
+#         telegram_id:obj[:telegram_id],
+#         username:obj[:username],
+#         first_name:obj[:first_name],
+#         last_name:obj[:last_name],
+#         lg:obj[:lg],
 #         status:obj[:status]
 #     )
 # end

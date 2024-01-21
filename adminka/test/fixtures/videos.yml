@@ -10,6 +10,7 @@
 #  option_details          :json
 #  oracles_tips            :json
 #  search_user             :json
+#  start                   :json
 #  created_at              :datetime         not null
 #  updated_at              :datetime         not null
 #  compare_user_id         :json

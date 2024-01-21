@@ -44,12 +44,5 @@ def skip_proof
 end
 
 def view_next_step_option_details
-  option_details = Video.last.option_details
-  if option_details.present?
-    type = option_details['type']
-    file_id = option_details['file_id']
-    BotMain.send("send_#{type}", caption: Text.option_details, reply_markup: M::Reply.to_6_point, file_id:)
-  else
-    Send.mes(Text.option_details, M::Reply.to_6_point)
-  end
+  View.option_details
 end

@@ -43,16 +43,7 @@ def to_complaint_photos
     photo_file_ids: []
   )
 
-  # puts complaint.inspect
-
-  complaint_photos = Video.last.complaint_photos
-  if complaint_photos.present?
-    type = complaint_photos['type']
-    file_id = complaint_photos['file_id']
-    BotMain.send("send_#{type}", caption: Text.complaint_photos, reply_markup: M::Reply.complaint_photos, file_id:)
-  else
-    Send.mes(Text.complaint_photos, M::Reply.complaint_photos)
-  end
+  View.complaint_photos
 end
 
 def more_then_max_length?

@@ -8,7 +8,7 @@
 require 'dotenv'
 Dotenv.load
 
-set :output, "#{ENV["ADMINKA_PATH"]}/log/cron_log.log"
+set :output, "#{ENV['ADMINKA_PATH']}/log/cron_log.log"
 #
 # every 2.hours do
 #   command "/usr/bin/some_great_command"
@@ -20,13 +20,10 @@ set :output, "#{ENV["ADMINKA_PATH"]}/log/cron_log.log"
 #   runner "AnotherModel.prune_old_records"
 # end
 
-
-
 # Learn more: http://github.com/javan/whenever
 every '0 0 * * *' do
-    # rails_path = '/home/g/.rbenv/shims/rails'
-    command "cd #{ENV["ADMINKA_PATH"]} && #{ENV["RAILS_PATH"]} runner 'Moderator.update_all(decisions_per_day_amount:0)'"
-    command "cd #{ENV["ADMINKA_PATH"]} && #{ENV["RAILS_PATH"]} runner 'Counter.first.update(lookup_requests_from_bots:0)'"
-    environment "RAILS_ENV=#{ENV['RAILS_ENV']}"
-  end
-  
+  # rails_path = '/home/g/.rbenv/shims/rails'
+  command "cd #{ENV['ADMINKA_PATH']} && #{ENV['RAILS_PATH']} runner 'Moderator.update_all(decisions_per_day_amount:0)'"
+  command "cd #{ENV['ADMINKA_PATH']} && #{ENV['RAILS_PATH']} runner 'Counter.first.update(lookup_requests_from_bots:0)'"
+  environment "RAILS_ENV=#{ENV['RAILS_ENV']}"
+end

@@ -15,12 +15,5 @@ class StateMachine
 end
 
 def to_complaint_text
-  complaint_text = Video.last.complaint_text
-  if complaint_text.present?
-    type = complaint_text['type']
-    file_id = complaint_text['file_id']
-    BotMain.send("send_#{type}", caption: Text.complaint_text, reply_markup: M::Reply.complaint_text, file_id:)
-  else
-    Send.mes(Text.complaint_text, M::Reply.complaint_text)
-  end
+  View.complaint_text
 end

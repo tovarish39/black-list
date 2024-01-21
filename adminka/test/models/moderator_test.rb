@@ -19,7 +19,7 @@
 #  cur_complaint_id         :string
 #  telegram_id              :string
 #
-require "test_helper"
+require 'test_helper'
 
 class ModeratorTest < ActiveSupport::TestCase
   # test "the truth" do

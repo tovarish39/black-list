@@ -19,7 +19,7 @@
 #  cur_message_id            :string
 #  telegram_id               :string
 #
-require "test_helper"
+require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
   # test "the truth" do

@@ -36,7 +36,7 @@
                     <div class='users__cell users__cell-telegram-id'><%= user[:telegram_id] %></div>
                     <div class='users__cell users__cell-username'>@<%= user[:username] %></div>
                     <div class='users__cell users__cell-status'><%= render '/partials/select_status2', status_options:default_options(@status_options, user[:status]), id:user.id %></div>
-                    <div class='users__cell users__cell-registration'><%= user[:created_at].strftime('%d.%m.%Y') %></div>
+                    <div class='users__cell users__cell-registration'><%= user[:created_at].strftime('%d.%b.%Y') %></div>
            </div>
            <% end%>
         </div>
