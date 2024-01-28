@@ -11,8 +11,9 @@
       "type": "ruby_lsp",
       "name": "Debug",
       "request": "launch",
-      // "program": "bundle exec ruby start-bot-moderator.rb"
-      "program": "bundle exec ruby start-bot-main.rb"
+      // "program": "bundle exec ruby start_bot_moderator.rb"
+      "program": "bundle exec ruby start_bot_main.rb"
+      // "program": "bundle exec ruby request_on_python.rb"
     },
     {
       "type": "ruby_lsp",

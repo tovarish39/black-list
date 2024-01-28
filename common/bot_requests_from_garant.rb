@@ -24,10 +24,13 @@ module BotMain
       end
     end
 
-    def send_message(text, reply_markup = nil, chat_id: nil, bot: BOT_MAIN_INIT)
-      chat_id ||= Chat.to_self
+    def send_message(args)
+      # default args
+      bot = BOT_MAIN_INIT
+      args[:chat_id]    ||= Chat.to_self
+      args[:parse_mode] ||= 'HTML'
 
-      bot.api.send_message(chat_id:, text:, reply_markup:, parse_mode: 'HTML')
+      bot.api.send_message(args)
     end
 
     def edit_message_text(text, reply_markup = nil, message_id: nil, chat_id: nil, bot: BOT_MAIN_INIT)

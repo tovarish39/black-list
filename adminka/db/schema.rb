@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_21_195741) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_28_102559) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -85,6 +85,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_21_195741) do
     t.datetime "updated_at", null: false
     t.datetime "date_when_became_a_scamer"
     t.string "chat_member_status"
+    t.string "managed_status_by"
   end
 
   create_table "videos", force: :cascade do |t|

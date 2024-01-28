@@ -1,52 +1,35 @@
-class UsersController < ApplicationController
+# frozen_string_literal: true
+
+class UsersController < ApplicationController # rubocop:disable Style/Documentation
   require 'telegram/bot'
 
   def index
     @users = User.all.order(:created_at)
-    @languages = [
-      { label: 'ru', value: 'ru', checked: true },
-      { label: 'en', value: 'en', checked: false },
-      { label: 'es', value: 'es', checked: false },
-      { label: 'cn', value: 'cn', checked: false }
-    ]
-    @status_options = %w[scamer not_scamer verified trusted dwc]
-
-    complaints_for_statistic = Complaint.where.not(status: 'filling_by_user')
-    @complaints_per_day = []
-    @complaints_per_week = []
-    @complaints_per_month = []
-    complaints_for_statistic.each do |complaint|
-      @complaints_per_day   << complaint if complaint.created_at > 1.day.ago
-      @complaints_per_week  << complaint if complaint.created_at > 1.week.ago
-      @complaints_per_month << complaint if complaint.created_at > 1.month.ago
-    end
-    counter = Counter.first
-    counter ||= Counter.create
-    @lookup_counter = counter.lookup_requests_from_bots
+    @languages = languages
+    @status_options = status_options
+    @complaints_per_day, @complaints_per_week, @complaints_per_month = complaints_per_time
+    @lookup_counter = Counter.last.lookup_requests_from_bots
   end
 
-  def update
+  def update # rubocop:disable Metrics/MethodLength
     user = User.find(params[:id])
-    formatted_new_status = "#{params[:new_status_value]}:managed_by_admin"
+    status = params[:new_status_value]
 
-    # cброс статусов претезий
-    users_complaints = Complaint.where(telegram_id: user.telegram_id)
+    reset_users_complaints(user, status)
 
-    update_complaints(users_complaints, 'accepted_complaint') if formatted_new_status == 'scamer:managed_by_admin'
-    update_complaints(users_complaints, 'rejected_complaint') if formatted_new_status == 'not_scamer:managed_by_admin'
-    update_complaints(users_complaints, 'rejected_complaint') if formatted_new_status == 'verified:managed_by_admin'
-    update_complaints(users_complaints, 'rejected_complaint') if formatted_new_status == 'trusted:managed_by_admin'
-    update_complaints(users_complaints, 'rejected_complaint') if formatted_new_status == 'dwc:managed_by_admin'
-
-    user.update!(date_when_became_a_scamer: DateTime.now) if formatted_new_status == 'scamer:managed_by_admin'
-
-    user.update!(status: formatted_new_status, justification: nil)
+    args = {
+      status:,
+      justification: nil,
+      managed_status_by: 'admin'
+    }
+    args[:date_when_became_a_scamer] = DateTime.now if status == :scammer
+    user.update!(args)
     sleep 1 # имитация ожидания
 
-    render json: { updated_status: user.status.split(':').first }
+    render json: { updated_status: user.status }
   end
 
-  def send_message
+  def send_message # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     bot = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
 
     ids = params[:checked_ids].keys
@@ -77,6 +60,49 @@ class UsersController < ApplicationController
   private
 
   def update_complaints(complaints, new_status)
-    complaints.each { |complaint| complaint.update(status: new_status) }
+    complaints.each do |complaint|
+      complaint.update(status: new_status) if complaint.status != 'filling_by_user'
+    end
+  end
+
+  def languages
+    [
+      { label: 'ru', value: 'ru', checked: true },
+      { label: 'en', value: 'en', checked: false },
+      { label: 'es', value: 'es', checked: false },
+      { label: 'cn', value: 'cn', checked: false }
+    ].freeze
+  end
+
+  def complaints_per_time # rubocop:disable Metrics/AbcSize
+    complaints = Complaint.where.not(status: 'filling_by_user')
+    complaints.each_with_object([0, 0, 0]) do |complaint, acc|
+      created_at = complaint.created_at
+      acc[0] = acc[0] + 1 if created_at > 1.day.ago
+      acc[1] = acc[1] + 1 if created_at > 1.week.ago
+      acc[2] = acc[2] + 1 if created_at > 1.month.ago
+    end
+  end
+
+  def status_options
+    # rubocop:disable  Layout/ExtraSpacing
+    [
+      { label: '💤 Regular User',            value: 'start_default' },
+      { label: '⚠️ Suspect',                  value: 'suspect' },
+      { label: '🚫 Scammer/Ripper',          value: 'scammer' },
+      { label: '✅ Oracle Verified',         value: 'verified' },
+      { label: '🔱 Trusted',                 value: 'trusted' },
+      { label: '♨️ DWC',                      value: 'dwc' },
+      { label: '✅ ⚠️ Oracle Trial Verified', value: 'trial_verified' },
+      { label: '🌐 Federal Admin',           value: 'federal_admin' }
+    ]
+    # rubocop:enable  Layout/ExtraSpacing
+  end
+
+  def reset_users_complaints(user, user_status)
+    complaints = Complaint.where(telegram_id: user.telegram_id)
+    stop_statuses = %w[suspect scammer]
+    complaint_status = stop_statuses.include?(user_status) ? 'accepted_complaint' : 'rejected_complaint'
+    update_complaints(complaints, complaint_status)
   end
 end

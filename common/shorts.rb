@@ -65,10 +65,6 @@ def mes_video_note?
   $mes.video_note.present?
 end
 
-def mes_from_group_and_text?
-  mes_text? && mes_from_group?
-end
-
 def mes_from_group?
   $mes.chat.type == 'group' || $mes.chat.type == 'supergroup'
 end

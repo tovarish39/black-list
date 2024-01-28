@@ -13,10 +13,6 @@ end
 # json = JSON.parse($mes.to_json)
 # puts pretty_print_object(json, 1)
 
-$is_next_forward_message = false
-$forwarder_user_telegram_id = ''
-$lookuping = false
-$verifing = false
 
 def update_user_by_telegram_id(user, mes)
   user.update(
@@ -131,54 +127,8 @@ def handle
   # если нету аккаунтов, то создаётся новый юзер
   $user = get_user($mes)
   # ####### group
-  if mes_from_group_and_text?
-
-    # если юзер есть в бд!
-    # когда кто-то пишет в группе нужно проверить скамер он или нет
-    # нужно делать слияние юзеров в бд когда пишет юзер с телеграм ид и юзернеймом, которые каждый есть в бд
-    # $lg ||= Ru # если в группах любых где у пользователя не определён язык
-    if $user && $user.status =~ /^scamer/ # если в группе пишет скаммер
-      # json = JSON.parse($mes.to_json)
-      # puts pretty_print_object(json, 1)
-      $bot.api.send_message(
-        chat_id: $mes.chat.id,
-        reply_to_message_id: $mes.message_id,
-        text: Text.verifying_user($user, 'scamer'),
-        parse_mode: 'HTML'
-      )
-    elsif mes_text?(%r{^/lookup$}) # /verify или /lookup и не скаммер сам
-      # для forward следующий mes проверяется
-      $is_next_forward_message = true
-      $forwarder_user_telegram_id = $mes.chat.id
-      $lookuping = true
-    # проверка следующего после /lookup с forwarted
-    elsif $lookuping && $is_next_forward_message && ($forwarder_user_telegram_id == $mes.chat.id) && $mes.forward_from.present?
-      $is_next_forward_message = false
-      $forwarder_user_telegram_id = ''
-      $lookuping = false
-      handle_text_to_lookup($mes.chat.id)
-
-    # для forward следующий mes проверяется
-    elsif mes_text?(%r{^/verify$})
-      $is_next_forward_message = true
-      $forwarder_user_telegram_id = $mes.from.id
-      $verifing = true
-    # проверка следующего после /verify с forwarted
-    elsif $verifing && $is_next_forward_message && ($forwarder_user_telegram_id == $mes.from.id) && $mes.forward_from.present?
-      $is_next_forward_message = false
-      $forwarder_user_telegram_id = ''
-      $verifing = false
-      handle_forwarded_message_to_verifying
-
-      # проверка по ид или юзернейму
-    elsif mes_text?(%r{^/lookup })
-      $is_next_forward_message = false
-      handle_text_to_lookup($mes.chat.id)
-    elsif mes_text?(%r{^/verify })
-      $is_next_forward_message = false
-      handle_verify_with_id_or_username
-    end
-
+  if GroupHandler.message_from_group?
+    GroupHandler.handle
   else
     $user ||= create_user(User)
     $lg = $user.lg # if $user
@@ -248,50 +198,13 @@ def write_video
   config.update(for_private_channel_video_file_ids: videos)
 end
 
-def result_of_verifying(user, _data)
-  #   puts user
-  # puts data
-  if user.present? && user.status =~ /^scamer/
-    Send.mes(Text.verifying_user(user, 'scamer'))
-  elsif user.present? && user.status =~ /^verified/
-    Send.mes(Text.verifying_user(user, 'verified'))
-  elsif user.present? && user.status =~ /^not_scamer/
-    Send.mes(Text.verifying_user(user, 'not_scamer'))
-  elsif user.nil?
-    Send.mes(Text.verifying_user(user, 'not_scamer'))
-  elsif user.present? && user.status =~ /trusted/
-    Send.mes(Text.verifying_user(user, 'trusted'))
-  elsif user.present? && user.status =~ /dwc/
-    Send.mes(Text.verifying_user(user, 'dwc'))
-  end
-end
-
-def handle_forwarded_message_to_verifying
-  checking_telegram_id = $mes.forward_from.id
-  user = User.find_by(telegram_id: checking_telegram_id)
-  result_of_verifying(user, checking_telegram_id)
-end
-
-def handle_verify_with_id_or_username
-  data = $mes.text.split(' ')[1]
-  user = if data =~ /^\d+$/ # telegram_id
-           User.find_by(telegram_id: data)
-         else # username
-           User.find_by(username: data.sub('@', ''))
-         end
-  result_of_verifying(user, data)
-end
-
 def user_is_blocked_by_moderator?
   $user.status === 'scamer:blocked_by_moderator'
 end
 
 def user_is_scamer?
   return false if $user.status.nil?
-
-  status = $user.status.split(':').first
-  return true if status === 'scamer'
-
+  return true if $user.status == 'scammer'
   false
 end
 

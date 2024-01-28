@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StateMachine
   class_eval do
     include AASM
@@ -40,20 +42,13 @@ end
 # request_to_moderator     not_scamer или verified
 # если определено было админинстратором, то сбрасываются статус претензий
 
-def actual_user_status_and_complaint_status?
+def actual_user_status_and_complaint_status? # rubocop:disable Metrics/MethodLength
   complaint = get_complaint_by_button
   raise 'complaint not found by button' if complaint.nil?
 
   return false unless actual_complaint?(complaint)
 
-  actual_user_statuses = [
-    'not_scamer:default',
-    'not_scamer:managed_by_admin',
-    'not_scamer:managed_by_moderator',
-    'verified:managed_by_admin',
-    'trusted:managed_by_admin',
-    'dwc:managed_by_admin'
-  ]
+  # актуальные все, кроме :suspect статуса, который делает модератор
 
   userTo = if complaint.telegram_id.present?
              User.find_by(telegram_id: complaint.telegram_id)
@@ -61,7 +56,7 @@ def actual_user_status_and_complaint_status?
              User.find_by(username: complaint.username)
            end
 
-  is_actual_user_status = actual_user_statuses.include?(userTo.status)
+  is_actual_user_status = userTo.status != 'suspect'
   return false unless is_actual_user_status
 
   true
@@ -109,12 +104,12 @@ def actual_scamer?(user)
   user.justification.present? && (user.status =~ /^scamer/) && !(user.status =~ /blocked/)
 end
 
-def view_complaints
+def view_complaints # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
   complaints_to_moderator = actual_complaints # request_to_moderator     not_scamer или verified
 
   userTo_justifications = users_whith_actual_justifications
 
-  date_time_now = DateTime.now.strftime('%d.%b.%Y %H:%M')
+  date_time_now = DateTime.now.strftime('%d %b %Y %H:%M')
   Send.mes(Text.date_time_now(date_time_now))
 
   complaints_to_moderator.each do |complaint|
@@ -175,7 +170,9 @@ def update_black_list_user_whith_scamer_status(complaint)
          end
 
   user.update!(
-    status: 'scamer:managed_by_moderator',
+    status: :suspect,
+    managed_status_by: :moderator,
+    # status: 'scamer:managed_by_moderator',
     date_when_became_a_scamer: DateTime.now
   )
 end
@@ -191,7 +188,7 @@ def increment_decisions
   $user.save
 end
 
-def handle_accept_complaint
+def handle_accept_complaint # rubocop:disable Metrics/MethodLength,Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
   complaint = get_complaint_by_button
   return if complaint.nil?
 
@@ -366,10 +363,6 @@ def send_notify_to(user, text)
     text:,
     parse_mode: 'HTML'
   )
-end
-
-def user_is_scamer_now?(user)
-  user.status.split(':').first === 'scamer'
 end
 
 def accessing_justification

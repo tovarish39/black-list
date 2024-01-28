@@ -1,8 +1,7 @@
-require './config/requires'
-require_all './bot-main'
+# frozen_string_literal: true
 
-BOT_MOD_INIT = Telegram::Bot::Client.new(ENV['TOKEN_MODERATOR'])
-BOT_MAIN_INIT = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
+require_relative 'config'
+require_all './bot-main'
 
 log_path = "#{$root_path}/log/bot-main.log"
 $logger = Logger.new(log_path, 'weekly')
@@ -22,12 +21,11 @@ end
 # end
 
 Telegram::Bot::Client.run(ENV['TOKEN_MAIN']) do |bot|
-  bot.listen do |message|
-    $bot = bot
-    $mes = message
-
+  bot.listen do |mes|
+    $bot = bot # rubocop:disable Style/GlobalVars
+    $mes = mes # rubocop:disable Style/GlobalVars
     begin
-      handle if $mes
+      handle
     rescue StandardError => e
       $logger.info("ERROR  #{$mes.inspect}")
       Send.mes(e, to: ENV['CHAT_ID_MY'])

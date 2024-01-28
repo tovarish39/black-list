@@ -24,7 +24,7 @@ module View
     end
 
     def option_details
-      with_or_media(:option_details, Text.option_details, M::Reply.option_details)
+      with_or_media(:option_details, Text.option_details, M::Reply.to_6_point)
     end
 
     def input_username

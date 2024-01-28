@@ -33,7 +33,7 @@
                     <div class='moderators__cell moderators__cell-username'>@<%= moderator[:username] %></div>
                     <div class='moderators__cell moderators__cell-stat moderators__cell-stat_values'><%= moderator[:access_amount]%> | <%= moderator[:reject_amount] + moderator[:block_amount] %> | <%= moderator[:decisions_per_day_amount]%> </div>
                     <div class='moderators__cell moderators__cell-status'><%= render '/partials/select_status', status_options:default_options(@status_options, moderator[:status]), id:moderator.id %></div>
-                    <div class='moderators__cell moderators__cell-registration'><%= moderator[:created_at].strftime('%d.%b.%Y') %></div>
+                    <div class='moderators__cell moderators__cell-registration'><%= moderator[:created_at].strftime('%d %b %Y') %></div>
            </div>
            <% end%>
         </div>

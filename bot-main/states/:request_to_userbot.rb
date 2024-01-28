@@ -26,5 +26,6 @@ def handle_text_to_lookup(group_chat_id = nil)
   data = data.sub('@', '')
   request = "bundle exec ruby #{$root_path}/request_on_python.rb #{data} #{$user.telegram_id} #{group_chat_id}"
   # puts request
+  # puts request
   spawn(request)
 end

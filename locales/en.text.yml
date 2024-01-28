@@ -1,0 +1,14 @@
+en:
+  user:
+    status:
+      start_default: 💤 Regular User
+      suspect: ⚠️ Suspect
+      scammer: 🚫 Scammer/Ripper
+      verified: ✅ Oracle Verified
+      trusted: 🔱 Trusted
+      dwc: ♨️ DWC
+      trial_verified: ✅⚠️ Oracle Trial Verified
+      federal_admin: 🌐 Federal Admin
+  stop_status_comment:
+    suspect: ⚠️ User was found on the Ripper's wall! Notify him immediately and direct him our way so he can address and appeal these accusations.
+    scammer: 🚩 User was found on the Ripper's Wall! Don't perform any type of business with him!

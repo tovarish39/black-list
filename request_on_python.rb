@@ -1,12 +1,17 @@
 # frozen_string_literal: true
 
-require './config/requires'
+require_relative 'config'
+require_relative './common/checker_statuses'
+
 require 'socket'
 
 # rubocop:disable Style/MultilineTernaryOperator, Style/GlobalVars
 
+# data = 'asdf'
 data = ARGV[0]
+# from_user_telegram_id = '1964112204'
 from_user_telegram_id = ARGV[1]
+# group_chat_id = '-1001979775757'
 group_chat_id = ARGV[2]
 
 $user = User.find_by(telegram_id: from_user_telegram_id)
@@ -178,9 +183,15 @@ def format_res(res)
   formatted_lines.join("\n")
 end
 
-result_message = (response.present? && response == 'Error') || format_res(response).include?('Запрос принят, ожидайте') ?
-    Text.not_availible :
-    format_res(response)
+# is_res_error = response.present? && response == 'Error'
+
+result_message = if !response.present? || (response.present? && response == 'Error') || format_res(response).include?('Запрос принят, ожидайте')
+                   Text.not_availible
+                 else
+                   format_res(response)
+                 end
+# is_res_error || format_res(response).include?('Запрос принят, ожидайте') ?
+# Text.not_availible :
 
 answer = if result_message.include?('_')
            result_message.gsub(/_/, '\\\\_')
@@ -245,37 +256,38 @@ end
 
 #  /verifying by id | username
 
-def result_of_verifying_local(user, group_chat_id, data, bot)
-  #   puts user
-  # puts data
-  if user.present? && user.status =~ /^scamer/
-    bot.api.send_message(chat_id: group_chat_id || $user.telegram_id, text: Text.verifying_user(user, 'scamer', data),
-                         parse_mode: 'HTML')
-  elsif user.present? && user.status =~ /^verified/
-    bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,
-                         text: Text.verifying_user(user, 'verified', data), parse_mode: 'HTML')
-  elsif user.present? && user.status =~ /^not_scamer/
-    bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,
-                         text: Text.verifying_user(user, 'not_scamer', data), parse_mode: 'HTML')
-  elsif user.nil?
-    bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,
-                         text: Text.verifying_user(user, 'not_scamer', data), parse_mode: 'HTML')
-  elsif user.present? && user.status =~ /trusted/
-    bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,  text: Text.verifying_user(user, 'trusted', data),
-                         parse_mode: 'HTML')
-  elsif user.present? && user.status =~ /dwc/
-    bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,  text: Text.verifying_user(user, 'dwc', data),
-                         parse_mode: 'HTML')
-  end
-end
+# def result_of_verifying_local(user, group_chat_id, data, bot)
+#   #   puts user
+#   # puts data
+#   if user.present? && user.status =~ /^scamer/
+#     bot.api.send_message(chat_id: group_chat_id || $user.telegram_id, text: Text.verifying_user(user, 'scamer', data),
+#                          parse_mode: 'HTML')
+#   elsif user.present? && user.status =~ /^verified/
+#     bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,
+#                          text: Text.verifying_user(user, 'verified', data), parse_mode: 'HTML')
+#   elsif user.present? && user.status =~ /^not_scamer/
+#     bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,
+#                          text: Text.verifying_user(user, 'not_scamer', data), parse_mode: 'HTML')
+#   elsif user.nil?
+#     bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,
+#                          text: Text.verifying_user(user, 'not_scamer', data), parse_mode: 'HTML')
+#   elsif user.present? && user.status =~ /trusted/
+#     bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,  text: Text.verifying_user(user, 'trusted', data),
+#                          parse_mode: 'HTML')
+#   elsif user.present? && user.status =~ /dwc/
+#     bot.api.send_message(chat_id: group_chat_id || $user.telegram_id,  text: Text.verifying_user(user, 'dwc', data),
+#                          parse_mode: 'HTML')
+#   end
+# end
 
-def handle_verify_with_id_or_username(data, group_chat_id, bot)
+def handle_verify_with_id_or_username(data, group_chat_id, _bot)
   user = if data =~ /^-?\d+$/ # telegram_id
            User.find_by(telegram_id: data)
          else # username
            User.find_by(username: data.sub('@', ''))
          end
-  result_of_verifying_local(user, group_chat_id, data, bot)
+  CheckerStatuses.view_status(user, data, chat_id: group_chat_id)
+  # result_of_verifying_local(user, group_chat_id, data, bot)
 end
 
 handle_verify_with_id_or_username(data, group_chat_id, bot)

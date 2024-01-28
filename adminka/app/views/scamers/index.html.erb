@@ -41,7 +41,7 @@
                         <%end%>
                     </div>
                     <div class='scamers__cell scamers__cell-became-a-scamer'>
-                        <%= DateTime.parse(scamer['date_when_became_a_scamer']).strftime('%d.%b.%Y') if scamer['date_when_became_a_scamer'].present?%>
+                        <%= DateTime.parse(scamer['date_when_became_a_scamer']).strftime('%d %b %Y') if scamer['date_when_became_a_scamer'].present?%>
                     </div>
            </div>
            <% end%>

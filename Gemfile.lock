@@ -102,6 +102,7 @@ DEPENDENCIES
   dotenv
   faraday (= 2.3.0)
   faraday-multipart
+  i18n
   nokogiri
   pg (~> 1.5, >= 1.5.3)
   rubocop

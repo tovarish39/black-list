@@ -9,6 +9,7 @@
 #  justification             :text
 #  last_name                 :string
 #  lg                        :string
+#  managed_status_by         :string
 #  state_aasm                :string
 #  status                    :string           default("not_scamer:default")
 #  username                  :string

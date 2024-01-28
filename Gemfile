@@ -8,6 +8,7 @@ gem 'faraday', '2.3.0'
 gem 'pg', '~> 1.5', '>= 1.5.3'
 gem 'telegram-bot-ruby', '~> 1.0.0'
 
+gem 'i18n'
 group :development do
   gem 'rubocop'
 end

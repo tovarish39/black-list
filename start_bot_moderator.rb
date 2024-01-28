@@ -1,8 +1,8 @@
-require './config/requires'
-require_all './bot-moderator'
+# frozen_string_literal: true
 
-BOT_MOD_INIT = Telegram::Bot::Client.new(ENV['TOKEN_MODERATOR'])
-BOT_MAIN_INIT = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
+require_relative 'config'
+
+require_all './bot-moderator'
 
 log_path = "#{$root_path}/log/bot-moderator.log"
 $logger = Logger.new(log_path, 'weekly')

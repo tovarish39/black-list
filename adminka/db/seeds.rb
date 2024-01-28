@@ -7,7 +7,11 @@
 #   Character.create(name: "Luke", movie: movies.first)
 
 Video.create unless Video.last.present?
-
+unless Counter.last.present?
+  Counter.create(
+    lookup_requests_from_bots: 0
+  )
+end
 # data = [
 #     {telegram_id:'65788123412342143', username:"sadfsadf", first_name:'asdfsdf', last_name:'xcvbvcb', lg:'ru', status:'not_scamer:default'},
 #     {telegram_id:'123412342143', username:"sadfsadf", first_name:'asdfsdf', last_name:'xcvbvcb', lg:'ru', status:'not_scamer:default'},
