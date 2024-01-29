@@ -103,8 +103,10 @@ DEPENDENCIES
   faraday (= 2.3.0)
   faraday-multipart
   i18n
+  minitest
   nokogiri
   pg (~> 1.5, >= 1.5.3)
+  rake
   rubocop
   ruby-debug-ide
   telegram-bot-ruby (~> 1.0.0)

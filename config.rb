@@ -15,11 +15,13 @@ Dotenv.load
 BOT_MOD_INIT = Telegram::Bot::Client.new(ENV['TOKEN_MODERATOR'])
 BOT_MAIN_INIT = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
 
+env = ENVIROMENT || 'development'
+
 params = {
   adapter: 'postgresql',
   host: 'localhost',
   port: 5432,
-  dbname: 'black-list_adminka_development',
+  dbname: "black-list_adminka_#{env}",
   user: ENV['DB_USERNAME'],
   password: ENV['DB_PASSWORD']
 }

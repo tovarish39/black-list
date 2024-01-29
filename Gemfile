@@ -5,12 +5,16 @@ gem 'activerecord'
 gem 'colorize'
 gem 'dotenv'
 gem 'faraday', '2.3.0'
-gem 'pg', '~> 1.5', '>= 1.5.3'
-gem 'telegram-bot-ruby', '~> 1.0.0'
-
 gem 'i18n'
+gem 'pg', '~> 1.5', '>= 1.5.3'
+gem 'rake'
+gem 'telegram-bot-ruby', '~> 1.0.0'
 group :development do
   gem 'rubocop'
+end
+
+group :test do
+  gem 'minitest'
 end
 
 group :debug do

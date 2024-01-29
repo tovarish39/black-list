@@ -12,7 +12,7 @@
       "name": "Debug",
       "request": "launch",
       // "program": "bundle exec ruby start_bot_moderator.rb"
-      "program": "bundle exec ruby start_bot_main.rb"
+      "program": "bundle exec ruby main_test.rb"
       // "program": "bundle exec ruby request_on_python.rb"
     },
     {
