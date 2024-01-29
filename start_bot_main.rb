@@ -30,9 +30,9 @@ Telegram::Bot::Client.run(ENV['TOKEN_MAIN']) do |bot|
     rescue StandardError => e
       # $logger.info("ERROR  #{$mes.inspect}")
 
-      Send.mes("Error with income json =  \n\n#{$raw_data_for_testing}", to: ENV['CHAT_ID_MY'])
-      # Send.mes(e, to: ENV['CHAT_ID_MY'])
-      # Send.mes(e.backtrace, to: ENV['CHAT_ID_MY'])
+      # Send.mes("Error with income json =  \n\n#{$raw_data_for_testing}", to: ENV['CHAT_ID_MY'])
+      Send.mes(e, to: ENV['CHAT_ID_MY'])
+      Send.mes(e.backtrace, to: ENV['CHAT_ID_MY'])
     end
   end
 end
