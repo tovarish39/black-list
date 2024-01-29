@@ -73,8 +73,10 @@ end
 def already_requesting_complaint?
   userTo = get_userTo_by_mes($mes)
   if userTo
+    complaints_by_telegram_id = []
     complaints_by_telegram_id = Complaint.where(telegram_id: userTo.telegram_id) if userTo.telegram_id.present?
-    complaints_by_username    = Complaint.where(username: userTo.username)       if userTo.username.present?
+    complaints_by_username = []
+    complaints_by_username = Complaint.where(username: userTo.username) if userTo.username.present?
     complaints = complaints_by_telegram_id + complaints_by_username
     complaints.each do |complaint|
       return true if complaint.status == 'request_to_moderator'
