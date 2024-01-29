@@ -25,7 +25,7 @@
 class User < ApplicationRecord
   has_many :complaints, dependent: :destroy
 
-  attiribute :status, default: 'start_default'
+  attribute :status, default: 'start_default'
 
   validates :managed_status_by, inclusion: { in: [
     nil,
