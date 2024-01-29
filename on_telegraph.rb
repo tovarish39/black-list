@@ -124,7 +124,7 @@ moderators.each do |moderator|
     parse_mode: 'HTML'
   )
 rescue StandardError => e
-  if ResponseError.error_code != 400
+  if e.error_code != 400
     bot.api.send_message(text: "telegraph #{e}", chat_id: ENV['CHAT_ID_MY'])
     bot.api.send_message(text: e.backtrace, chat_id: ENV['CHAT_ID_MY'])
   end

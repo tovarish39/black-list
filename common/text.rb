@@ -629,7 +629,7 @@ DONT LET LOW LIFE SCAMMERS FOOL YOU
                                        "\n#{Text.id} #{user.telegram_id}"
                                      end}#{if user&.first_name.present?
                                              "\n#{Text.first_name} #{user.first_name}"
-                                           end}#{"\n#{Text.username} @#{user.username}\n" if user.username.present?}"
+                                           end}#{"\n#{Text.username} @#{user.username}\n" if user&.username.present?}"
     "User info: #{if user&.telegram_id.present?
                     "\nID: #{user.telegram_id}"
                   end}#{if user&.first_name.present?
