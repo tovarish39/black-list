@@ -176,7 +176,7 @@ def handle
       event_bot.method(action(from_state)).call     # "#{from_state}_action"
 
       new_state = event_bot.aasm.current_state
-      $user.update(state_aasm: new_state)
+      $user.update!(state_aasm: new_state)
     end
   end
   # rescue  => exception
