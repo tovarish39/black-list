@@ -25,9 +25,10 @@
 class User < ApplicationRecord
   has_many :complaints, dependent: :destroy
 
-  validates :managed_status_by, inclusion: { in: %w[
-    moderator
-    admin
+  validates :managed_status_by, inclusion: { in: [
+    nil,
+    'moderator',
+    'admin'
   ] }
 
   # 1 💤 Regular User = 💤 Мужик
