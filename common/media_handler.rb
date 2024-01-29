@@ -15,7 +15,7 @@ module MediaHandler # rubocop:disable Style/Documentation
 
   class << self
     def user_try_write_media?(mes)
-      return false if mes.instance_of?(CallbackQuery)
+      return false if mes&.caption.nil?
 
       command = mes.caption
 
