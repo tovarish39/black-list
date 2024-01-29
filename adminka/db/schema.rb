@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_01_28_102559) do
+ActiveRecord::Schema[7.0].define(version: 2024_01_29_175426) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -78,7 +78,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_01_28_102559) do
     t.string "state_aasm"
     t.string "cur_complaint_id"
     t.string "cur_message_id"
-    t.string "status", default: "not_scamer:default"
+    t.string "status"
     t.string "complaint_id"
     t.text "justification"
     t.datetime "created_at", null: false

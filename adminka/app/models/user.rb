@@ -13,7 +13,7 @@
 #  lg                        :string
 #  managed_status_by         :string
 #  state_aasm                :string
-#  status                    :string           default("not_scamer:default")
+#  status                    :string
 #  username                  :string
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
