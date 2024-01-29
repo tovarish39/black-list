@@ -625,16 +625,16 @@ DONT LET LOW LIFE SCAMMERS FOOL YOU
   end
 
   def self.user_info(user)
-    return "#{Text.user_info_word} #{if user.telegram_id.present?
+    return "#{Text.user_info_word} #{if user&.telegram_id.present?
                                        "\n#{Text.id} #{user.telegram_id}"
-                                     end}#{if user.first_name.present?
+                                     end}#{if user&.first_name.present?
                                              "\n#{Text.first_name} #{user.first_name}"
                                            end}#{"\n#{Text.username} @#{user.username}\n" if user.username.present?}"
-    "User info: #{if user.telegram_id.present?
+    "User info: #{if user&.telegram_id.present?
                     "\nID: #{user.telegram_id}"
-                  end}#{if user.first_name.present?
+                  end}#{if user&.first_name.present?
                           "\nFirst Name: #{user.first_name}"
-                        end}#{if user.username.present?
+                        end}#{if user&.username.present?
                                                                                      "\nUsername: @#{user.username}"
                                                                                    end}\n"
   end
