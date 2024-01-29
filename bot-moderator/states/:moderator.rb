@@ -55,6 +55,7 @@ def actual_user_status_and_complaint_status? # rubocop:disable Metrics/MethodLen
            else
              User.find_by(username: complaint.username)
            end
+  return true if userTo.nil?
 
   is_actual_user_status = userTo.status != 'suspect'
   return false unless is_actual_user_status
