@@ -453,7 +453,6 @@ module Text
       return "<b>Every day, we receive dozens of scam reports. However, only about 10% of them are truly sophisticated scams. The other 90% operate on old and dull schemes. \n\nYou can protect yourself from these by thoroughly studying our instructions and safety tips for working in Telegram under the Oracle's Tips section.</b>"
     end
     if $lg == Es
-      return "<b>Todos los días recibimos decenas de informes de estafas. Sin embargo, solo alrededor del 10% de ellos son estafas verdaderamente sofisticadas. El otro 90% opera con esquemas antiguos y simplones. \n\nPuede protegerse de estos estudiando detalladamente nuestras instrucciones y consejos de seguridad para trabajar en Telegram en la sección Consejos de Oracle.</b>"
     end
     return unless $lg == Cn
 
