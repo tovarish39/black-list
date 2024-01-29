@@ -15,7 +15,8 @@ Dotenv.load
 BOT_MOD_INIT = Telegram::Bot::Client.new(ENV['TOKEN_MODERATOR'])
 BOT_MAIN_INIT = Telegram::Bot::Client.new(ENV['TOKEN_MAIN'])
 
-env = ENVIROMENT || 'development'
+env =  'development'
+# env = ENVIROMENT || 'development'
 
 params = {
   adapter: 'postgresql',
