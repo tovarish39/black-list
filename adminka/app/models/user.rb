@@ -25,6 +25,8 @@
 class User < ApplicationRecord
   has_many :complaints, dependent: :destroy
 
+  attiribute :status, default: 'start_default'
+
   validates :managed_status_by, inclusion: { in: [
     nil,
     'moderator',
@@ -39,6 +41,7 @@ class User < ApplicationRecord
   # 6 ♨️ DWC = ♨️ Проявите осторожность!
   # 7 ✅⚠️ Oracle Trial Verified = ✅⚠️ Верифицированный Продавец (испытательный срок)
   # 8 🌐 Federal Admin = 🌐 Админ Чатов
+
   validates :status, inclusion: { in: %w[
     start_default
     suspect
